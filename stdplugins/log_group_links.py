@@ -58,10 +58,12 @@ async def approve_p_m(event):
         return
     reason = event.pattern_match.group(1)
     chat = await event.get_chat()
-    if Config.NC_LOG_P_M_S:
-        if event.is_group:
-            if chat.id not in NO_PM_LOG_USERS:
-                NO_PM_LOG_USERS.append(chat.id)
-                await event.edit("Won't Log Messages from this chat")
-                await asyncio.sleep(3)
-                await event.delete()
+    if (
+        Config.NC_LOG_P_M_S
+        and event.is_group
+        and chat.id not in NO_PM_LOG_USERS
+    ):
+        NO_PM_LOG_USERS.append(chat.id)
+        await event.edit("Won't Log Messages from this chat")
+        await asyncio.sleep(3)
+        await event.delete()
