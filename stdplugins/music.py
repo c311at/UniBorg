@@ -186,7 +186,7 @@ async def _(event):
     if ".com" not in d_link:
         await event.edit("` I need a link to download something pro.`**(._.)**")
     else:
-        msg = await event.edit("🎶**Müzik indilip gönderiliyor..!**🎶")
+        msg = await event.edit("🎶**Müzik indirilip gönderiliyor..!**🎶")
     bot = "@spotify_to_mp3_bot"
 
     async with event.client.conversation(bot) as conv:
