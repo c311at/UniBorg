@@ -46,7 +46,7 @@ async def all_messages_catcher(event):
     ammoca_message += f"Etiketleyen: {who_m}\nGrup:[{where_m}]({message_link}) "
 
     await tgbot.send_message(
-        entity=Config.PRIVATE_CHANNEL_BOT_API_ID,
+        entity=Config.TAG_CHANNEL,
         message=ammoca_message,
         link_preview=False,
         buttons=[

@@ -21,6 +21,10 @@ class Config:
     PRIVATE_GROUP_BOT_API_ID = os.environ.get("PRIVATE_GROUP_BOT_API_ID", None)
     if PRIVATE_GROUP_BOT_API_ID:
         PRIVATE_GROUP_BOT_API_ID = int(PRIVATE_GROUP_BOT_API_ID)
+    # tag channel
+    TAG_CHANNEL = os.environ.get("TAG_CHANNEL", None)
+    if TAG_CHANNEL:
+        TAG_CHANNEL = int(TAG_CHANNEL)
     # Send .get_id in any channel to fill this value. ReQuired for @Manuel15 inspiration to work!
     PRIVATE_CHANNEL_BOT_API_ID = os.environ.get(
         "PRIVATE_CHANNEL_BOT_API_ID", None)
