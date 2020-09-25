@@ -33,7 +33,7 @@ async def _(event):
     elif event.reply_to_msg_id:
         previous_message = await event.get_reply_message()
         if previous_message.media:
-            downloaded_file_name = await previous_message.download_media(
+            downloaded_file_name = await event.client.download_media(
                 previous_message,
                 Config.TMP_DOWNLOAD_DIRECTORY,
                 progress_callback=progress
