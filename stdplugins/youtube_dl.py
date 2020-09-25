@@ -31,13 +31,13 @@ if Config.TG_BOT_USER_NAME_BF_HER is not None and tgbot is not None:
             try:
                 with open(Config.TMP_DOWNLOAD_DIRECTORY + "/" + "YouTubeDL.json", "r", encoding="utf8") as f:
                     response_json = json.load(f)
-            except FileNotFoundError as e:
+            except FileNotFoundError:
                 await event.edit("Something Bad Happened")
                 return False
             custom_file_name = str(response_json.get("title")) + \
                 "_" + ytdl_format_code + "." + ytdl_extension
             youtube_dl_url = response_json["webpage_url"]
-            download_directory = Config.TMP_DOWNLOAD_DIRECTORY + "/" + custom_file_name
+            download_directory = Config.TMP_DOWNLOAD_DIRECTORY + custom_file_name
             command_to_exec = []
             if tg_send_type == "audio":
                 command_to_exec = [
