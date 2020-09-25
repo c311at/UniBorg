@@ -4,7 +4,7 @@ from telethon.tl.types import Channel, Chat, User
 from telethon.utils import get_display_name
 
 
-@borg.on(events.NewMessage(incoming=True, blacklist_chats=Config.UB_BLACK_LIST_CHAT, func=lambda e: (e.mentioned or e.is_chat or not e.is_private)))
+@borg.on(events.NewMessage(incoming=True, blacklist_chats=Config.UB_BLACK_LIST_CHAT, func=lambda e: (e.mentioned)))
 async def all_messages_catcher(event):
     # the bot might not have the required access_hash to mention the appropriate PM
     await event.forward_to(Config.TG_BOT_USER_NAME_BF_HER)
