@@ -14,12 +14,9 @@ async def all_messages_catcher(event):
     ammoca_message = ""
 
     who_ = await event.client.get_entity(event.from_id)
-    if (
-        who_.bot or
-        who_.verified or
-        who_.support or
-        event.is_private
-    ):
+    if (who_.bot or who_.verified or who_.support):
+        return
+    if event.is_private:
         return
 
     who_m = f"[{get_display_name(who_)}](tg://user?id={who_.id})"
