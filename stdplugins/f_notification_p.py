@@ -43,7 +43,7 @@ async def all_messages_catcher(event):
         message_link = f"tg://openmessage?chat_id={where_.id}&message_id={event.id}"
         # Telegram is weird :\
 
-    ammoca_message += f"Etiketleyen: {who_m}\nGrup:[{where_m}]({message_link}) "
+    ammoca_message += f"Etiketleyen: {who_m}\nGrup/Kişi:[{where_m}]({message_link}) "
 
     await tgbot.send_message(
         entity=Config.TAG_CHANNEL,
