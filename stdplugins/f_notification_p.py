@@ -4,7 +4,7 @@ from telethon.tl.types import Channel, Chat, User
 from telethon.utils import get_display_name
 
 
-@borg.on(events.NewMessage(incoming=True, blacklist_chats=Config.UB_BLACK_LIST_CHAT, func=lambda e: (e.mentioned or e.is_chat)))
+@borg.on(events.NewMessage(incoming=True, blacklist_chats=Config.UB_BLACK_LIST_CHAT, func=lambda e: (e.mentioned or e.is_chat or not e.is_private)))
 async def all_messages_catcher(event):
     # the bot might not have the required access_hash to mention the appropriate PM
     await event.forward_to(Config.TG_BOT_USER_NAME_BF_HER)
@@ -15,8 +15,6 @@ async def all_messages_catcher(event):
 
     who_ = await event.client.get_entity(event.from_id)
     if (who_.bot or who_.verified or who_.support):
-        return
-    if event.is_private:
         return
 
     who_m = f"[{get_display_name(who_)}](tg://user?id={who_.id})"
