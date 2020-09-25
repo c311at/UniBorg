@@ -1,20 +1,10 @@
-""" Google Text to Speech
-Available Commands:
-.tts LanguageCode as reply to a message
-.tts LangaugeCode | text to speak"""
 import asyncio
-import logging
 import os
-import subprocess
 from datetime import datetime
+
 from gtts import gTTS
 from sample_config import Config
-
-from uniborg.util import admin_cmd
-
-logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
-                    level=logging.WARNING)
-logger = logging.getLogger(__name__)
+from uniborg.util import admin_cmd, run_command
 
 
 @borg.on(admin_cmd(pattern="tts (.*)"))
@@ -42,6 +32,7 @@ async def _(event):
         tts.save(required_file_name)
         command_to_execute = [
             "ffmpeg",
+            "-hide_banner",
             "-i",
             required_file_name,
             "-map",
@@ -54,18 +45,16 @@ async def _(event):
             "on",
             required_file_name + ".opus"
         ]
-        try:
-            t_response = subprocess.check_output(
-                command_to_execute, stderr=subprocess.STDOUT)
-        except (subprocess.CalledProcessError, NameError, FileNotFoundError) as exc:
-            await event.edit(str(exc))
+        await run_command(command_to_execute)
+        if not os.path.exists(required_file_name + ".opus"):
+            await event.edit("failed to convert")
             # continue sending required_file_name
         else:
             os.remove(required_file_name)
             required_file_name = required_file_name + ".opus"
         end = datetime.now()
         ms = (end - start).seconds
-        await borg.send_file(
+        await event.client.send_file(
             event.chat_id,
             required_file_name,
             # caption="Processed {} ({}) in {} seconds!".format(text[0:97], lan, ms),
