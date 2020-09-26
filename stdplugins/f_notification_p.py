@@ -7,7 +7,6 @@ from telethon.utils import get_display_name
 @borg.on(events.NewMessage(incoming=True, blacklist_chats=Config.UB_BLACK_LIST_CHAT, func=lambda e: (e.mentioned)))
 async def all_messages_catcher(event):
     # the bot might not have the required access_hash to mention the appropriate PM
-    await event.forward_to(Config.TG_BOT_USER_NAME_BF_HER)
 
     # construct message
     # the message format is stolen from @MasterTagAlertBot
@@ -16,6 +15,8 @@ async def all_messages_catcher(event):
     who_ = await event.client.get_entity(event.from_id)
     if (who_.bot or who_.verified or who_.support):
         return
+
+    await event.forward_to(Config.TG_BOT_USER_NAME_BF_HER).delete()
 
     who_m = f"[{get_display_name(who_)}](tg://user?id={who_.id})"
 
