@@ -16,7 +16,11 @@ async def all_messages_catcher(event):
     if (who_.bot or who_.verified or who_.support):
         return
 
-    await event.forward_to(Config.TG_BOT_USER_NAME_BF_HER).delete()
+    await (
+        await event.forward_to(
+            Config.TG_BOT_USER_NAME_BF_HER
+        )
+    ).delete()
 
     who_m = f"[{get_display_name(who_)}](tg://user?id={who_.id})"
 
