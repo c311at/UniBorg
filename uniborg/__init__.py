@@ -6,4 +6,4 @@ from .uniborg import *
 import os
 
 os.system("pip install --upgrade youtube-dl ")
-os.system("pip install -U pip")
+os.system("python3 -m pip install --upgrade pip setuptools wheel")
