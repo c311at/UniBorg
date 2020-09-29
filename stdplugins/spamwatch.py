@@ -9,7 +9,7 @@ import spamwatch
 from sample_config import Config
 
 ENABLE_LOG = True
-LOGGING_CHATID = Config.PRIVATE_CHANNEL_BOT_API_ID
+LOGGING_CHATID = Config.SPAM_WATCH_LOG_CHANNEL
 BANNED_RIGHTS = ChatBannedRights(
     until_date=None,
     view_messages=True,
