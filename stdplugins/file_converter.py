@@ -6,6 +6,8 @@ import os
 import time
 from datetime import datetime
 
+from sample_config import Config
+
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 logger = logging.getLogger(__name__)
@@ -78,7 +80,6 @@ async def _(event):
             os.remove(downloaded_file_name)
             return
         logger.info(command_to_run)
-<< << << < HEAD
         # TODO: re-write create_subprocess_exec 😉
         process = await asyncio.create_subprocess_exec(
             *command_to_run,
@@ -95,14 +96,12 @@ async def _(event):
             end_two = datetime.now()
             force_document = False
             await event.client.send_file(
-== == == =
         t_response, e_response=await utils.run_command(command_to_run)
         os.remove(downloaded_file_name)
         if os.path.exists(new_required_file_name):
             end_two=datetime.now()
             force_document=False
             await borg.send_file(
->>>>>> > aea8912d89b5f605e52dde7c95e809162f6ec390
                 entity=event.chat_id,
                 file=new_required_file_name,
                 caption=new_required_file_caption,
@@ -112,11 +111,7 @@ async def _(event):
                 voice_note=voice_note,
                 supports_streaming=supports_streaming,
                 progress_callback=lambda d, t: asyncio.get_event_loop().create_task(
-<< << << < HEAD
-                    progress(d, t, event, c_time, "yükleniyor..")
-== == == =
                     utils.progress(d, t, event, c_time, "trying to upload")
->> >>>> > aea8912d89b5f605e52dde7c95e809162f6ec390
                 )
             )
             ms_two=(end_two - end).seconds

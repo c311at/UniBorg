@@ -1,9 +1,6 @@
 import sql_helpers.warns_sql as sql
 import html
 from telethon.tl.types import ChatBannedRights
-<< << << < HEAD
-== == == =
->>>>>> > aea8912d89b5f605e52dde7c95e809162f6ec390
 
 
 banned_rights = ChatBannedRights(
@@ -37,8 +34,6 @@ async def _(event):
         return
     warn_reason = event.pattern_match.group(1)
     reply_message = await event.get_reply_message()
-<< << << < HEAD
-== == == =
  if await utils.is_admin(event.client, event.chat_id, reply_message.from_id):
       return
 >>>>>> > aea8912d89b5f605e52dde7c95e809162f6ec390

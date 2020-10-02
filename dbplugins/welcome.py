@@ -12,11 +12,7 @@ from sql_helpers.welcome_sql import (add_welcome_setting,
 from sample_config import Config
 from telethon import events
 import logging
-<< << << < HEAD
 
-
-== == == =
->>>>>> > aea8912d89b5f605e52dde7c95e809162f6ec390
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
@@ -56,17 +52,7 @@ async def _(event):
             update_previous_welcome(event.chat_id, current_message.id)
 
 
-<< << << < HEAD
-
-
-@borg.on(utils.admin_cmd(pattern="savewelcome"))
-== == == =
-
-
 @borg.on(utils.admin_cmd(pattern="savewelcome"))  # pylint:disable=E0602
->>>>>> > aea8912d89b5f605e52dde7c95e809162f6ec390
-
-
 async def _(event):
     if event.fwd_from:
         return
@@ -82,17 +68,7 @@ async def _(event):
         await event.edit("Welcome note saved. ")
 
 
-<< << << < HEAD
-
-
-@borg.on(utils.admin_cmd(pattern="clearwelcome"))
-== == == =
-
-
 @borg.on(utils.admin_cmd(pattern="clearwelcome"))  # pylint:disable=E0602
->>>>>> > aea8912d89b5f605e52dde7c95e809162f6ec390
-
-
 async def _(event):
     if event.fwd_from:
         return

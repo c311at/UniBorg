@@ -9,11 +9,7 @@ from sample_config import Config
 from database.snipsdb import add, check, check_one, delete_one
 from telethon.tl import types
 import logging
-<< << << < HEAD
 
-
-== == == =
->>>>>> > aea8912d89b5f605e52dde7c95e809162f6ec390
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
