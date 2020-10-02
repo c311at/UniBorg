@@ -55,7 +55,7 @@ RUN apt -qq install -y --no-install-recommends \
     coreutils jq pv \
     # install encoding tools
     ffmpeg mediainfo \
-    p7zip-rar unzip zip \
+    unzip zip \
     # miscellaneous helpers
     megatools && \
     # clean up the container "layer", after we are done
