@@ -3,6 +3,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import asyncio
+import datetime
 import logging
 import math
 import os
@@ -11,10 +12,14 @@ import time
 from typing import List
 
 from telethon import events
+from telethon.errors import MessageTooLongError
 from telethon.tl.functions.channels import GetParticipantRequest
 from telethon.tl.functions.messages import GetPeerDialogsRequest
+from telethon.tl.tlobject import TLObject
 from telethon.tl.types import (ChannelParticipantAdmin,
-                               ChannelParticipantCreator)
+                               ChannelParticipantCreator,
+                               DocumentAttributeFilename, MessageEntityPre)
+from telethon.utils import add_surrogate
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
@@ -30,28 +35,9 @@ else:
         from sample_config import Development as Config
 
 
-def get_arg(message):
-    msg = message.raw_text
-    msg = msg.replace(" ", "", 1) if msg[1] == " " else msg
-    split = msg[1:].replace("\n", " \n").split(" ")
-    if " ".join(split[1:]).strip() == "":
-        return ""
-    return " ".join(split[1:])
-
-
-def arg_split_with(message, char):
-    args = get_arg(message).split(char)
-    for space in args:
-        if space.strip() == "":
-            args.remove(space)
-    return args
-
-
-async def reply(message, msg):
-    await message.client.send_message(message.chat_id, msg, reply_to=message.id)
-
-
 def admin_cmd(**args):
+    args["func"] = lambda e: e.via_bot_id is None
+
     pattern = args.get("pattern", None)
     allow_sudo = args.get("allow_sudo", False)
 
@@ -109,13 +95,15 @@ async def progress(current, total, event, start, type_of_ps):
     diff = now - start
     if round(diff % 10.00) == 0 or current == total:
         percentage = current * 100 / total
+        elapsed_time = round(diff)
+        if elapsed_time == 0:
+            return
         speed = current / diff
-        elapsed_time = round(diff) * 1000
-        time_to_completion = round((total - current) / speed) * 1000
+        time_to_completion = round((total - current) / speed)
         estimated_total_time = elapsed_time + time_to_completion
         progress_str = "[{0}{1}]\nPercent: {2}%\n".format(
-            ''.join("█" for _ in range(math.floor(percentage / 5))),
-            ''.join("░" for _ in range(20 - math.floor(percentage / 5))),
+            ''.join(["█" for _ in range(math.floor(percentage / 5))]),
+            ''.join(["░" for _ in range(20 - math.floor(percentage / 5))]),
             round(percentage, 2))
         tmp = progress_str + \
             "{0} of {1}\nETA: {2}".format(
@@ -127,56 +115,6 @@ async def progress(current, total, event, start, type_of_ps):
             type_of_ps,
             tmp
         ))
-
-# async def progress(current,total,event,start,type_of_ps):
-# 	"""Faster progressbar
-# 	"""
-# 	now = time.time()
-# 	diff = now - start
-# 	if round(diff % 10.00) == 0 or current == total:
-#         percentage = current * 100 / total
-#         speed = current / diff
-#         elapsed_time = round(diff) * 1000
-#         time_to_completion = round((total - current) / speed) * 1000
-#         estimated_total_time = elapsed_time + time_to_completion
-#         with alive_bar(100, bar='blocks') as bar:
-#         	for i in range(100):
-#                 await asyncio.sleep(5)
-#                 progress_str = bar()
-#         tmp = progress_str + \
-#             "{0} of {1}\nETA: {2}".format(
-#                 humanbytes(current),
-#                 humanbytes(total),
-#                 time_formatter(estimated_total_time)
-#             )
-#         await event.edit("{}\n {}".format(
-#             type_of_ps,
-#             tmp
-#         ))
-
-# async def progress(current,total,event,start,type_of_ps):
-#     now = time.time()
-#     diff = now -start
-#     if round(diff % 10.00)== 0 or current == total:
-#         percentage = current * 100 / total
-#         speed = current / diff
-#         elapsed_time = round(diff) * 1000
-#         time_to_completion = round((total - current)/speed) * 1000
-#         estimated_total_time = elapsed_time + time_to_completion
-#         with alive_bar(100, bar='blocks') as bar:
-#             for i in range(100):
-#                 await asyncio.sleep(5)
-#                 progress_str = bar()
-#         tmp = progress_str + \
-#             "{0} of {1}\nETA: {2}".format(
-#                 humanbytes(current),
-#                 humanbytes(total),
-#                 time_formatter(estimated_total_time)
-#             )
-#         await event.edit("{}\n {}".format(
-#             type_of_ps,
-#             tmp
-#         ))
 
 
 def humanbytes(size):
@@ -201,32 +139,42 @@ def humanbytes(size):
     return str(round(size, 2)) + " " + dict_power_n[raised_to_pow] + "B"
 
 
-def time_formatter(milliseconds: int) -> str:
-    """Inputs time in milliseconds, to get beautified time,
+def time_formatter(seconds: int) -> str:
+    """Inputs time in seconds, to get beautified time,
     as string"""
-    seconds, milliseconds = divmod(int(milliseconds), 1000)
-    minutes, seconds = divmod(seconds, 60)
-    hours, minutes = divmod(minutes, 60)
-    days, hours = divmod(hours, 24)
-    tmp = ((str(days) + "d, ") if days else "") + \
-        ((str(hours) + "h, ") if hours else "") + \
-        ((str(minutes) + "m, ") if minutes else "") + \
-        ((str(seconds) + "s, ") if seconds else "") + \
-        ((str(milliseconds) + "ms, ") if milliseconds else "")
-    return tmp[:-2]
+    result = ""
+    v_m = 0
+    remainder = seconds
+    r_ange_s = {
+        "days": (24 * 60 * 60),
+        "hours": (60 * 60),
+        "minutes": 60,
+        "seconds": 1
+    }
+    for age in r_ange_s:
+        divisor = r_ange_s[age]
+        v_m, remainder = divmod(remainder, divisor)
+        v_m = int(v_m)
+        if v_m != 0:
+            result += f" {v_m} {age} "
+    return result
 
 
 async def is_admin(client, chat_id, user_id):
     if not str(chat_id).startswith("-100"):
         return False
-    req_jo = await client(GetParticipantRequest(
-        channel=chat_id,
-        user_id=user_id
-    ))
-    chat_participant = req_jo.participant
-    return isinstance(
-        chat_participant, (ChannelParticipantCreator, ChannelParticipantAdmin)
-    )
+    try:
+        req_jo = await client(GetParticipantRequest(
+            channel=chat_id,
+            user_id=user_id
+        ))
+        chat_participant = req_jo.participant
+        if isinstance(chat_participant, (ChannelParticipantCreator, ChannelParticipantAdmin)):
+            return True
+    except Exception:
+        return False
+    else:
+        return False
 
 
 # Not that Great but it will fix sudo reply
@@ -307,3 +255,81 @@ async def cult_small_video(video_file, output_directory, start_time, end_time):
         logger.info(e_response)
         logger.info(t_response)
         return None
+
+# these two functions are stolen from
+# https://github.com/udf/uniborg/blob/kate/stdplugins/info.py
+
+
+def parse_pre(text):
+    text = text.strip()
+    return (
+        text,
+        [MessageEntityPre(offset=0, length=len(
+            add_surrogate(text)), language='')]
+    )
+
+
+def yaml_format(obj, indent=0, max_str_len=256, max_byte_len=64):
+    """
+    Pretty formats the given object as a YAML string which is returned.
+    (based on TLObject.pretty_format)
+    """
+    result = []
+    if isinstance(obj, TLObject):
+        obj = obj.to_dict()
+
+    if isinstance(obj, dict):
+        if not obj:
+            return 'dict:'
+        items = obj.items()
+        has_items = len(items) > 1
+        has_multiple_items = len(items) > 2
+        result.append(obj.get('_', 'dict') + (':' if has_items else ''))
+        if has_multiple_items:
+            result.append('\n')
+            indent += 2
+        for k, v in items:
+            if k == '_' or v is None:
+                continue
+            formatted = yaml_format(v, indent)
+            if not formatted.strip():
+                continue
+            result.append(' ' * (indent if has_multiple_items else 1))
+            result.append(f'{k}:')
+            if not formatted[0].isspace():
+                result.append(' ')
+            result.append(f'{formatted}')
+            result.append('\n')
+        if has_items:
+            result.pop()
+        if has_multiple_items:
+            indent -= 2
+    elif isinstance(obj, str):
+        # truncate long strings and display elipsis
+        result = repr(obj[:max_str_len])
+        if len(obj) > max_str_len:
+            result += '…'
+        return result
+    elif isinstance(obj, bytes):
+        # repr() bytes if it's printable, hex like "FF EE BB" otherwise
+        if all(0x20 <= c < 0x7f for c in obj):
+            return repr(obj)
+        else:
+            return ('<…>' if len(obj) > max_byte_len else
+                    ' '.join(f'{b:02X}' for b in obj))
+    elif isinstance(obj, datetime.datetime):
+        # ISO-8601 without timezone offset (telethon dates are always UTC)
+        return obj.strftime('%Y-%m-%d %H:%M:%S')
+    elif hasattr(obj, '__iter__'):
+        # display iterables one after another at the base indentation level
+        result.append('\n')
+        indent += 2
+        for x in obj:
+            result.append(f"{' ' * indent}- {yaml_format(x, indent + 2)}")
+            result.append('\n')
+        result.pop()
+        indent -= 2
+    else:
+        return repr(obj)
+
+    return ''.join(result)
