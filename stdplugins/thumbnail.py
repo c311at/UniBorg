@@ -7,7 +7,7 @@ Available Commands:
 import asyncio
 import os
 import time
-
+from uniborg import utils
 from hachoir.metadata import extractMetadata
 from hachoir.parser import createParser
 from PIL import Image

@@ -7,7 +7,6 @@ import io
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 import logging
 import time
-
 from telethon import events
 
 from sample_config import Config
@@ -56,6 +55,7 @@ async def _(event):
     await event.edit(f"{OUTPUT}`{stdout.decode()}`")
 #    else:
 #        await event.edit("Unknown Command")
+
 
 @borg.on(events.NewMessage(pattern=r"\.lsroot", outgoing=True))
 async def _(event):

@@ -1,5 +1,6 @@
 """Syntax: .whatscrapp as reply to a message copied from @WhatsCRApp"""
 
+from uniborg import utils
 import logging
 
 

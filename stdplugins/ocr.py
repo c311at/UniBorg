@@ -3,7 +3,7 @@ Syntax: .ocr <LangCode>
 Available Languages: .ocrlanguages"""
 import json
 import os
-
+from uniborg import utils
 import requests
 from sample_config import Config
 

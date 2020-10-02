@@ -2,7 +2,7 @@
 Syntax: .currency number from to"""
 import logging
 from datetime import datetime
-
+from uniborg import utils
 import requests
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',

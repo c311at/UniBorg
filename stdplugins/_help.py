@@ -12,6 +12,7 @@ import logging
 import sys
 import time
 from telethon import events, functions, __version__
+from uniborg import utils
 
 
 @borg.on(utils.admin_cmd(pattern="helpme ?(.*)", allow_sudo=True))  # pylint:disable=E0602

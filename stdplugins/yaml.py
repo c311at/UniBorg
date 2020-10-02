@@ -5,6 +5,7 @@
 """Get Detailed info about any message
 Syntax: .yaml"""
 import io
+from uniborg import utils
 
 
 @borg.on(utils.admin_cmd(pattern="yaml"))

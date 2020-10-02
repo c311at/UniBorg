@@ -1,7 +1,7 @@
 "get music from .m <music query>  Credits https://t.me/By_Azade"
 import logging
 from asyncio.exceptions import TimeoutError
-
+from uniborg import utils
 from telethon import events
 from telethon.errors.rpcerrorlist import YouBlockedUserError
 
@@ -167,7 +167,7 @@ async def _(event):
     msg = await event.get_reply_message()
     await event.delete()
     if msg:
-        msj = f"[{msg.file.name[0:-5]}](https://t.me/joinchat/AAAAAE8NqbV48l7ls-pFtQ)\n`{humanbytes(msg.file.size)}`"
+        msj = f"[{msg.file.name[0:-5]}](https://t.me/joinchat/AAAAAE8NqbV48l7ls-pFtQ)\n`{utils.humanbytes(msg.file.size)}`"
         await event.client.send_message(
             entity=await event.client.get_entity(-1001326295477),
             file=msg.media,
@@ -198,11 +198,11 @@ async def _(event):
                         await button.click()
                         first = await conv.get_response()
                         if first.media:
-                            msj = f"[{first.media.document.attributes[1].file_name}](https://t.me/joinchat/AAAAAE8NqbV48l7ls-pFtQ)\n`{humanbytes(first.media.document.size)}`"
+                            msj = f"[{first.media.document.attributes[1].file_name}](https://t.me/joinchat/AAAAAE8NqbV48l7ls-pFtQ)\n`{utils.humanbytes(first.media.document.size)}`"
                             await event.client.send_file(event.chat_id, first, caption=msj)
                         resp = await conv.get_response()
                         if resp.media:
-                            msj = f"[{resp.media.document.attributes[1].file_name}](https://t.me/joinchat/AAAAAE8NqbV48l7ls-pFtQ)\n`{humanbytes(resp.media.document.size)}`"
+                            msj = f"[{resp.media.document.attributes[1].file_name}](https://t.me/joinchat/AAAAAE8NqbV48l7ls-pFtQ)\n`{utils.humanbytes(resp.media.document.size)}`"
                             await event.client.send_file(event.chat_id, resp, caption=msj)
                         await msg.delete()
 

@@ -1,7 +1,7 @@
 """Pins the replied message
 Syntax: .cpin [LOUD]"""
 import logging
-
+from uniborg import utils
 from telethon.tl import functions, types
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',

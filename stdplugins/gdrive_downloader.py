@@ -5,7 +5,6 @@ By: @Zero_cool7870
 
 """
 import logging
-
 import requests
 from telethon import events
 

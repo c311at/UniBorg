@@ -2,6 +2,7 @@
 from asyncio import sleep
 
 from sample_config import Config
+from uniborg import utils
 
 
 @borg.on(utils.admin_cmd(pattern="unmutechat"))

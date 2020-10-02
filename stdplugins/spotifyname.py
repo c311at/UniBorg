@@ -9,7 +9,6 @@ from json import loads
 from json.decoder import JSONDecodeError
 from os import environ
 from sys import setrecursionlimit
-
 from requests import get
 from telethon import events
 from telethon.tl.functions.account import UpdateProfileRequest

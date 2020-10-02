@@ -5,7 +5,7 @@ import logging
 import os
 import time
 from datetime import datetime
-
+from uniborg import utils
 from hachoir.metadata import extractMetadata
 from hachoir.parser import createParser
 

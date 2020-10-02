@@ -5,7 +5,6 @@ import logging
 import mimetypes
 import os
 from datetime import datetime
-
 import requests
 from telethon import events
 

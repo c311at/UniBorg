@@ -3,7 +3,7 @@ Syntax: .filext EXTENSION"""
 import logging
 
 import requests
-
+from uniborg import utils
 from bs4 import BeautifulSoup
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',

@@ -17,6 +17,7 @@ from telethon.errors.rpcerrorlist import StickersetInvalidError
 from telethon.tl.functions.messages import GetStickerSetRequest
 from telethon.tl.types import (DocumentAttributeSticker, InputStickerSetID,
                                InputStickerSetShortName, MessageMediaPhoto)
+from uniborg import utils
 
 
 @borg.on(utils.admin_cmd(pattern="kangsticker ?(.*)"))

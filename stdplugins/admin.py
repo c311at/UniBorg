@@ -25,11 +25,11 @@
 
 Userbot module to help you manage a group.
 """
-
 import asyncio
 from asyncio import sleep
 from os import remove
 
+from sample_config import Config
 from telethon import events
 from telethon.errors import (BadRequestError, ChatAdminRequiredError,
                              ImageProcessFailedError, PhotoCropSizeSmallError,
@@ -44,9 +44,7 @@ from telethon.tl.types import (ChannelParticipantsAdmins,
                                ChannelParticipantsBots, ChatAdminRights,
                                ChatBannedRights, MessageEntityMentionName,
                                MessageMediaPhoto, PeerChat)
-
-from sample_config import Config
-
+from uniborg import utils
 
 LOGGING_CHATID = Config.PRIVATE_GROUP_BOT_API_ID
 
@@ -446,8 +444,8 @@ async def unmute(eventUnMute):
 @borg.on(events.NewMessage(incoming=True))
 async def muter(mutedMessage):
     try:
-        from sql_helpers.spam_mute_sql import is_muted
         from sql_helpers.gmute_sql import is_gmuted
+        from sql_helpers.spam_mute_sql import is_muted
     except AttributeError:
         return
     muted = is_muted(mutedMessage.chat_id)

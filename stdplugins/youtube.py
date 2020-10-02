@@ -10,15 +10,16 @@ import os
 import time
 from datetime import datetime
 
+from sample_config import Config
 from telethon import events
 
-import youtube_dl
-from sample_config import Config
 
+import youtube_dl
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 logger = logging.getLogger(__name__)
+
 
 @borg.on(events.MessageEdited(pattern=r"\.youtube search (.*)", outgoing=True))  # pylint:disable=E0602
 async def _(event):

@@ -1,6 +1,7 @@
 """@RollADie
 Syntax: .dice"""
 from telethon.tl.types import InputMediaDice
+from uniborg import utils
 
 
 @borg.on(utils.admin_cmd(pattern="dice ?(.*)"))

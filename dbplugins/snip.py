@@ -9,6 +9,7 @@ import logging
 from database.snipsdb import add, check, check_one, delete_one
 from sample_config import Config
 from telethon.tl import types
+from uniborg import utils
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

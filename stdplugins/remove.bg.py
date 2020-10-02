@@ -21,6 +21,7 @@ import os
 from datetime import datetime
 from sample_config import Config
 import requests
+from uniborg import utils
 
 
 @borg.on(utils.admin_cmd(pattern="remove\.bg ?(.*)"))

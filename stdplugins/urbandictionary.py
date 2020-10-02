@@ -5,7 +5,7 @@
 Syntax: .ud Query"""
 import logging
 import urbandict
-
+from uniborg import utils
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 logger = logging.getLogger(__name__)
