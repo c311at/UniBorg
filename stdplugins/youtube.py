@@ -13,7 +13,6 @@ from datetime import datetime
 from sample_config import Config
 from telethon import events
 
-
 import youtube_dl
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',

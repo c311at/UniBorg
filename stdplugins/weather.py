@@ -3,8 +3,10 @@ Syntax: .weather <Location> """
 import io
 import logging
 import time
-from datetime import tzinfo, datetime
+from datetime import datetime, tzinfo
+
 from uniborg import utils
+
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 logger = logging.getLogger(__name__)

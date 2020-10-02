@@ -10,12 +10,12 @@ import re
 import urllib.parse
 from os import popen
 from random import choice
-from uniborg import utils
-import requests
-from telethon import events
 
+import requests
 from bs4 import BeautifulSoup
 from humanize import naturalsize
+from telethon import events
+from uniborg import utils
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

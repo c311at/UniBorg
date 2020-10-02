@@ -1,6 +1,7 @@
 import time
-from uniborg import utils
+
 from telethon.tl.functions.channels import LeaveChannelRequest
+from uniborg import utils
 
 
 @borg.on(utils.admin_cmd(pattern="leave", outgoing=True))

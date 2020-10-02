@@ -13,10 +13,10 @@ import logging
 import os
 import subprocess
 import time
-from uniborg import utils
+
 import patoolib
 from sample_config import Config
-
+from uniborg import utils
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

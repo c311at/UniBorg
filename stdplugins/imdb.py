@@ -8,11 +8,10 @@ Imdb Module
 """
 import logging
 import re
-from uniborg import utils
-import requests
 
 import bs4
-
+import requests
+from uniborg import utils
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

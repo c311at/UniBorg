@@ -5,9 +5,12 @@ Available Commands:
 import logging
 import os
 from datetime import datetime
-from telegraph import Telegraph, upload_file, exceptions
-from uniborg import utils
+
 from sample_config import Config
+from uniborg import utils
+
+from telegraph import Telegraph, exceptions, upload_file
+
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 logger = logging.getLogger(__name__)

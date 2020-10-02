@@ -7,10 +7,9 @@ import os
 import time
 from datetime import datetime
 
+import aiohttp
 import requests
 from uniborg import utils
-import aiohttp
-
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

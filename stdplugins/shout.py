@@ -3,9 +3,9 @@ usage: .shout message
 originaly from : @corsicanu_bot
 """
 import logging
-from uniborg import utils
-from telethon import events
 
+from telethon import events
+from uniborg import utils
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

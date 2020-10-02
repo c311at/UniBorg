@@ -11,7 +11,8 @@
 import logging
 import sys
 import time
-from telethon import events, functions, __version__
+
+from telethon import __version__, events, functions
 from uniborg import utils
 
 

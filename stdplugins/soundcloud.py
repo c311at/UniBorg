@@ -1,10 +1,10 @@
 "download from soundcloud mp3 using telegram. Credits: https://t.me/By_Azade"
 import logging
 import os
+
+from sample_config import Config
 from sclib.asyncio import SoundcloudAPI, Track
 from uniborg import utils
-from sample_config import Config
-
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

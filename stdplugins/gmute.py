@@ -8,10 +8,9 @@ By:- JaskaranSM ( @Zero_cool7870 )
 
 import logging
 
-from telethon import events
-
 from pymongo import MongoClient
 from sample_config import Config
+from telethon import events
 from uniborg import utils
 
 logging.basicConfig(level=logging.INFO)

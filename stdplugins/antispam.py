@@ -4,9 +4,10 @@
 import logging
 import os
 import sys
-from uniborg import utils
-from telethon import events
+
 from sample_config import Config
+from telethon import events
+from uniborg import utils
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
@@ -23,6 +24,7 @@ async def _(cas):
             mid = "{}".format(chat.title)
             mention = "[{}](tg://user?id={})".format(user.first_name, user.id)
             from requests import get
+
             # async with aiohttp.get()
             r = get(f'https://combot.org/api/cas/check?user_id={id}')
             # r = await aiohttp.get(f'https://combot.org/api/cas/check?user_id={id}')

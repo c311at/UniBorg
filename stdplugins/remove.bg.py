@@ -19,8 +19,9 @@ import io
 import logging
 import os
 from datetime import datetime
-from sample_config import Config
+
 import requests
+from sample_config import Config
 from uniborg import utils
 
 

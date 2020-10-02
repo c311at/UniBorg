@@ -14,19 +14,17 @@ import math
 import os
 import time
 from datetime import datetime
-from telethon import events
 #
 from mimetypes import guess_type
-from uniborg import utils
-import httplib2
-from telethon import events
 
+import httplib2
 from apiclient.discovery import build
 from apiclient.http import MediaFileUpload
 from oauth2client.client import OAuth2WebServerFlow
 from oauth2client.file import Storage
 from sample_config import Config
-
+from telethon import events
+from uniborg import utils
 
 # Path to token json file, it should be in same directory as script
 G_DRIVE_TOKEN_FILE = os.path.join(

@@ -1,8 +1,9 @@
 """Quickly make a decision
 Syntax: .decide"""
 import logging
-from uniborg import utils
+
 import requests
+from uniborg import utils
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

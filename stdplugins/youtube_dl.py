@@ -12,7 +12,6 @@ import os
 import re
 from datetime import datetime
 
-
 from sample_config import Config
 from telethon import events
 

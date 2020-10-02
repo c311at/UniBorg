@@ -1,7 +1,8 @@
 """Dictionary Plugin for @UniBorg
 Syntax: .meaning <word>"""
-import requests
 import logging
+
+import requests
 from uniborg import utils
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',

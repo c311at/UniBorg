@@ -4,10 +4,11 @@ Available Commands:
 .dns google.com
 .url <long url>
 .unshort <short url>"""
-import logging
-from uniborg import utils
-import requests
 import json
+import logging
+
+import requests
+from uniborg import utils
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

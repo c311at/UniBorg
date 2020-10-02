@@ -3,10 +3,12 @@
 # there are changes made by "me" to suit the needs of this repository
 
 import time
+
 from telethon.events import NewMessage
 from telethon.tl.custom import Dialog
-from telethon.tl.types import Channel, User, Chat
+from telethon.tl.types import Channel, Chat, User
 from uniborg import utils
+
 """Type `.count` and see Magic."""
 
 

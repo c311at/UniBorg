@@ -1,8 +1,8 @@
 import asyncio
 import logging
-from uniborg import utils
-from sample_config import Config
 
+from sample_config import Config
+from uniborg import utils
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

@@ -13,10 +13,10 @@ import re
 import shutil
 import time
 
-from telethon.tl.types import DocumentAttributeAudio
-
 from sample_config import Config
+from telethon.tl.types import DocumentAttributeAudio
 from uniborg import utils
+
 from youtube_dl import YoutubeDL
 from youtube_dl.utils import (ContentTooShortError, DownloadError,
                               ExtractorError, GeoRestrictedError,

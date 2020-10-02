@@ -8,11 +8,12 @@ import math
 import os
 import time
 from datetime import datetime
-from uniborg import utils
+
 from pySmartDL import SmartDL
 from sample_config import Config
 from telethon import events
 from telethon.tl.types import DocumentAttributeVideo
+from uniborg import utils
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

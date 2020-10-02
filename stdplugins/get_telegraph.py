@@ -5,9 +5,9 @@ import logging
 import mimetypes
 import os
 from datetime import datetime
+
 import requests
 from telethon import events
-
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

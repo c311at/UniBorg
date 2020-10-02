@@ -3,10 +3,10 @@ Syntax: .afk REASON"""
 import asyncio
 import datetime
 import logging
-from telethon import events
-from telethon.tl import functions, types
 
 from sample_config import Config
+from telethon import events
+from telethon.tl import functions, types
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

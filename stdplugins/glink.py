@@ -15,17 +15,16 @@ import ssl
 import time
 from datetime import datetime
 from mimetypes import guess_type
-from uniborg import utils
-import httplib2
-from telethon import events
 
+import httplib2
 from apiclient.discovery import build
 from apiclient.http import MediaFileUpload
 from oauth2client.client import OAuth2WebServerFlow
 from oauth2client.file import Storage
 from pySmartDL import SmartDL
 from sample_config import Config
-
+from telethon import events
+from uniborg import utils
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

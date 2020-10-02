@@ -9,9 +9,9 @@ import time
 from os.path import exists
 from subprocess import PIPE, Popen
 from urllib.error import HTTPError
-from uniborg import utils
-from pySmartDL import SmartDL
 
+from pySmartDL import SmartDL
+from uniborg import utils
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

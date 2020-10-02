@@ -11,14 +11,12 @@ import logging
 import os
 import time
 from datetime import datetime
-from uniborg import utils
-from telethon.tl.types import DocumentAttributeAudio, DocumentAttributeVideo
 
 from hachoir.metadata import extractMetadata
 from hachoir.parser import createParser
-from telethon.tl.types import DocumentAttributeVideo
-from telethon.tl.types import DocumentAttributeAudio
 from sample_config import Config
+from telethon.tl.types import DocumentAttributeAudio, DocumentAttributeVideo
+from uniborg import utils
 
 thumb_image_path = Config.TMP_DOWNLOAD_DIRECTORY + "/thumb_image.jpg"
 

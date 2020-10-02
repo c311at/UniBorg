@@ -1,12 +1,13 @@
 """spamwatch for uniborg users. Credits : @By_Azade"""
 
+from sample_config import Config
 from telethon import events
 from telethon.errors import BadRequestError
 from telethon.tl.functions.channels import EditBannedRequest
 from telethon.tl.types import ChatBannedRights
 from uniborg import utils
+
 import spamwatch
-from sample_config import Config
 
 ENABLE_LOG = True
 LOGGING_CHATID = Config.SPAM_WATCH_LOG_CHANNEL

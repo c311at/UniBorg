@@ -9,12 +9,11 @@ import shutil
 import time
 from datetime import datetime
 
-from telethon.tl.types import DocumentAttributeVideo
-
 import patoolib
 from hachoir.metadata import extractMetadata
 from hachoir.parser import createParser
 from sample_config import Config
+from telethon.tl.types import DocumentAttributeVideo
 from uniborg import utils
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',

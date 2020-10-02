@@ -2,11 +2,12 @@
 Available Commands:
 .otransfer @username"""
 import logging
-from uniborg import utils
+
 import telethon.password as pwd_mod
 from telethon import events
 # https://t.me/TelethonChat/140200
 from telethon.tl import functions, types
+from uniborg import utils
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

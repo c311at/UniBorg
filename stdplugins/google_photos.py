@@ -20,15 +20,14 @@ import os
 import time
 from mimetypes import guess_type
 
-from httplib2 import Http
-from telethon import events
-from uniborg import utils
 import aiofiles
 import aiohttp
 from apiclient.discovery import build
+from httplib2 import Http
 from oauth2client import client, file
 from sample_config import Config
-
+from telethon import events
+from uniborg import utils
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

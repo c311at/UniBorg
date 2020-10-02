@@ -2,9 +2,11 @@
 """
 import logging
 import re
-from uniborg import utils
-from telethon import custom
+
 from sample_config import Config
+from telethon import custom
+from uniborg import utils
+
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 logger = logging.getLogger(__name__)

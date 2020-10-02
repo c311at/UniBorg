@@ -1,8 +1,8 @@
 """Syntax: .whatscrapp as reply to a message copied from @WhatsCRApp"""
 
-from uniborg import utils
 import logging
 
+from uniborg import utils
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

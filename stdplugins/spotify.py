@@ -5,12 +5,11 @@ from json.decoder import JSONDecodeError
 from os import environ
 from sys import setrecursionlimit
 
+import spotify_token as st
 from requests import get
+from sample_config import Config
 from telethon import events
 from telethon.tl.functions.account import UpdateProfileRequest
-
-import spotify_token as st
-from sample_config import Config
 from uniborg import utils
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',

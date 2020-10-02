@@ -12,3 +12,5 @@ sessions/
 .vscode/settings.json
 .vscode/.ropeproject/objectdb
 stdplugins/tb_button.py
+Pipfile
+Pipfile.lock

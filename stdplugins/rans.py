@@ -3,8 +3,8 @@ import asyncio
 # Original written by @UniBorg edit by @INF1N17Y
 import logging
 from collections import deque
-from telethon import events
 
+from telethon import events
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

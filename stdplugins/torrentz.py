@@ -1,10 +1,10 @@
 import logging
 from datetime import datetime
 
-import requests
-from uniborg import utils
 import cfscrape  # https://github.com/Anorov/cloudflare-scrape
+import requests
 from bs4 import BeautifulSoup
+from uniborg import utils
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
