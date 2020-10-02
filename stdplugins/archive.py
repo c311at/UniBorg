@@ -16,7 +16,7 @@ import time
 
 import patoolib
 from sample_config import Config
-, progress
+
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

@@ -10,7 +10,7 @@ from datetime import datetime
 import requests
 
 import aiohttp
-, progress
+
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
