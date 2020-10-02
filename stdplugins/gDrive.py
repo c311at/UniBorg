@@ -26,7 +26,7 @@ from apiclient.http import MediaFileUpload
 from oauth2client.client import OAuth2WebServerFlow
 from oauth2client.file import Storage
 from sample_config import Config
-, humanbytes, progress
+
 
 # Path to token json file, it should be in same directory as script
 G_DRIVE_TOKEN_FILE = os.path.join(

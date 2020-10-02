@@ -25,7 +25,7 @@ from oauth2client.client import OAuth2WebServerFlow
 from oauth2client.file import Storage
 from pySmartDL import SmartDL
 from sample_config import Config
-, humanbytes, progress
+
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
