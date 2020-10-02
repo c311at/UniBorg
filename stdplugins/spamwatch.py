@@ -34,9 +34,9 @@ async def spam_watch_(event):
                 (event.user_joined or event.user_added)
             ):
                 try:
-                    ban = client.get_ban(event.action_message.peer_id.user_id)
+                    ban = client.get_ban(event.action_message.from_id)
                     if ban:
-                        await borg(EditBannedRequest(event.chat_id, event.action_message.peer_id.user_id, BANNED_RIGHTS))
+                        await borg(EditBannedRequest(event.chat_id, event.action_message.from_id, BANNED_RIGHTS))
                     else:
                         return
                 except AttributeError:
