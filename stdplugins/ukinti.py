@@ -5,6 +5,7 @@ Available Commands:
 Available Options: d, y, m, w, o, q, r """
 from asyncio import sleep
 from datetime import datetime, timedelta
+import logging
 
 from telethon.tl import functions, types
 from telethon.tl.types import (ChannelParticipantsKicked, ChatBannedRights,
@@ -37,7 +38,7 @@ async def _(event):
             try:
                 await borg(functions.channels.EditBannedRequest(event.chat_id, i, rights))
             except FloodWaitError as ex:
-                logger.warning("sleeping for {} seconds".format(ex.seconds))
+                logger.warn("sleeping for {} seconds".format(ex.seconds))
                 sleep(ex.seconds)
             except Exception as ex:
                 await event.edit(str(ex))
@@ -55,7 +56,7 @@ async def _(event):
     input_str = event.pattern_match.group(1)
     if input_str:
         chat = await event.get_chat()
-        if not chat.admin_rights and not chat.creator:
+        if not (chat.admin_rights or chat.creator):
             await event.edit("`You aren't an admin here!`")
             return False
     p = 0
@@ -110,9 +111,7 @@ async def _(event):
             w += 1
             if "w" in input_str:
                 status, e = await ban_user(event.chat_id, i, rights)
-                if status:
-                    c += 1
-                else:
+                if not status:
                     try:
                         await event.edit("I need admin priveleges to perform this action!")
                     except:
@@ -151,9 +150,7 @@ async def _(event):
             r += 1
             if "r" in input_str:
                 status, e = await ban_user(event.chat_id, i, rights)
-                if status:
-                    c += 1
-                else:
+                if not status:
                     try:
                         await event.edit("I need admin priveleges to perform this action!")
                     except:
