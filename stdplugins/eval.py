@@ -7,6 +7,10 @@ Syntax: .eval PythonCode"""
 import asyncio
 import inspect
 import io
+import sys
+from types import TracebackType
+
+from sample_config import Config
 
 
 @borg.on(utils.admin_cmd(pattern="eval"))
@@ -28,7 +32,7 @@ async def _(event):
     try:
         await aexec(cmd, event)
     except Exception:
-        exc = traceback.format_exc()
+        exc = TracebackType.format_exc()
 
     stdout = redirected_output.getvalue()
     stderr = redirected_error.getvalue()

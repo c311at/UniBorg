@@ -243,7 +243,7 @@ async def dyno_manage(dyno):
             if build is None:
                 return await dyno.edit(
                     f"`There is no such build.id`:  **{build_id}**")
-        if build.status is not "pending":
+        if build.status != "pending":
             return await dyno.edit("`Zero active builds to cancel...`")
         useragent = ('Mozilla/5.0 (Linux; Android 10; SM-G975F) '
                      'AppleWebKit/537.36 (KHTML, like Gecko) '
