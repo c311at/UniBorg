@@ -5,7 +5,7 @@ import logging
 import os
 from datetime import datetime
 
-import sample_config import Config
+from sample_config import Config
 
 from PIL import Image, ImageDraw, ImageFont
 
