@@ -8,7 +8,9 @@ import asyncio
 import inspect
 import io
 import sys
-from types import TracebackType
+import traceback
+
+from telethon import errors, events, functions, types
 
 from sample_config import Config
 
@@ -32,7 +34,7 @@ async def _(event):
     try:
         await aexec(cmd, event)
     except Exception:
-        exc = TracebackType.format_exc()
+        exc = traceback.format_exc()
 
     stdout = redirected_output.getvalue()
     stderr = redirected_error.getvalue()
