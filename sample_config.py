@@ -61,16 +61,28 @@ class Config:
     MAX_MESSAGE_SIZE_LIMIT = 4095
     # set blacklist_chats where you do not want userbot's features
     UB_BLACK_LIST_CHAT = {int(x) for x in os.environ.get(
+<< << << < HEAD
         "UB_BLACK_LIST_CHAT", "").split()}
+
+
+== == == =
+            "UB_BLACK_LIST_CHAT",
+            ""
+        ).split()}
+>>>>>>> aea8912d89b5f605e52dde7c95e809162f6ec390
     # specify LOAD and NO_LOAD
     LOAD = []
-    # foloowing plugins won't work on Heroku,
+    # folowing plugins won't work on Heroku,
     # because of their ephemeral file system
+<<<<<<< HEAD
     NO_LOAD = [
         "rss",
         "unbanmute",
         "antispam"
     ]
+=======
+    NO_LOAD = []
+>>>>>>> aea8912d89b5f605e52dde7c95e809162f6ec390
     # Get your own API key from https://www.remove.bg/ or
     # feel free to use http://telegram.dog/Remove_BGBot
     REM_BG_API_KEY = os.environ.get("REM_BG_API_KEY", None)
@@ -87,10 +99,14 @@ class Config:
     # specify list of users allowed to use bot
     # WARNING: be careful who you grant access to your bot.
     # malicious users could do ".exec rm -rf /*"
+<<<<<<< HEAD
     SUDO_USERS = {int(x) for x in os.environ.get("SUDO_USERS", "").split()}
     # VeryStream only supports video formats
     VERY_STREAM_LOGIN = os.environ.get("VERY_STREAM_LOGIN", None)
     VERY_STREAM_KEY = os.environ.get("VERY_STREAM_KEY", None)
+=======
+    SUDO_USERS = list({int(x) for x in os.environ.get("SUDO_USERS", "").split()})
+>>>>>>> aea8912d89b5f605e52dde7c95e809162f6ec390
     # Google Drive ()
     G_DRIVE_CLIENT_ID = os.environ.get("G_DRIVE_CLIENT_ID", None)
     G_DRIVE_CLIENT_SECRET = os.environ.get("G_DRIVE_CLIENT_SECRET", None)
@@ -122,6 +138,8 @@ class Config:
     #
     # define "spam" in PMs
     MAX_FLOOD_IN_P_M_s = int(os.environ.get("MAX_FLOOD_IN_P_M_s", 3))
+    # JustWatch Country
+    WATCH_COUNTRY = os.environ.get("WATCH_COUNTRY","IN")
     # leave this blank, should be automatically filled for Heroku.com users
     PM_LOGGR_BOT_API_ID = os.environ.get("PM_LOGGR_BOT_API_ID", None)
     if PM_LOGGR_BOT_API_ID:

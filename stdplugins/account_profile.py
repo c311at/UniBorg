@@ -7,17 +7,15 @@ import logging
 import os
 from datetime import datetime
 
-from telethon.tl import functions
-
 from sample_config import Config
-from uniborg.util import admin_cmd
+from telethon.tl import functions
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 logger = logging.getLogger(__name__)
 
 
-@borg.on(admin_cmd(pattern="pbio (.*)"))
+@borg.on(utils.admin_cmd(pattern="pbio (.*)"))  # pylint:disable=E0602
 async def _(event):
     if event.fwd_from:
         return
@@ -31,7 +29,7 @@ async def _(event):
         await event.edit(str(e))
 
 
-@borg.on(admin_cmd(pattern="pname ((.|\n)*)"))
+@borg.on(utils.admin_cmd(pattern="pname ((.|\n)*)"))  # pylint:disable=E0602,W0703
 async def _(event):
     if event.fwd_from:
         return
@@ -50,7 +48,7 @@ async def _(event):
         await event.edit(str(e))
 
 
-@borg.on(admin_cmd(pattern="ppic"))
+@borg.on(utils.admin_cmd(pattern="ppic"))  # pylint:disable=E0602
 async def _(event):
     if event.fwd_from:
         return

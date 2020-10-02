@@ -47,7 +47,7 @@ PHOTOS_BASE_URI = "https://photoslibrary.googleapis.com"
 TOKEN_FILE_NAME = "gPhoto_credentials_UniBorg.json"
 
 
-@borg.on(admin_cmd(pattern="gphoto setup"))
+@borg.on(utils.admin_cmd(pattern="gphoto setup"))
 async def setup_google_photos(event):
     if event.chat_id != Config.PRIVATE_GROUP_BOT_API_ID:
         return
@@ -126,7 +126,7 @@ async def check_creds(token_file, event):
     return False, None
 
 
-@borg.on(admin_cmd(pattern="gphoto upload( -- (.*))?"))
+@borg.on(utils.admin_cmd(pattern="gphoto upload( -- (.*))?"))
 async def upload_google_photos(event):
     if event.fwd_from:
         return
@@ -177,7 +177,7 @@ async def upload_google_photos(event):
         file_path = await media_message.download_media(
             file=Config.TMP_DOWNLOAD_DIRECTORY,
             progress_callback=lambda d, t: asyncio.get_event_loop().create_task(
-                progress(d, t, event, c_time, "trying to download")
+                utils.progress(d, t, event, c_time, "trying to download")
             )
         )
 
@@ -260,7 +260,14 @@ async def upload_google_photos(event):
                     data=current_chunk
                 )
                 loop.create_task(
-                    progress(offset + part_size, file_size, event, c_time, "uploading(gphoto)🧐?"))
+                    utils.progress(
+                        offset + part_size,
+                        file_size,
+                        event,
+                        c_time,
+                        "uploading to gPhoto 🧐?"
+                    )
+                )
                 logger.info(response.headers)
 
                 # await f_d.seek(i * upload_granularity)

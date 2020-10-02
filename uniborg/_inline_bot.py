@@ -7,12 +7,9 @@ import asyncio
 import json
 import re
 from telethon import events, custom
-from uniborg.util import admin_cmd, humanbytes
-import os
-from sample_config import Config
 
 
-@borg.on(admin_cmd(
+@borg.on(utils.admin_cmd(  # pylint:disable=E0602
     pattern="ib (.[^ ]*) (.*)"
 ))
 async def _(event):
@@ -39,7 +36,7 @@ async def _(event):
             `{}`".format(bot_username, search_query, str(e)))
 
 
-@borg.on(admin_cmd(
+@borg.on(utils.admin_cmd(  # pylint:disable=E0602
     pattern="icb (.[^ ]*) (.[^ ]*) (.*)"
 ))
 async def _(event):
@@ -212,7 +209,7 @@ if Config.TG_BOT_USER_NAME_BF_HER is not None and tgbot is not None:
             )
         await event.answer([result] if result else None)
 
-    @tgbot.on(events.callbackquery.CallbackQuery(
+    @tgbot.on(events.callbackquery.CallbackQuery(  # pylint:disable=E0602
         data=re.compile(b"helpme_next\((.+?)\)")
     ))
     async def on_plug_in_callback_query_handler(event):
@@ -227,7 +224,7 @@ if Config.TG_BOT_USER_NAME_BF_HER is not None and tgbot is not None:
             reply_pop_up_alert = "Please get your own @UniBorg, and don't edit my messages!"
             await event.answer(reply_pop_up_alert, cache_time=0, alert=True)
 
-    @tgbot.on(events.callbackquery.CallbackQuery(
+    @tgbot.on(events.callbackquery.CallbackQuery(  # pylint:disable=E0602
         data=re.compile(b"helpme_prev\((.+?)\)")
     ))
     async def on_plug_in_callback_query_handler(event):
@@ -245,13 +242,17 @@ if Config.TG_BOT_USER_NAME_BF_HER is not None and tgbot is not None:
             reply_pop_up_alert = "Please get your own @UniBorg, and don't edit my messages!"
             await event.answer(reply_pop_up_alert, cache_time=0, alert=True)
 
-    @tgbot.on(events.callbackquery.CallbackQuery(
+    @tgbot.on(events.callbackquery.CallbackQuery(  # pylint:disable=E0602
         data=re.compile(b"ub_plugin_(.*)")
     ))
     async def on_plug_in_callback_query_handler(event):
         plugin_name = event.data_match.group(1).decode("UTF-8")
-        help_string = borg._plugins[plugin_name].__doc__[
-            0:125]
+        try:
+            help_string = borg._plugins[plugin_name].__doc__[
+                0:125
+            ]  # pylint:disable=E0602
+        except (ValueError, TypeError):
+            help_string = None
         reply_pop_up_alert = help_string if help_string is not None else \
             "No DOCSTRING has been setup for {} plugin".format(plugin_name)
         reply_pop_up_alert += "\n\n Use .unload {} to remove this plugin\n\

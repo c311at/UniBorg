@@ -7,15 +7,14 @@ Available Commands:
 import logging
 
 import requests
-
-from uniborg.util import admin_cmd
+import json
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 logger = logging.getLogger(__name__)
 
 
-@borg.on(admin_cmd(pattern="dns (.*)"))
+@borg.on(utils.admin_cmd(pattern="dns (.*)"))
 async def _(event):
     if event.fwd_from:
         return
@@ -28,7 +27,7 @@ async def _(event):
         await event.edit("i can't seem to find {} on the internet".format(input_str))
 
 
-@borg.on(admin_cmd(pattern="shortlink (.*)"))
+@borg.on(utils.admin_cmd(pattern="shortlink (.*)"))
 async def _(event):
     if event.fwd_from:
         return
@@ -41,7 +40,7 @@ async def _(event):
         await event.edit("something is wrong. please try again later.")
 
 
-@borg.on(admin_cmd(pattern="unshort (.*)"))
+@borg.on(utils.admin_cmd(pattern="unshort (.*)"))
 async def _(event):
     if event.fwd_from:
         return

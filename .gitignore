@@ -3,9 +3,12 @@ __pycache__
 
 *.session
 *.session-journal
+*.DB
+*.DB-journal
 data/
 config.py
 sessions/
 
 .vscode/settings.json
 .vscode/.ropeproject/objectdb
+stdplugins/tb_button.py

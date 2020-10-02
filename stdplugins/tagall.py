@@ -3,20 +3,20 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 import logging
 
-from uniborg.util import admin_cmd
+from uniborg import utils
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 logger = logging.getLogger(__name__)
 
 
-@borg.on(admin_cmd(pattern="tagall"))
+@borg.on(utils.admin_cmd(pattern="tagall"))
 async def _(event):
     if event.fwd_from:
         return
     mentions = "@tag"
     chat = await event.get_input_chat()
-    async for x in borg.iter_participants(chat, 100):
+    async for x in event.client.iter_participants(chat, 100):
         mentions += f"[\u2063](tg://user?id={x.id})"
     await event.reply(mentions)
     await event.delete()

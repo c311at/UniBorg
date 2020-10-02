@@ -10,11 +10,15 @@ Available Commands:
 import asyncio
 import logging
 import re
-
-from database.filtersdb import (add_filter, delete_all_filters, delete_filter,
-                                get_all_filters)
-from sample_config import Config
-from uniborg.util import admin_cmd
+from telethon import events
+from telethon.tl import types
+from sql_helpers.filters_sql import (
+    get_filter,
+    add_filter,
+    remove_filter,
+    get_all_filters,
+    remove_all_filters
+)
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
@@ -24,14 +28,17 @@ DELETE_TIMEOUT = 300
 last_triggered_filters = {}
 
 
-@borg.on(admin_cmd(incoming=True))
+@borg.on(utils.admin_cmd(incoming=True))
 async def on_snip(event):
     name = event.raw_text
-    if (event.chat_id in last_triggered_filters and name in last_triggered_filters[event.chat_id]):
-       # avoid userbot spam
-       # "I demand rights for us bots, we are equal to you humans." -Henri Koivuneva (t.me/UserbotTesting/2698)
+    if (
+        event.chat_id in last_triggered_filters
+        and name in last_triggered_filters[event.chat_id]
+    ):
+        # avoid userbot spam
+        # "I demand rights for us bots, we are equal to you humans." -Henri Koivuneva (t.me/UserbotTesting/2698)
         return False
-    snips = await get_all_filters(event.chat_id)
+    snips = get_all_filters(event.chat_id)
     if snips:
         for snip in snips:
             pattern = r"( |^|[^\w])" + \
@@ -65,7 +72,7 @@ async def on_snip(event):
                 last_triggered_filters[event.chat_id].remove(name)
 
 
-@borg.on(admin_cmd(pattern="savef (.*)"))
+@borg.on(utils.admin_cmd(pattern="savefilter (.*)"))
 async def on_snip_save(event):
     name = event.pattern_match.group(1)
     msg = await event.get_reply_message()
@@ -82,7 +89,7 @@ async def on_snip_save(event):
         await event.edit("Reply to a message with `savefilter keyword` to save the filter")
 
 
-@borg.on(admin_cmd(pattern="listf"))
+@borg.on(utils.admin_cmd(pattern="listfilters"))
 async def on_snip_list(event):
     all_snips = await get_all_filters(event.chat_id)
     OUT_STR = "Available Filters in the Current Chat:\n"
@@ -107,14 +114,14 @@ async def on_snip_list(event):
         await event.edit(OUT_STR)
 
 
-@borg.on(admin_cmd(pattern="clearf (.*)"))
+@borg.on(utils.admin_cmd(pattern="clearfilter (.*)"))
 async def on_snip_delete(event):
     name = event.pattern_match.group(1)
     await delete_filter(event.chat_id, name)
     await event.edit(f"Delete filter **{name}** deleted successfully")
 
 
-@borg.on(admin_cmd(pattern="clearaf"))
+@borg.on(utils.admin_cmd(pattern="clearallfilters"))
 async def on_all_snip_delete(event):
     await delete_all_filters(event.chat_id)
     await event.edit("All filters **in current chat** deleted successfully")

@@ -1,19 +1,10 @@
 """Create Private Groups
 Available Commands:
 .create (b|g) GroupName"""
-import logging
-
-from telethon.tl import functions
-
-from uniborg import util
+from telethon.tl import functions, types
 
 
-logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
-                    level=logging.WARNING)
-logger = logging.getLogger(__name__)
-
-
-@borg.on(util.admin_cmd(pattern="create (b|g|c) (.*)"))
+@borg.on(utils.admin_cmd(pattern="create (b|g|c) (.*)"))  # pylint:disable=E0602
 async def _(event):
     if event.fwd_from:
         return
@@ -28,22 +19,22 @@ async def _(event):
                 title=group_name
             ))
             created_chat_id = result.chats[0].id
-            await borg(functions.messages.DeleteChatUserRequest(
+            await event.client(functions.messages.DeleteChatUserRequest(
                 chat_id=created_chat_id,
                 user_id="@GoogleIMGBot"
             ))
-            result = await borg(functions.messages.ExportChatInviteRequest(
+            result = await event.client(functions.messages.ExportChatInviteRequest(
                 peer=created_chat_id,
             ))
             await event.edit("Group `{}` created successfully. Join {}".format(group_name, result.link))
         except Exception as e:  # pylint:disable=C0103,W0703
             await event.edit(str(e))
-    elif type_of_group in ("c", "g"):
+    elif type_of_group in ["g", "c"]:
         try:
-            r = await borg(
+            r = await event.client(
                 functions.channels.CreateChannelRequest(
                     title=group_name,
-                    about="New Channel",
+                    about="This is a Test from @UniBorg",
                     megagroup=type_of_group != "c",
                 )
             )

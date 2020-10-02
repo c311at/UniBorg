@@ -7,14 +7,13 @@ from datetime import datetime
 
 from sample_config import Config
 from selenium import webdriver
-from uniborg.util import admin_cmd
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 logger = logging.getLogger(__name__)
 
 
-@borg.on(admin_cmd(pattern="screencapture (.*)"))
+@borg.on(utils.admin_cmd(pattern="screencapture (.*)"))
 async def _(event):
     if event.fwd_from:
         return

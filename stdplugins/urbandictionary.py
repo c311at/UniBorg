@@ -3,17 +3,14 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 """Urban Dictionary
 Syntax: .ud Query"""
-import logging
-
 import urbandict
-from uniborg.util import admin_cmd
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 logger = logging.getLogger(__name__)
 
 
-@borg.on(admin_cmd(pattern="ud (.*)"))
+@borg.on(utils.admin_cmd(pattern="ud (.*)"))
 async def _(event):
     if event.fwd_from:
         return

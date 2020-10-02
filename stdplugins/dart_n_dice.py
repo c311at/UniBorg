@@ -6,7 +6,6 @@ Your account might get banned for offensive use of this script,
 The below script is only intended for "fun" and "entertainment"
 and please read https://t.me/UniBorg/39 before proceeding to run this!"""
 from telethon.tl.types import InputMediaDice
-from uniborg.util import admin_cmd
 
 # EMOJI CONSTANTS
 DART_E_MOJI = "🎯"
@@ -15,7 +14,7 @@ BALL_E_MOJI = "🏀"
 # EMOJI CONSTANTS
 
 
-@borg.on(admin_cmd(pattern=f"({DART_E_MOJI}|{DICE_E_MOJI}|{BALL_E_MOJI}) ?(.*)"))
+@borg.on(utils.admin_cmd(pattern=f"({DART_E_MOJI}|{DICE_E_MOJI}|{BALL_E_MOJI}) ?(.*)"))
 async def _(event):
     if event.fwd_from:
         return

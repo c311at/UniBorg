@@ -3,16 +3,14 @@ Syntax: .weather <Location> """
 import io
 import logging
 import time
-
-import aiohttp
-from sample_config import Config
-from uniborg.util import admin_cmd
+from datetime import tzinfo, datetime
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 logger = logging.getLogger(__name__)
 
-@borg.on(admin_cmd(pattern="weather (.*)"))
+
+@borg.on(utils.admin_cmd(pattern="weather (.*)"))
 async def _(event):
     if event.fwd_from:
         return
@@ -54,7 +52,7 @@ async def _(event):
         await event.edit(response_api["message"])
 
 
-@borg.on(admin_cmd(pattern="wttr (.*)"))
+@borg.on(utils.admin_cmd(pattern="wttr (.*)"))
 async def _(event):
     if event.fwd_from:
         return

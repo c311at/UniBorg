@@ -5,9 +5,9 @@ import logging
 import os
 from datetime import datetime
 
+import sample_config import Config
+
 from PIL import Image, ImageDraw, ImageFont
-from sample_config import Config
-from uniborg.util import admin_cmd
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 FONT_FILE_TO_USE = "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf"
 
 
-@borg.on(admin_cmd(pattern="getime ?(.*)"))
+@borg.on(utils.admin_cmd(pattern="getime ?(.*)"))  # pylint:disable=E0602
 async def _(event):
     if event.fwd_from:
         return
@@ -55,7 +55,17 @@ async def _(event):
     await event.delete()
 
 
+<< << << < HEAD
+
+
 @borg.on(admin_cmd(pattern="time (.*)"))
+== == == =
+
+
+@borg.on(utils.admin_cmd(pattern="time (.*)"))  # pylint:disable=E0602
+>>>>>> > aea8912d89b5f605e52dde7c95e809162f6ec390
+
+
 async def _(event):
     if event.fwd_from:
         return

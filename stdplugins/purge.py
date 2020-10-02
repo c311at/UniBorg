@@ -1,8 +1,6 @@
 """Purge your messages without the admins seeing it in Recent Actions"""
 import asyncio
 import logging
-from uniborg.util import admin_cmd
-
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 logger = logging.getLogger(__name__)
@@ -11,7 +9,7 @@ level = logging.INFO
 print(level)
 
 
-@borg.on(admin_cmd(pattern="purge ?(.*)"))
+@borg.on(utils.admin_cmd(pattern="purge ?(.*)"))
 async def _(event):
     if event.fwd_from:
         return

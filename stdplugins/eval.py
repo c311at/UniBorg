@@ -7,16 +7,9 @@ Syntax: .eval PythonCode"""
 import asyncio
 import inspect
 import io
-import sys
-import traceback
-
-from telethon import errors, events, functions, types
-
-from sample_config import Config
-from uniborg.util import admin_cmd
 
 
-@borg.on(admin_cmd(pattern="eval"))
+@borg.on(utils.admin_cmd(pattern="eval"))
 async def _(event):
     if event.fwd_from or event.via_bot_id:
         return

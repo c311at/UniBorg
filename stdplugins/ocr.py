@@ -5,10 +5,7 @@ import json
 import os
 
 import requests
-
-from PIL import Image
 from sample_config import Config
-from uniborg.util import admin_cmd
 
 
 def ocr_space_file(filename, overlay=False, api_key=Config.OCR_SPACE_API_KEY, language='eng'):
@@ -67,7 +64,7 @@ def progress(current, total):
         current, total, (current / total) * 100))
 
 
-@borg.on(admin_cmd(pattern="ocrlanguages"))
+@borg.on(utils.admin_cmd(pattern="ocrlanguages"))
 async def get_ocr_languages(event):
     if event.fwd_from:
         return
@@ -97,12 +94,11 @@ async def get_ocr_languages(event):
         "Swedish": "swe",
         "Turkish": "tur",
     }
-
     a = json.dumps(languages, sort_keys=True, indent=4)
     await event.edit(str(a))
 
 
-@borg.on(admin_cmd(pattern="ocr (.*)"))
+@borg.on(utils.admin_cmd(pattern="ocr (.*)"))
 async def parse_ocr_space_api(event):
     if event.fwd_from:
         return
@@ -113,7 +109,7 @@ async def parse_ocr_space_api(event):
     downloaded_file_name = await event.client.download_media(
         await event.get_reply_message(),
         Config.TMP_DOWNLOAD_DIRECTORY,
-        progress_callback=progress
+        progress_callback=utils.progress
     )
     if downloaded_file_name.endswith((".webp")):
         downloaded_file_name = conv_image(downloaded_file_name)

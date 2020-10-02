@@ -1,5 +1,9 @@
 import html
 from telethon.tl.types import ChatBannedRights
+<<<<<<< HEAD
+=======
+import sql_helpers.warns_sql as sql
+>>>>>>> aea8912d89b5f605e52dde7c95e809162f6ec390
 
 import sql_helpers.warns_sql as sql
 from uniborg.util import admin_cmd
@@ -29,12 +33,17 @@ unbanned_rights = ChatBannedRights(
 )
 
 
-@borg.on(admin_cmd(pattern="warn (.*)"))
+@borg.on(utils.admin_cmd(pattern="warn (.*)"))
 async def _(event):
     if event.fwd_from:
         return
     warn_reason = event.pattern_match.group(1)
     reply_message = await event.get_reply_message()
+<<<<<<< HEAD
+=======
+    if await utils.is_admin(event.client, event.chat_id, reply_message.from_id):
+        return
+>>>>>>> aea8912d89b5f605e52dde7c95e809162f6ec390
     limit, soft_warn = sql.get_warn_setting(event.chat_id)
     num_warns, reasons = sql.warn_user(
         reply_message.from_id, event.chat_id, warn_reason)
@@ -58,7 +67,7 @@ async def _(event):
     await event.edit(reply, parse_mode="html")
 
 
-@borg.on(admin_cmd(pattern="get_warns"))
+@borg.on(utils.admin_cmd(pattern="get_warns"))
 async def _(event):
     if event.fwd_from:
         return
@@ -79,7 +88,7 @@ async def _(event):
         await event.edit("this user hasn't got any warnings!")
 
 
-@borg.on(admin_cmd(pattern="reset_warns"))
+@borg.on(utils.admin_cmd(pattern="reset_warns"))
 async def _(event):
     if event.fwd_from:
         return

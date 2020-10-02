@@ -8,17 +8,14 @@ import logging
 import os
 from datetime import datetime
 
-import barcode
-from barcode.writer import ImageWriter
 from sample_config import Config
-from uniborg.util import admin_cmd
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 logger = logging.getLogger(__name__)
 
 
-@borg.on(admin_cmd(pattern="barcode ?(.*)"))
+@borg.on(utils.admin_cmd(pattern="barcode ?(.*)"))
 async def _(event):
     if event.fwd_from:
         return

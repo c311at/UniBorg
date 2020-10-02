@@ -4,16 +4,11 @@
 import asyncio
 import logging
 
-import telethon.utils
 from telethon import events
-
-from uniborg import util
-
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 logger = logging.getLogger(__name__)
-
 
 
 async def get_target_message(event):
@@ -33,15 +28,15 @@ async def await_read(chat, message):
                 and read_event.is_read(message))
     fut = borg.await_event(events.MessageRead(inbox=False), read_filter)
 
-    if await util.is_read(borg, chat, message):
+    if await utils.is_read(borg, chat, message):
         fut.cancel()
         return
 
     await fut
 
 
-@borg.on(util.admin_cmd(pattern="(del)(?:ete)?$"))
-@borg.on(util.admin_cmd(pattern="(edit)(?:\s+(.*))?$"))
+@borg.on(utils.admin_cmd(pattern="(del)(?:ete)?$"))
+@borg.on(utils.admin_cmd(pattern="(edit)(?:\s+(.*))?$"))
 async def delete(event):
     await event.delete()
     command = event.pattern_match.group(1)

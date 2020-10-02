@@ -6,8 +6,6 @@ from datetime import datetime
 from telethon.tl.functions.channels import EditBannedRequest
 from telethon.tl.types import ChatBannedRights
 
-from uniborg.util import admin_cmd
-
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 logger = logging.getLogger(__name__)
@@ -47,7 +45,8 @@ banned_rights = ChatBannedRights(
     embed_links=True
 )
 
-@borg.on(admin_cmd(pattern="(ban|unban|mute) ?(.*)"))
+
+@borg.on(utils.admin_cmd(pattern="(ban|unban|mute) ?(.*)"))
 async def _(event):
     # Space weirdness in regex required because argument is optional and other
     # commands start with ".unban"
@@ -77,4 +76,4 @@ async def _(event):
     except (Exception) as exc:
         await event.edit(str(exc))
     else:
-        await event.edit(f"{input_cmd}ed Successfully")
+        await event.edit(f"__{input_cmd}__ Successfully")

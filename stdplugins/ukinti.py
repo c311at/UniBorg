@@ -3,24 +3,21 @@ Available Commands:
 .unbanall
 .kick option
 Available Options: d, y, m, w, o, q, r """
-import asyncio
-import logging
-from time import sleep
+from asyncio import sleep
+from datetime import datetime, timedelta
 
-from telethon.tl import functions
+from telethon.tl import functions, types
 from telethon.tl.types import (ChannelParticipantsKicked, ChatBannedRights,
                                UserStatusEmpty, UserStatusLastMonth,
                                UserStatusLastWeek, UserStatusOffline,
                                UserStatusOnline, UserStatusRecently)
-
-from uniborg.util import admin_cmd
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 logger = logging.getLogger(__name__)
 
 
-@borg.on(admin_cmd(pattern="unbanall ?(.*)"))
+@borg.on(utils.admin_cmd(pattern="unbanall ?(.*)"))
 async def _(event):
     if event.fwd_from:
         return
@@ -74,7 +71,7 @@ async def _(event):
     q = 0
     r = 0
     await event.edit("Searching Participant Lists.")
-    async for i in borg.iter_participants(event.chat_id):
+    async for i in event.client.iter_participants(event.chat_id):
         p += 1
         #
         # Note that it's "reversed". You must set to ``True`` the permissions
@@ -122,6 +119,8 @@ async def _(event):
                         pass
                     ee.append(str(e))
                     # break
+                else:
+                    c += 1
         if isinstance(i.status, UserStatusOffline):
             o += 1
             if "o" in input_str:
@@ -161,6 +160,8 @@ async def _(event):
                         pass
                     ee.append(str(e))
                     # break
+                else:
+                    c += 1
         if i.bot:
             b += 1
             if "b" in input_str:
@@ -190,28 +191,34 @@ async def _(event):
         elif i.status is None:
             n += 1
     if input_str:
-        required_string = """Kicked {} / {} users
-Deleted Accounts: {}
-UserStatusEmpty: {}
-UserStatusLastMonth: {}
-UserStatusLastWeek: {}
-UserStatusOffline: {}
-UserStatusOnline: {}
-UserStatusRecently: {}
-Bots: {}
-None: {}"""
+        required_string = (
+            "Kicked {} / {} users\n"
+            "Deleted Accounts: {}\n"
+            "UserStatusEmpty: {}\n"
+            "UserStatusLastMonth: {}\n"
+            "UserStatusLastWeek: {}\n"
+            "UserStatusOffline: {}\n"
+            "UserStatusOnline: {}\n"
+            "UserStatusRecently: {}\n"
+            "Bots: {}\n"
+            "None: {}"
+        )
         await event.edit(required_string.format(c, p, d, y, m, w, o, q, r, b, n))
-        await asyncio.sleep(5)
-    await event.edit("""Total: {} users
-Deleted Accounts: {}
-UserStatusEmpty: {}
-UserStatusLastMonth: {}
-UserStatusLastWeek: {}
-UserStatusOffline: {}
-UserStatusOnline: {}
-UserStatusRecently: {}
-Bots: {}
-None: {}""".format(p, d, y, m, w, o, q, r, b, n))
+        return
+    await event.edit(
+        (
+            "Total: {} users\n"
+            "Deleted Accounts: {}\n"
+            "UserStatusEmpty: {}\n"
+            "UserStatusLastMonth: {}\n"
+            "UserStatusLastWeek: {}\n"
+            "UserStatusOffline: {}\n"
+            "UserStatusOnline: {}\n"
+            "UserStatusRecently: {}\n"
+            "Bots: {}\n"
+            "None: {}"
+        ).format(p, d, y, m, w, o, q, r, b, n)
+    )
 
 
 async def ban_user(chat_id, i, rights):

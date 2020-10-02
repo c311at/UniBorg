@@ -1,14 +1,11 @@
 """Syntax: .whatscrapp as reply to a message copied from @WhatsCRApp"""
-import logging
-
-from uniborg.util import admin_cmd
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 logger = logging.getLogger(__name__)
 
 
-@borg.on(admin_cmd(pattern="whatscrapp"))
+@borg.on(utils.admin_cmd(pattern="whatscrapp"))
 async def _(event):
     if event.fwd_from:
         return
@@ -20,4 +17,7 @@ async def _(event):
         the_real_message = the_real_message.replace("_", "__")
         await event.edit(the_real_message)
     else:
-        await event.edit("Reply to a message with `.whatscrapp` to format @WhatsCRApp messages to @Telegram")
+        await event.edit(
+            "Reply to a message with `.whatscrapp` "
+            "to format @WhatsCRApp messages to @Telegram"
+        )

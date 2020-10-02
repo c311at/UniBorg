@@ -1,11 +1,11 @@
 """
 command: .singer singer name - song name 
 """
-from uniborg.util import admin_cmd
-import PyLyrics
+import asyncio
+from PyLyrics import *
 
 
-@borg.on(admin_cmd(pattern="singer (.*)"))
+@borg.on(utils.admin_cmd(pattern="singer (.*)"))
 async def _(event):
     if event.fwd_from:
         return

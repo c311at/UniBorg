@@ -2,18 +2,20 @@
 Available Commands:
 .restart
 .shutdown"""
+# This Source Code Form is subject to the terms of the GNU
+# General Public License, v.3.0. If a copy of the GPL was not distributed with this
+# file, You can obtain one at https://www.gnu.org/licenses/gpl-3.0.en.html
+import asyncio
 import logging
 import os
 import sys
-
-from uniborg.util import admin_cmd
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 logger = logging.getLogger(__name__)
 
 
-@borg.on(admin_cmd(pattern="restart"))
+@borg.on(utils.admin_cmd(pattern="restart"))
 async def _(event):
     if event.fwd_from:
         return
@@ -30,7 +32,7 @@ async def _(event):
     sys.exit()
 
 
-@borg.on(admin_cmd(pattern="shutdown"))
+@borg.on(utils.admin_cmd(pattern="shutdown"))
 async def _(event):
     if event.fwd_from:
         return

@@ -19,18 +19,11 @@ import io
 import logging
 import os
 from datetime import datetime
-
+from sample_config import Config
 import requests
 
-from sample_config import Config
-from uniborg.util import admin_cmd
 
-logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
-                    level=logging.WARNING)
-logger = logging.getLogger(__name__)
-
-
-@borg.on(admin_cmd(pattern="remove\.bg ?(.*)"))
+@borg.on(utils.admin_cmd(pattern="remove\.bg ?(.*)"))
 async def _(event):
     if event.fwd_from:
         return

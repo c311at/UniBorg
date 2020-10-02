@@ -5,14 +5,12 @@ from datetime import datetime
 
 import requests
 
-from uniborg.util import admin_cmd
-
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 logger = logging.getLogger(__name__)
 
 
-@borg.on(admin_cmd(pattern="currency (.*)"))
+@borg.on(utils.admin_cmd(pattern="currency (.*)"))
 async def _(event):
     if event.fwd_from:
         return

@@ -5,12 +5,8 @@ Available Commands:
 import logging
 import os
 from datetime import datetime
-
-from PIL import Image
+from telegraph import Telegraph, upload_file, exceptions
 from sample_config import Config
-from telegraph import Telegraph, exceptions, upload_file
-from uniborg.util import admin_cmd
-
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 logger = logging.getLogger(__name__)
@@ -21,7 +17,7 @@ r = telegraph.create_account(short_name=Config.TELEGRAPH_SHORT_NAME)
 auth_url = r["auth_url"]
 
 
-@borg.on(admin_cmd(pattern="telegraph (media|text) ?(.*)"))
+@borg.on(utils.admin_cmd(pattern="telegraph (media|text) ?(.*)"))
 async def _(event):
     if event.fwd_from:
         return
@@ -30,7 +26,7 @@ async def _(event):
         return
     if not os.path.isdir(Config.TMP_DOWNLOAD_DIRECTORY):
         os.makedirs(Config.TMP_DOWNLOAD_DIRECTORY)
-    await borg.send_message(
+    await event.client.send_message(
         Config.PRIVATE_GROUP_BOT_API_ID,
         "Created New Telegraph account {} for the current session. \n**Do not give this url to anyone, even if they say they are from Telegram!**".format(
             auth_url)
@@ -41,7 +37,7 @@ async def _(event):
         r_message = await event.get_reply_message()
         input_str = event.pattern_match.group(1)
         if input_str == "media":
-            downloaded_file_name = await borg.download_media(
+            downloaded_file_name = await event.client.download_media(
                 r_message,
                 Config.TMP_DOWNLOAD_DIRECTORY
             )
@@ -62,7 +58,7 @@ async def _(event):
                 os.remove(downloaded_file_name)
                 await event.edit("Uploaded to https://telegra.ph{} in {} seconds.".format(media_urls[0], (ms + ms_two)), link_preview=True)
         elif input_str == "text":
-            user_object = await borg.get_entity(r_message.from_id)
+            user_object = await event.client.get_entity(r_message.from_id)
             title_of_page = user_object.first_name  # + " " + user_object.last_name
             # apparently, all Users do not have last_name field
             if optional_title:
@@ -71,7 +67,7 @@ async def _(event):
             if r_message.media:
                 if page_content != "":
                     title_of_page = page_content
-                downloaded_file_name = await borg.download_media(
+                downloaded_file_name = await event.client.download_media(
                     r_message,
                     Config.TMP_DOWNLOAD_DIRECTORY
                 )

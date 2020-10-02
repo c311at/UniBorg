@@ -14,6 +14,8 @@ import math
 import os
 import time
 from datetime import datetime
+from telethon import events
+#
 from mimetypes import guess_type
 
 import httplib2
@@ -42,7 +44,7 @@ G_DRIVE_F_PARENT_ID = Config.G_DRIVE_F_PARENT_ID
 G_DRIVE_DIR_MIME_TYPE = "application/vnd.google-apps.folder"
 
 
-@borg.on(admin_cmd(pattern="ugdrive ?(.*)", allow_sudo=True))
+@borg.on(utils.admin_cmd(pattern="ugdrive ?(.*)", allow_sudo=True))
 async def _(event):
     if event.fwd_from:
         return
@@ -66,7 +68,7 @@ async def _(event):
                 reply_message,
                 Config.TMP_DOWNLOAD_DIRECTORY,
                 progress_callback=lambda d, t: asyncio.get_event_loop().create_task(
-                    progress(d, t, mone, c_time, "trying to download")
+                    utils.progress(d, t, mone, c_time, "trying to download")
                 )
             )
         except Exception as e:  # pylint:disable=C0103,W0703
@@ -112,7 +114,7 @@ async def _(event):
         await mone.edit("File Not found in local server. Give me a file path :((")
 
 
-@borg.on(admin_cmd(pattern="gdrivesp https?://drive\.google\.com/drive/u/\d/folders/([-\w]{25,})", allow_sudo=True))
+@borg.on(utils.admin_cmd(pattern="gdrivesp https?://drive\.google\.com/drive/u/\d/folders/([-\w]{25,})", allow_sudo=True))
 async def _(event):
     if event.fwd_from:
         return
@@ -126,7 +128,7 @@ async def _(event):
         await mone.edit("Send `.gdrivesp https://drive.google.com/drive/u/X/folders/Y` to set the folder to upload new files to")
 
 
-@borg.on(admin_cmd(pattern="gdriveclear", allow_sudo=True))
+@borg.on(utils.admin_cmd(pattern="gdriveclear", allow_sudo=True))
 async def _(event):
     if event.fwd_from:
         return
@@ -136,7 +138,7 @@ async def _(event):
     await event.delete()
 
 
-@borg.on(admin_cmd(pattern="gdrivedir ?(.*)", allow_sudo=True))
+@borg.on(utils.admin_cmd(pattern="gdrivedir ?(.*)", allow_sudo=True))
 async def _(event):
     if event.fwd_from:
         return
@@ -169,7 +171,7 @@ async def _(event):
         await mone.edit(f"directory {input_str} does not seem to exist")
 
 
-@borg.on(admin_cmd(pattern="drive (delete|get) ?(.*)", allow_sudo=True))
+@borg.on(utils.admin_cmd(pattern="drive (delete|get) ?(.*)", allow_sudo=True))
 async def _(event):
     if event.fwd_from:
         return
@@ -201,7 +203,7 @@ async def _(event):
     await mone.edit(response_from_svc)
 
 
-@borg.on(admin_cmd(pattern="drive search ?(.*)", allow_sudo=True))
+@borg.on(utils.admin_cmd(pattern="drive search ?(.*)", allow_sudo=True))
 async def _(event):
     if event.fwd_from:
         return
@@ -393,9 +395,10 @@ async def gdrive_list_file_md(service, file_id):
             # is a file.
             file_meta_data["mimeType"] = file["mimeType"]
             file_meta_data["md5Checksum"] = file["md5Checksum"]
-            file_meta_data["fileSize"] = str(humanbytes(int(file["fileSize"])))
+            file_meta_data["fileSize"] = str(
+                utils.humanbytes(int(file["fileSize"])))
             file_meta_data["quotaBytesUsed"] = str(
-                humanbytes(int(file["quotaBytesUsed"])))
+                utils.humanbytes(int(file["quotaBytesUsed"])))
             file_meta_data["previewURL"] = file["downloadUrl"]
         return json.dumps(file_meta_data, sort_keys=True, indent=4)
     except Exception as e:

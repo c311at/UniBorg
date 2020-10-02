@@ -10,18 +10,11 @@
 """
 import logging
 import sys
-
-from telethon import __version__, functions
-
-from sample_config import Config
-from uniborg.util import admin_cmd
-
-logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
-                    level=logging.WARNING)
-logger = logging.getLogger(__name__)
+import time
+from telethon import events, functions, __version__
 
 
-@borg.on(admin_cmd(pattern="helpme ?(.*)", allow_sudo=True))
+@borg.on(utils.admin_cmd(pattern="helpme ?(.*)", allow_sudo=True))  # pylint:disable=E0602
 async def _(event):
     if event.fwd_from:
         return
@@ -30,14 +23,30 @@ async def _(event):
         s_help_string = borg._plugins[splugin_name].__doc__
     else:
         s_help_string = ""
-    help_string = """@UniBorg
-Python {}
-Telethon {}
-UserBot Forked from https://github.com/muhammedfurkan/uniborg""".format(
-        sys.version,
-        __version__
-    )
-    tgbotusername = Config.TG_BOT_USER_NAME_BF_HER
+    _, check_sgnirts = check_data_base_heal_th()
+
+    current_run_time = utils.time_formatter((time.time() - BOT_START_TIME))
+    total, used, free = shutil.disk_usage("/")
+    total = utils.humanbytes(total)
+    used = utils.humanbytes(used)
+    free = utils.humanbytes(free)
+
+    help_string = "@UniBorg\n"
+    help_string += f"✅ <b>UpTime</b> <code>{current_run_time}</code>\n"
+    help_string += f"✅ <b>Python</b> <code>{sys.version}</code>\n"
+    help_string += f"✅ <b>Telethon</b> <code>{__version__}</code>\n"
+    help_string += f"{check_sgnirts} <b>Database</b>\n"
+    help_string += f"<b>Total Disk Space</b>: <code>{total}</code>\n"
+    help_string += f"<b>Used Disk Space</b>: <code>{used}</code>\n"
+    help_string += f"<b>Free Disk Space</b>: <code>{free}</code>\n\n"
+    help_string += f"UserBot Forked from https://github.com/udf/uniborg"
+    borg._iiqsixfourstore[str(event.chat_id)] = {}
+    borg._iiqsixfourstore[
+        str(event.chat_id)
+    ][
+        str(event.id)
+    ] = help_string + "\n\n" + s_help_string
+    tgbotusername = Config.TG_BOT_USER_NAME_BF_HER  # pylint:disable=E0602
     if tgbotusername is not None:
         results = await borg.inline_query(
             tgbotusername,
@@ -49,30 +58,33 @@ UserBot Forked from https://github.com/muhammedfurkan/uniborg""".format(
             hide_via=True
         )
     else:
-        await event.reply(help_string + "\n\n" + s_help_string)
+        await event.reply(
+            help_string + "\n\n" + s_help_string,
+            parse_mode="html"
+        )
 
     await event.delete()
 
 
-@borg.on(admin_cmd(pattern="dc"))
+@borg.on(utils.admin_cmd(pattern="dc"))  # pylint:disable=E0602
 async def _(event):
     if event.fwd_from:
         return
-    result = await borg(functions.help.GetNearestDcRequest())
+    result = await event.client(functions.help.GetNearestDcRequest())
     await event.edit(result.stringify())
 
 
-@borg.on(admin_cmd(pattern="config"))
+@borg.on(utils.admin_cmd(pattern="config"))  # pylint:disable=E0602
 async def _(event):
     if event.fwd_from:
         return
-    result = await borg(functions.help.GetConfigRequest())
+    result = await event.client(functions.help.GetConfigRequest())  # pylint:disable=E0602
     result = result.stringify()
     logger.info(result)
     await event.edit("""Telethon UserBot powered by @UniBorg""")
 
 
-@borg.on(admin_cmd(pattern="syntax (.*)"))
+@borg.on(utils.admin_cmd(pattern="syntax (.*)"))
 async def _(event):
     if event.fwd_from:
         return

@@ -6,17 +6,14 @@ import logging
 import telethon.password as pwd_mod
 from telethon import events
 # https://t.me/TelethonChat/140200
-from telethon.tl import functions
-
-from sample_config import Config
-from uniborg import util
+from telethon.tl import functions, types
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 logger = logging.getLogger(__name__)
 
 
-@borg.on(util.admin_cmd(pattern="otransfer (.*)"))
+@borg.on(utils.admin_cmd(pattern="otransfer (.*)"))  # pylint:disable=E0602
 async def _(event):
     if event.fwd_from:
         return

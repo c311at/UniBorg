@@ -1,17 +1,15 @@
 """Get ID of any Telegram media, or any user
 Syntax: .get_id"""
+
 import logging
 
-from telethon.utils import pack_bot_file_id
-
-from uniborg.util import admin_cmd
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 logger = logging.getLogger(__name__)
 
 
-@borg.on(admin_cmd(pattern="get_id"))
+@borg.on(utils.admin_cmd(pattern="get_id"))
 async def _(event):
     if event.fwd_from:
         return
@@ -19,9 +17,19 @@ async def _(event):
         chat = await event.get_input_chat()
         r_msg = await event.get_reply_message()
         if r_msg.media:
-            bot_api_file_id = pack_bot_file_id(r_msg.media)
-            await event.edit("Current Chat ID: `{}`\nFrom User ID: `{}`\nBot API File ID: `{}`".format(str(event.chat_id), str(r_msg.from_id), bot_api_file_id))
+            await event.edit(
+                "Current Chat ID: `{}`\nFrom User ID: `{}`\nBot API File ID: `{}`".format(
+                    str(event.chat_id),
+                    str(r_msg.from_id),
+                    r_msg.file.id
+                )
+            )
         else:
-            await event.edit("Current Chat ID: `{}`\nFrom User ID: `{}`".format(str(event.chat_id), str(r_msg.from_id)))
+            await event.edit(
+                "Current Chat ID: `{}`\nFrom User ID: `{}`".format(
+                    str(event.chat_id),
+                    str(r_msg.from_id)
+                )
+            )
     else:
         await event.edit("Current Chat ID: `{}`".format(str(event.chat_id)))
