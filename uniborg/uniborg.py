@@ -5,14 +5,14 @@ import asyncio
 import importlib.util
 import logging
 import os
+import time
 from pathlib import Path
 
 import telethon.events
 import telethon.utils
 from telethon import TelegramClient
 
-from . import hacks
-from . import utils
+from . import hacks, utils
 
 
 class Uniborg(TelegramClient):
