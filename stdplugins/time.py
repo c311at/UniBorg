@@ -55,17 +55,7 @@ async def _(event):
     await event.delete()
 
 
-<< << << < HEAD
-
-
-@borg.on(utils.admin_cmd(pattern="time (.*)"))
-== == == =
-
-
 @borg.on(utils.admin_cmd(pattern="time (.*)"))  # pylint:disable=E0602
->>>>>> > aea8912d89b5f605e52dde7c95e809162f6ec390
-
-
 async def _(event):
     if event.fwd_from:
         return
