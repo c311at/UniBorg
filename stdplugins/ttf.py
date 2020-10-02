@@ -1,7 +1,6 @@
-from uniborg.util import admin_cmd
 
 
-@borg.on(admin_cmd(pattern="ttf ?(.*)"))
+@borg.on(utils.admin_cmd(pattern="ttf ?(.*)"))
 async def get(event):
     name = event.text[5:] + ".txt"
     m = await event.get_reply_message()

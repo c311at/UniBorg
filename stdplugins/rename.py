@@ -16,7 +16,7 @@ from hachoir.metadata import extractMetadata
 from hachoir.parser import createParser
 from pySmartDL import SmartDL
 from sample_config import Config
-from uniborg.util import admin_cmd, humanbytes, progress
+, humanbytes, progress
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 thumb_image_path = Config.TMP_DOWNLOAD_DIRECTORY + "/thumb_image.jpg"
 
 
-@borg.on(admin_cmd(pattern="rndlup (.*)"))
+@borg.on(utils.admin_cmd(pattern="rndlup (.*)"))
 async def _(event):
     if event.fwd_from:
         return
@@ -106,7 +106,7 @@ async def _(event):
         await event.edit("Incorrect URL\n {}".format(input_str))
 
 
-@borg.on(admin_cmd(pattern="rnupload (.*)"))
+@borg.on(utils.admin_cmd(pattern="rnupload (.*)"))
 async def _(event):
     if event.fwd_from:
         return
@@ -157,7 +157,7 @@ async def _(event):
         await event.edit("Syntax // .rnupload file.name as reply to a Telegram media")
 
 
-@borg.on(admin_cmd(pattern="rnstreamupload (.*)"))
+@borg.on(utils.admin_cmd(pattern="rnstreamupload (.*)"))
 async def _(event):
     if event.fwd_from:
         return

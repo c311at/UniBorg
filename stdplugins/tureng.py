@@ -3,8 +3,6 @@ import requests
 import urllib3
 from bs4 import BeautifulSoup
 
-from uniborg.util import admin_cmd
-
 
 def searchTureng(word):
     http = urllib3.PoolManager()
@@ -63,14 +61,14 @@ def searchTureng_tr(word):
         return "Sonuç bulunamadı"
 
 
-@borg.on(admin_cmd(pattern=("tureng ?(.*)")))
+@borg.on(utils.admin_cmd(pattern=("tureng ?(.*)")))
 async def turen(event):
     input_str = event.pattern_match.group(1)
     result = turengsearch(input_str)
     await event.edit(result)
 
 
-@borg.on(admin_cmd(pattern=("tur_eng ?(.*)")))
+@borg.on(utils.admin_cmd(pattern=("tur_eng ?(.*)")))
 async def turen_(event):
     input_str = event.pattern_match.group(1)
     result = searchTureng_tr(input_str)

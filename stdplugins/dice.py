@@ -1,10 +1,9 @@
 """@RollADie
 Syntax: .dice"""
 from telethon.tl.types import InputMediaDice
-from uniborg.util import admin_cmd
 
 
-@borg.on(admin_cmd(pattern="dice ?(.*)"))
+@borg.on(utils.admin_cmd(pattern="dice ?(.*)"))
 async def _(event):
     if event.fwd_from:
         return

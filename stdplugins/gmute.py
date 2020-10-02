@@ -12,7 +12,7 @@ from telethon import events
 
 from pymongo import MongoClient
 from sample_config import Config
-from uniborg.util import admin_cmd
+
 
 logging.basicConfig(level=logging.INFO)
 
@@ -30,7 +30,7 @@ except Exception as e:
     logging.error(str(e))
 
 
-@borg.on(admin_cmd(pattern="gmute ?(.*)", allow_sudo=True))
+@borg.on(utils.admin_cmd(pattern="gmute ?(.*)", allow_sudo=True))
 async def gmute_user(event):
     if event.fwd_from:
         return
@@ -74,7 +74,7 @@ async def gmute_user(event):
         await event.edit("`You are not admin Here.`")
 
 
-@borg.on(admin_cmd(pattern="ungmute ?(.*)", allow_sudo=True))
+@borg.on(utils.admin_cmd(pattern="ungmute ?(.*)", allow_sudo=True))
 async def un_gmute_user(event):
     if event.fwd_from:
         return
@@ -97,7 +97,7 @@ async def un_gmute_user(event):
         await event.edit("Error: "+str(e))
 
 
-@borg.on(admin_cmd(pattern="listgmuted", allow_sudo=True))
+@borg.on(utils.admin_cmd(pattern="listgmuted", allow_sudo=True))
 async def list_gmuted(event):
     if event.fwd_from:
         return

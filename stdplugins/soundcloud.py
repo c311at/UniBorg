@@ -4,14 +4,14 @@ import os
 from sclib.asyncio import SoundcloudAPI, Track
 
 from sample_config import Config
-from uniborg.util import admin_cmd
+
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 logger = logging.getLogger(__name__)
 
 
-@borg.on(admin_cmd(pattern="scdl ?(.*)"))  # pylint:disable=E0602
+@borg.on(utils.admin_cmd(pattern="scdl ?(.*)"))  # pylint:disable=E0602
 async def _(event):
     if event.fwd_from:
         return

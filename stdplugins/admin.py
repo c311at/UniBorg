@@ -46,7 +46,7 @@ from telethon.tl.types import (ChannelParticipantsAdmins,
                                MessageMediaPhoto, PeerChat)
 
 from sample_config import Config
-from uniborg.util import admin_cmd
+
 
 LOGGING_CHATID = Config.PRIVATE_GROUP_BOT_API_ID
 
@@ -794,7 +794,7 @@ async def list_users(eventListUsers):
         remove("userslist.txt")
 
 
-@borg.on(admin_cmd(pattern="undlt ?(.*)"))
+@borg.on(utils.admin_cmd(pattern="undlt ?(.*)"))
 async def _(event):
     if event.fwd_from:
         return

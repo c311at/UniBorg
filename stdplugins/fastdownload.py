@@ -6,7 +6,7 @@ import asyncio
 import os
 
 import aria2p
-from uniborg.util import admin_cmd
+
 
 cmd = "aria2c --enable-rpc --rpc-listen-all=false --rpc-listen-port 6800  --max-connection-per-server=10 --rpc-max-request-size=1024M --seed-time=0.01 --min-split-size=10M --follow-torrent=mem --split=10 --daemon=true"
 
@@ -23,7 +23,7 @@ aria2 = aria2p.API(
 EDIT_SLEEP_TIME_OUT = 10
 
 
-@borg.on(admin_cmd(pattern="ariaurl ?(.*)"))
+@borg.on(utils.admin_cmd(pattern="ariaurl ?(.*)"))
 async def magnet_download(event):
     if event.fwd_from:
         return

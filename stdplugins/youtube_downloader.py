@@ -16,7 +16,7 @@ import time
 from telethon.tl.types import DocumentAttributeAudio
 
 from sample_config import Config
-from uniborg.util import admin_cmd
+
 from youtube_dl import YoutubeDL
 from youtube_dl.utils import (ContentTooShortError, DownloadError,
                               ExtractorError, GeoRestrictedError,
@@ -89,7 +89,7 @@ def time_formatter(milliseconds: int) -> str:
     return tmp[:-2]
 
 
-@borg.on(admin_cmd(pattern="yt(a|v) (.*)"))
+@borg.on(utils.admin_cmd(pattern="yt(a|v) (.*)"))
 async def download_video(v_url):
     """ For .ytdl command, download media from YouTube and many other sites. """
     url = v_url.pattern_match.group(2)

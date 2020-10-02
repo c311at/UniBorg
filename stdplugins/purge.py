@@ -39,7 +39,7 @@ async def _(event):
             await event.edit("**PURGE** Failed!")
 
 
-@borg.on(admin_cmd(pattern="purgme ?(.*)"))
+@borg.on(utils.admin_cmd(pattern="purgme ?(.*)"))
 async def purgeme(delme):
     """ For .purgeme, delete x count of your latest message."""
     message = delme.text
@@ -61,7 +61,7 @@ async def purgeme(delme):
     await asyncio.sleep(5)
 
 
-@borg.on(admin_cmd(pattern="selfd ?(.*) + ?(.*)", outgoing=True))
+@borg.on(utils.admin_cmd(pattern="selfd ?(.*) + ?(.*)", outgoing=True))
 async def selfdestruct(destroy):
     if not destroy.text[0].isalpha() and destroy.text[0] not in ("/", "#", "@", "!"):
         await destroy.delete()

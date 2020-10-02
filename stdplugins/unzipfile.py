@@ -15,14 +15,14 @@ from telethon.tl.types import DocumentAttributeVideo
 from hachoir.metadata import extractMetadata
 from hachoir.parser import createParser
 from sample_config import Config
-from uniborg.util import admin_cmd, progress
+, progress
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 logger = logging.getLogger(__name__)
 
 
-@borg.on(admin_cmd(pattern="unzip"))
+@borg.on(utils.admin_cmd(pattern="unzip"))
 async def _(event):
     if event.fwd_from:
         return

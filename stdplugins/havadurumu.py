@@ -3,14 +3,14 @@ import logging
 import requests
 
 from bs4 import BeautifulSoup
-from uniborg.util import admin_cmd
+
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 logger = logging.getLogger(__name__)
 
 
-@borg.on(admin_cmd(pattern="hava ?(.*)"))
+@borg.on(utils.admin_cmd(pattern="hava ?(.*)"))
 async def hava(event):
     if event.fwd_from:
         return

@@ -5,10 +5,9 @@ from telethon.errors.rpcerrorlist import (UserAlreadyParticipantError,
 from telethon.tl.functions.messages import ImportChatInviteRequest
 
 #from userbot.utils import admin_cmd
-from uniborg.util import admin_cmd
 
 
-@borg.on(admin_cmd(pattern="spoti ?(.*)"))
+@borg.on(utils.admin_cmd(pattern="spoti ?(.*)"))
 async def _(event):
     if event.fwd_from:
         return

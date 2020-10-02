@@ -14,7 +14,7 @@ from telethon import events
 from telethon.tl import types, functions
 
 # import sql_helpers.blacklist_sql as sql
-# from uniborg.util import admin_cmd
+#
 # from sample_config import Config
 
 

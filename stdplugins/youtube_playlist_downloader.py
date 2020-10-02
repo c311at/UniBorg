@@ -3,6 +3,11 @@ Audio and video downloader using Youtube-dl
 .yta To Download in mp3 format
 .ytv To Download in mp4 format
 """
+from youtube_dl.utils import (ContentTooShortError, DownloadError,
+                              ExtractorError, GeoRestrictedError,
+                              MaxDownloadsReached, PostProcessingError,
+                              UnavailableVideoError, XAttrMetadataError)
+from youtube_dl import YoutubeDL
 import asyncio
 import logging
 import os
@@ -14,12 +19,7 @@ from telethon.tl.types import DocumentAttributeVideo
 from hachoir.metadata import extractMetadata
 from hachoir.parser import createParser
 from sample_config import Config
-from uniborg.util import admin_cmd, progress
-from youtube_dl import YoutubeDL
-from youtube_dl.utils import (ContentTooShortError, DownloadError,
-                              ExtractorError, GeoRestrictedError,
-                              MaxDownloadsReached, PostProcessingError,
-                              UnavailableVideoError, XAttrMetadataError)
+, progress
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 DELETE_TIMEOUT = 5
 
 
-@borg.on(admin_cmd(pattern="playlist(a|v) (.*)"))
+@borg.on(utils.admin_cmd(pattern="playlist(a|v) (.*)"))
 async def download_video(v_url):
     """ For .ytdl command, download media from YouTube and many other sites. """
     url = v_url.pattern_match.group(2)

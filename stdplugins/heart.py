@@ -7,7 +7,6 @@ from collections import deque
 
 from telethon import events
 
-from uniborg.util import admin_cmd
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
@@ -25,7 +24,7 @@ async def _(event):
         deq.rotate(1)
 
 
-@borg.on(admin_cmd(pattern="bkalp", outgoing=True))
+@borg.on(utils.admin_cmd(pattern="bkalp", outgoing=True))
 async def bkallp(event):
     a = "❤️ 🧡 💛 💚 💙 💜 🖤 🤍 🤎 💔 💘 💝".split(" ")
     d = await event.reply("...")

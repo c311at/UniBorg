@@ -12,10 +12,9 @@ from telethon.tl.types import (ChannelParticipantsAdmins,
 from telethon.utils import get_input_location
 
 from emoji import emojize
-from uniborg.util import admin_cmd
 
 
-@borg.on(admin_cmd(pattern="chatinfo(?: |$)(.*)"))
+@borg.on(utils.admin_cmd(pattern="chatinfo(?: |$)(.*)"))
 async def info(event):
     await event.edit("`Analysing the chat...`")
     chat = await get_chatinfo(event)

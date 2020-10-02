@@ -3,22 +3,20 @@ Commands:
 .clearwelcome
 .savewelcome <Welcome Message>"""
 
-<<<<<<< HEAD
-import logging
-
-from telethon import events
-
-from sample_config import Config
+from sql_helpers.welcome_sql import get_current_welcome_settings, \
+    add_welcome_setting, rm_welcome_setting, update_previous_welcome
 from sql_helpers.welcome_sql import (add_welcome_setting,
                                      get_current_welcome_settings,
                                      rm_welcome_setting,
                                      update_previous_welcome)
-from uniborg.util import admin_cmd
-=======
+from sample_config import Config
 from telethon import events
-from sql_helpers.welcome_sql import get_current_welcome_settings, \
-    add_welcome_setting, rm_welcome_setting, update_previous_welcome
->>>>>>> aea8912d89b5f605e52dde7c95e809162f6ec390
+import logging
+<< << << < HEAD
+
+
+== == == =
+>>>>>> > aea8912d89b5f605e52dde7c95e809162f6ec390
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
@@ -58,11 +56,17 @@ async def _(event):
             update_previous_welcome(event.chat_id, current_message.id)
 
 
-<<<<<<< HEAD
-@borg.on(admin_cmd(pattern="savewelcome"))
-=======
+<< << << < HEAD
+
+
+@borg.on(utils.admin_cmd(pattern="savewelcome"))
+== == == =
+
+
 @borg.on(utils.admin_cmd(pattern="savewelcome"))  # pylint:disable=E0602
->>>>>>> aea8912d89b5f605e52dde7c95e809162f6ec390
+>>>>>> > aea8912d89b5f605e52dde7c95e809162f6ec390
+
+
 async def _(event):
     if event.fwd_from:
         return
@@ -78,11 +82,17 @@ async def _(event):
         await event.edit("Welcome note saved. ")
 
 
-<<<<<<< HEAD
-@borg.on(admin_cmd(pattern="clearwelcome"))
-=======
+<< << << < HEAD
+
+
+@borg.on(utils.admin_cmd(pattern="clearwelcome"))
+== == == =
+
+
 @borg.on(utils.admin_cmd(pattern="clearwelcome"))  # pylint:disable=E0602
->>>>>>> aea8912d89b5f605e52dde7c95e809162f6ec390
+>>>>>> > aea8912d89b5f605e52dde7c95e809162f6ec390
+
+
 async def _(event):
     if event.fwd_from:
         return

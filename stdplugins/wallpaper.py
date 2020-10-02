@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup as soup
 from PIL import Image
 
 from sample_config import Config
-from uniborg.util import admin_cmd
+
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 down_p = str(Config.TMP_DOWNLOAD_DIRECTORY.rstrip('/'))
 
 
-@borg.on(admin_cmd(pattern="wall ?(.*)"))
+@borg.on(utils.admin_cmd(pattern="wall ?(.*)"))
 async def wallp(event):
     if not os.path.isdir(down_p):
         os.makedirs(down_p)

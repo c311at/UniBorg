@@ -12,14 +12,14 @@ from datetime import datetime
 from bin.FastTelethon import download_file
 from pySmartDL import SmartDL
 from sample_config import Config
-from uniborg.util import admin_cmd, humanbytes, progress, time_formatter
+, humanbytes, progress, time_formatter
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 logger = logging.getLogger(__name__)
 
 
-@borg.on(admin_cmd(pattern="udownload ?(.*)", allow_sudo=True))
+@borg.on(utils.admin_cmd(pattern="udownload ?(.*)", allow_sudo=True))
 async def _(event):
     if event.fwd_from:
         return

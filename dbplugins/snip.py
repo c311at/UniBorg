@@ -3,20 +3,17 @@ Available Commands:
 .snips
 .snipl
 .snipd"""
-<<<<<<< HEAD
-
-import logging
-
-from telethon.tl import types
-
-from database.snipsdb import add, check, check_one, delete_one
-from sample_config import Config
-from uniborg.util import admin_cmd
-=======
-from telethon import events
-from telethon.tl import types
 from sql_helpers.snips_sql import get_snips, add_snip, remove_snip, get_all_snips
->>>>>>> aea8912d89b5f605e52dde7c95e809162f6ec390
+from telethon import events
+from sample_config import Config
+from database.snipsdb import add, check, check_one, delete_one
+from telethon.tl import types
+import logging
+<< << << < HEAD
+
+
+== == == =
+>>>>>> > aea8912d89b5f605e52dde7c95e809162f6ec390
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

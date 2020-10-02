@@ -11,7 +11,6 @@ import subprocess
 
 from telethon import errors, events
 
-from uniborg.util import admin_cmd
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
@@ -52,7 +51,7 @@ async def get_media(event):
     await event.edit("Downloaded "+output+" files.")
 
 
-@borg.on(admin_cmd(pattern="geta ?(.*)", allow_sudo=True))
+@borg.on(utils.admin_cmd(pattern="geta ?(.*)", allow_sudo=True))
 async def get_media(event):
     if event.fwd_from:
         return

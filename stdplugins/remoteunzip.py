@@ -1,5 +1,5 @@
 from sample_config import Config
-from uniborg.util import admin_cmd
+
 from hachoir.parser import createParser
 from hachoir.metadata import extractMetadata
 from telethon.tl.types import DocumentAttributeVideo
@@ -15,7 +15,7 @@ filedir = f"{Config.TMP_DOWNLOAD_DIRECTORY}extracted/"
 thumb_image_path = Config.TMP_DOWNLOAD_DIRECTORY + "/thumb_image.jpg"
 
 
-@borg.on(admin_cmd(pattern=("runzip ?(.*)")))
+@borg.on(utils.admin_cmd(pattern=("runzip ?(.*)")))
 async def _(event):
     if event.fwd_from:
         return

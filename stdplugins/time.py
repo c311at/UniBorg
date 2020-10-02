@@ -58,7 +58,7 @@ async def _(event):
 << << << < HEAD
 
 
-@borg.on(admin_cmd(pattern="time (.*)"))
+@borg.on(utils.admin_cmd(pattern="time (.*)"))
 == == == =
 
 

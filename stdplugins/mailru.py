@@ -2,13 +2,14 @@ import asyncio
 import logging
 
 from sample_config import Config
-from uniborg.util import admin_cmd
+
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 logger = logging.getLogger(__name__)
 
-@borg.on(admin_cmd(pattern=("mailru ?(.*)")))
+
+@borg.on(utils.admin_cmd(pattern=("mailru ?(.*)")))
 async def _(event):
     url = event.pattern_match.group(1)
     if event.fwd_from:

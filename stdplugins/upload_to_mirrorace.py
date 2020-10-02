@@ -10,7 +10,7 @@ from datetime import datetime
 import requests
 
 import aiohttp
-from uniborg.util import admin_cmd, progress
+, progress
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
@@ -25,7 +25,7 @@ else:
         from sample_config import Development as Config
 
 
-@borg.on(admin_cmd(pattern="mirrorace ?(.*)", allow_sudo=True))
+@borg.on(utils.admin_cmd(pattern="mirrorace ?(.*)", allow_sudo=True))
 async def _(event):
     if event.fwd_from:
         return

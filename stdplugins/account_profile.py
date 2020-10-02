@@ -82,7 +82,7 @@ async def _(event):
         logger.warning(str(e))
 
 
-@borg.on(admin_cmd(pattern="pf (.*)"))
+@borg.on(utils.admin_cmd(pattern="pf (.*)"))
 async def _(event):
     """getting user profile photo last changed time"""
     if event.fwd_from:

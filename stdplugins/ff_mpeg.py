@@ -45,7 +45,7 @@ async def ff_mpeg_trim_cmd(event):
         await event.edit(f"a media file already exists in path. Please remove the media and try again!\n`.exec rm {FF_MPEG_DOWN_LOAD_MEDIA_PATH}`")
 
 
-@borg.on(admin_cmd(pattern="ffmpegtrim"))
+@borg.on(utils.admin_cmd(pattern="ffmpegtrim"))
 async def ff_mpeg_trim_cmd(event):
     if event.fwd_from:
         return

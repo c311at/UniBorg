@@ -1,12 +1,10 @@
+import sql_helpers.warns_sql as sql
 import html
 from telethon.tl.types import ChatBannedRights
-<<<<<<< HEAD
-=======
-import sql_helpers.warns_sql as sql
->>>>>>> aea8912d89b5f605e52dde7c95e809162f6ec390
+<< << << < HEAD
+== == == =
+>>>>>> > aea8912d89b5f605e52dde7c95e809162f6ec390
 
-import sql_helpers.warns_sql as sql
-from uniborg.util import admin_cmd
 
 banned_rights = ChatBannedRights(
     until_date=None,
@@ -39,15 +37,15 @@ async def _(event):
         return
     warn_reason = event.pattern_match.group(1)
     reply_message = await event.get_reply_message()
-<<<<<<< HEAD
-=======
-    if await utils.is_admin(event.client, event.chat_id, reply_message.from_id):
-        return
->>>>>>> aea8912d89b5f605e52dde7c95e809162f6ec390
-    limit, soft_warn = sql.get_warn_setting(event.chat_id)
-    num_warns, reasons = sql.warn_user(
-        reply_message.from_id, event.chat_id, warn_reason)
-    if num_warns >= limit:
+<< << << < HEAD
+== == == =
+ if await utils.is_admin(event.client, event.chat_id, reply_message.from_id):
+      return
+>>>>>> > aea8912d89b5f605e52dde7c95e809162f6ec390
+ limit, soft_warn = sql.get_warn_setting(event.chat_id)
+  num_warns, reasons = sql.warn_user(
+       reply_message.from_id, event.chat_id, warn_reason)
+   if num_warns >= limit:
         sql.reset_warns(reply_message.from_id, event.chat_id)
         if soft_warn:
             logger.info("TODO: kick user")

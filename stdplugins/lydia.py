@@ -10,7 +10,7 @@ from coffeehouse.lydia import LydiaAI
 from coffeehouse.exception import CoffeeHouseError
 from pymongo import MongoClient
 from sample_config import Config
-from uniborg.util import admin_cmd
+
 
 logging.basicConfig(level=logging.INFO)
 
@@ -27,7 +27,7 @@ if Config.LYDIA_API is not None:
     lydia_session = LydiaAI(coffeehouse_api)
 
 
-@borg.on(admin_cmd(pattern="cf", allow_sudo=True))
+@borg.on(utils.admin_cmd(pattern="cf", allow_sudo=True))
 async def lydia_enable(event):
     if event.fwd_from:
         return
@@ -56,7 +56,7 @@ async def lydia_enable(event):
     await event.edit("Lydia AI Turned On for User: "+str(user_id))
 
 
-@borg.on(admin_cmd(pattern="delcf", allow_sudo=True))
+@borg.on(utils.admin_cmd(pattern="delcf", allow_sudo=True))
 async def lydia_disable(event):
     if event.fwd_from:
         return
@@ -77,7 +77,7 @@ async def lydia_disable(event):
     await event.edit("Lydia AI Turned OFF for User: "+str(user_id))
 
 
-@borg.on(admin_cmd(pattern="listcf", allow_sudo=True))
+@borg.on(utils.admin_cmd(pattern="listcf", allow_sudo=True))
 async def lydia_list(event):
     if event.fwd_from:
         return

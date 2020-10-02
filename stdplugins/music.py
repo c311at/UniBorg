@@ -5,14 +5,14 @@ from asyncio.exceptions import TimeoutError
 from telethon import events
 from telethon.errors.rpcerrorlist import YouBlockedUserError
 
-from uniborg.util import admin_cmd, humanbytes
+, humanbytes
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 logger = logging.getLogger(__name__)
 
 
-@borg.on(admin_cmd(pattern="music ?(.*)"))  # pylint:disable=E0602
+@borg.on(utils.admin_cmd(pattern="music ?(.*)"))  # pylint:disable=E0602
 async def music_find(event):
     if event.fwd_from:
         return
@@ -39,7 +39,7 @@ async def music_find(event):
         )
 
 
-@borg.on(admin_cmd(pattern="spotbot ?(.*)"))  # pylint:disable=E0602
+@borg.on(utils.admin_cmd(pattern="spotbot ?(.*)"))  # pylint:disable=E0602
 async def _(event):
     if event.fwd_from:
         return
@@ -163,7 +163,7 @@ async def _(event):
         await event.client.send_file(event.chat_id, response.message.media)
 
 
-@borg.on(admin_cmd(pattern="fm ?(.*)"))  # pylint:disable=E0602
+@borg.on(utils.admin_cmd(pattern="fm ?(.*)"))  # pylint:disable=E0602
 async def _(event):
     msg = await event.get_reply_message()
     await event.delete()
@@ -178,7 +178,7 @@ async def _(event):
         await event.edit("`mesajı yanıtla`")
 
 
-@borg.on(admin_cmd(pattern="sdown ?(.*)"))
+@borg.on(utils.admin_cmd(pattern="sdown ?(.*)"))
 async def _(event):
     if event.fwd_from:
         return

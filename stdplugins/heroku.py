@@ -9,7 +9,7 @@ import requests
 import heroku3
 from bin.prettyjson import prettyjson
 from sample_config import Config
-from uniborg.util import admin_cmd
+
 
 # =================
 Heroku = heroku3.from_key(Config.HEROKU_API_KEY)
@@ -20,7 +20,7 @@ HEROKU_API_KEY = Config.HEROKU_API_KEY
 # Here lies the Magic
 
 
-@borg.on(admin_cmd(pattern=r"(set|get|del) var ?(.*)", allow_sudo=True))
+@borg.on(utils.admin_cmd(pattern=r"(set|get|del) var ?(.*)", allow_sudo=True))
 async def variable(var):
     if HEROKU_APP_NAME is not None:
         app = Heroku.app(HEROKU_APP_NAME)
@@ -88,7 +88,7 @@ async def variable(var):
             return await var.reply(f"**{variable}**  `is not exists`")
 
 
-@borg.on(admin_cmd(pattern="usage ?(.*)", allow_sudo=True))
+@borg.on(utils.admin_cmd(pattern="usage ?(.*)", allow_sudo=True))
 async def _(event):
     await event.edit("`Processing...`")
     useragent = ('Mozilla/5.0 (Linux; Android 10; SM-G975F) '
@@ -143,7 +143,7 @@ async def _(event):
                              )
 
 
-@borg.on(admin_cmd(pattern="logs"))
+@borg.on(utils.admin_cmd(pattern="logs"))
 async def _(dyno):
     try:
         Heroku = heroku3.from_key(Config.HEROKU_API_KEY)
@@ -163,7 +163,7 @@ async def _(dyno):
     return os.remove('logs.txt')
 
 
-@borg.on(admin_cmd(pattern="dyno (on|restart|off|cancel deploy|cancel build) ?(.*)"))
+@borg.on(utils.admin_cmd(pattern="dyno (on|restart|off|cancel deploy|cancel build) ?(.*)"))
 async def dyno_manage(dyno):
     """ - Restart/Kill dyno - """
     await dyno.edit("`Sending information...`")
