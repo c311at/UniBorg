@@ -20,17 +20,17 @@ async def _(event):
     input_str = event.pattern_match.group(1)
     reply_message = await event.get_reply_message()
     if reply_message is None:
-        await event.edit("reply to a media to use the `nfc` operation.")
+        await event.edit("reply to a media to use the `nfc` operation.\nInspired by @FileConverterBot")
         return
     await event.edit("trying to download media file, to my local")
     try:
         start = datetime.now()
         c_time = time.time()
-        downloaded_file_name = await event.client.download_media(
+        downloaded_file_name = await borg.download_media(
             reply_message,
             Config.TMP_DOWNLOAD_DIRECTORY,
             progress_callback=lambda d, t: asyncio.get_event_loop().create_task(
-                progress(d, t, event, c_time, "indiriliyor")
+                utils.progress(d, t, event, c_time, "trying to download")
             )
         )
     except Exception as e:  # pylint:disable=C0103,W0703
@@ -45,8 +45,10 @@ async def _(event):
         voice_note = False
         supports_streaming = False
         if input_str == "voice":
-            new_required_file_caption = downloaded_file_name[12:-4] + ".opus"
-            new_required_file_name = new_required_file_caption
+            new_required_file_caption = "NLFC_" + \
+                str(round(time.time())) + ".opus"
+            new_required_file_name = Config.TMP_DOWNLOAD_DIRECTORY + \
+                "/" + new_required_file_caption
             command_to_run = [
                 "ffmpeg",
                 "-i",
@@ -64,8 +66,10 @@ async def _(event):
             voice_note = True
             supports_streaming = True
         elif input_str == "mp3":
-            new_required_file_caption = downloaded_file_name[12:-4] + ".mp3"
-            new_required_file_name = new_required_file_caption
+            new_required_file_caption = "NLFC_" + \
+                str(round(time.time())) + ".mp3"
+            new_required_file_name = Config.TMP_DOWNLOAD_DIRECTORY + \
+                "/" + new_required_file_caption
             command_to_run = [
                 "ffmpeg",
                 "-i",
@@ -80,27 +84,11 @@ async def _(event):
             os.remove(downloaded_file_name)
             return
         logger.info(command_to_run)
-        # TODO: re-write create_subprocess_exec 😉
-        process = await asyncio.create_subprocess_exec(
-            *command_to_run,
-            # stdout must a pipe to be accessible as process.stdout
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE,
-        )
-        # Wait for the subprocess to finish
-        stdout, stderr = await process.communicate()
-        e_response = stderr.decode().strip()
-        t_response = stdout.decode().strip()
-
+        t_response, e_response = await utils.run_command(command_to_run)
+        os.remove(downloaded_file_name)
         if os.path.exists(new_required_file_name):
             end_two = datetime.now()
             force_document = False
-            await event.client.send_file(
-        t_response, e_response=await utils.run_command(command_to_run)
-        os.remove(downloaded_file_name)
-        if os.path.exists(new_required_file_name):
-            end_two=datetime.now()
-            force_document=False
             await borg.send_file(
                 entity=event.chat_id,
                 file=new_required_file_name,
@@ -114,10 +102,6 @@ async def _(event):
                     utils.progress(d, t, event, c_time, "trying to upload")
                 )
             )
-            ms_two=(end_two - end).seconds
+            ms_two = (end_two - end).seconds
             os.remove(new_required_file_name)
-            await asyncio.sleep(5)
-            os.remove(downloaded_file_name)
-            a=await event.edit(f"converted in {ms_two} seconds")
-            await asyncio.sleep(5)
-            await a.delete()
+            await event.edit(f"converted in {ms_two} seconds")
