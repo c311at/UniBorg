@@ -84,7 +84,7 @@ class Uniborg(TelegramClient):
                     self.remove_plugin(plugin_name)
 
     async def _async_init(self, **kwargs):
-        self.start(**kwargs)
+        await self.start(**kwargs)
 
         self.me = await self.get_me()
         self.uid = telethon.utils.get_peer_id(self.me)
