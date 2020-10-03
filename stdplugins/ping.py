@@ -8,7 +8,6 @@ from uniborg import utils
 async def _(event):
     if event.fwd_from:
         return
-    ed = await utils.edit_or_reply(event, "...")
     start = datetime.now()
     await event.edit("Pong!")
     end = datetime.now()
