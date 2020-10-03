@@ -11,7 +11,6 @@ from telethon.tl.types import (MessageEntityBold, MessageEntityCode,
                                MessageEntityItalic, MessageEntityPre,
                                MessageEntityTextUrl)
 from telethon.utils import add_surrogate, del_surrogate
-from uniborg import utils
 
 
 def parse_url_match(m):

@@ -9,7 +9,7 @@ from datetime import datetime
 
 from sample_config import Config
 from telethon.tl import functions
-from uniborg import utils
+
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

@@ -1,8 +1,6 @@
 
 from datetime import datetime
 
-from uniborg import utils
-
 
 @borg.on(utils.admin_cmd(pattern="ping", allow_sudo=True))
 async def _(event):

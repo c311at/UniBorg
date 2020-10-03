@@ -6,7 +6,6 @@ import os
 
 import requests
 from sample_config import Config
-from uniborg import utils
 
 
 def ocr_space_file(filename, overlay=False, api_key=Config.OCR_SPACE_API_KEY, language='eng'):

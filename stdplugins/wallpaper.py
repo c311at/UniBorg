@@ -7,7 +7,7 @@ import requests
 from bs4 import BeautifulSoup as soup
 from PIL import Image
 from sample_config import Config
-from uniborg import utils
+
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

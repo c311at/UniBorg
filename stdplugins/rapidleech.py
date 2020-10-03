@@ -17,7 +17,6 @@ import aiohttp
 from bs4 import BeautifulSoup
 from sample_config import Config
 from telethon.utils import get_inner_text
-from uniborg import utils
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

@@ -4,7 +4,6 @@ from asyncio.exceptions import TimeoutError
 
 from telethon import events
 from telethon.errors.rpcerrorlist import YouBlockedUserError
-from uniborg import utils
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

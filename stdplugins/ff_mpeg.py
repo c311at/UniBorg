@@ -8,7 +8,6 @@ from datetime import datetime
 
 from hachoir.metadata import extractMetadata
 from hachoir.parser import createParser
-from uniborg import utils
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

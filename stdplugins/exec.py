@@ -11,7 +11,6 @@ import time
 from sample_config import Config
 from telethon.errors import (MessageEmptyError, MessageNotModifiedError,
                              MessageTooLongError)
-from uniborg import utils
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

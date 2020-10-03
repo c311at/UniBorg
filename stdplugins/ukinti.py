@@ -13,7 +13,6 @@ from telethon.tl.types import (ChannelParticipantsKicked, ChatBannedRights,
                                UserStatusEmpty, UserStatusLastMonth,
                                UserStatusLastWeek, UserStatusOffline,
                                UserStatusOnline, UserStatusRecently)
-from uniborg import utils
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

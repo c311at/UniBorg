@@ -6,7 +6,6 @@ from datetime import datetime
 
 from PyPDF2 import PdfFileReader, PdfFileWriter
 from sample_config import Config
-from uniborg import utils
 
 
 @borg.on(utils.admin_cmd(pattern="watermark"))

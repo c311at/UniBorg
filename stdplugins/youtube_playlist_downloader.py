@@ -13,7 +13,6 @@ from hachoir.metadata import extractMetadata
 from hachoir.parser import createParser
 from sample_config import Config
 from telethon.tl.types import DocumentAttributeVideo
-from uniborg import utils
 
 from youtube_dl import YoutubeDL
 from youtube_dl.utils import (ContentTooShortError, DownloadError,
