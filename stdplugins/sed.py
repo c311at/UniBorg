@@ -2,12 +2,6 @@
 import logging
 import re
 from collections import defaultdict, deque
-<<<<<<< HEAD
-=======
-
-from telethon import events, utils
-from telethon.tl import functions, types
->>>>>>> parent of 42483031... import utils
 
 from sample_config import Config
 from telethon import events, utils
