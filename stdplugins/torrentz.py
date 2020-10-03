@@ -1,6 +1,8 @@
 import logging
 from datetime import datetime
 
+import requests
+
 import cfscrape  # https://github.com/Anorov/cloudflare-scrape
 import requests
 from bs4 import BeautifulSoup

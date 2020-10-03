@@ -11,7 +11,10 @@ from html import unescape
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from sample_config import Config
-from uniborg import utils
+# from gtts import gTTS
+# from pytube.compat import quote
+# from pytube.helpers import safe_filename
+
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

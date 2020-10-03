@@ -12,6 +12,8 @@ import os
 import time
 from datetime import datetime
 
+from telethon.tl.types import DocumentAttributeAudio, DocumentAttributeVideo
+
 from hachoir.metadata import extractMetadata
 from hachoir.parser import createParser
 from sample_config import Config

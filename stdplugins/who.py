@@ -8,7 +8,6 @@ import logging
 from telethon import events, utils
 from telethon.errors.rpcerrorlist import MessageTooLongError
 from telethon.tl import types
-from uniborg import utils
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

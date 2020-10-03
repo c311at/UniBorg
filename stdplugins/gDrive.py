@@ -24,7 +24,7 @@ from oauth2client.client import OAuth2WebServerFlow
 from oauth2client.file import Storage
 from sample_config import Config
 from telethon import events
-from uniborg import utils
+
 
 # Path to token json file, it should be in same directory as script
 G_DRIVE_TOKEN_FILE = os.path.join(

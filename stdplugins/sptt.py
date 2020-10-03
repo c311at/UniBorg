@@ -8,6 +8,7 @@ import requests
 from sample_config import Config
 from telethon import events
 
+
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 logger = logging.getLogger(__name__)

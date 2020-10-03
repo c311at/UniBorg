@@ -5,7 +5,6 @@ from telethon.errors.rpcerrorlist import (UserAlreadyParticipantError,
                                           YouBlockedUserError)
 from telethon.tl.functions.messages import ImportChatInviteRequest
 #from userbot.utils import admin_cmd
-from uniborg import utils
 
 
 @borg.on(utils.admin_cmd(pattern="spoti ?(.*)"))

@@ -10,13 +10,14 @@ import os
 import random
 import urllib.request
 
-from PIL import Image
 from telethon import events
 from telethon.tl.functions.messages import GetStickerSetRequest
 from telethon.tl.types import (DocumentAttributeFilename,
                                DocumentAttributeSticker, InputStickerSetID,
                                MessageMediaPhoto)
-from uniborg import utils
+
+from PIL import Image
+
 
 KANGING_STR = [
     "Using Witchery to kang this sticker...",

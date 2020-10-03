@@ -5,6 +5,8 @@ import os
 from datetime import datetime
 
 import requests
+
+import requests
 from sample_config import Config
 from uniborg import utils
 

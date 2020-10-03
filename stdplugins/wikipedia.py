@@ -5,7 +5,8 @@
 Syntax: .wikipedia Query"""
 import logging
 
-from uniborg import utils
+import wikipedia
+
 
 import wikipedia
 

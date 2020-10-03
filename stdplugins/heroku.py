@@ -8,7 +8,7 @@ import heroku3
 import requests
 from bin.prettyjson import prettyjson
 from sample_config import Config
-from uniborg import utils
+
 
 # =================
 Heroku = heroku3.from_key(Config.HEROKU_API_KEY)

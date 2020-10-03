@@ -4,8 +4,6 @@ Options: typing, contact, game, location, voice, round, video, photo, document, 
 
 import asyncio
 
-from uniborg import utils
-
 
 @borg.on(utils.admin_cmd(pattern="sca ?(.*)"))
 async def _(event):

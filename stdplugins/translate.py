@@ -3,7 +3,6 @@ Available Commands:
 .tr LanguageCode as reply to a message
 .tr LangaugeCode | text to translate"""
 from googletrans import Translator
-from uniborg import utils
 
 
 @borg.on(utils.admin_cmd(pattern="tr ?(.*)"))

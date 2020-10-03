@@ -5,7 +5,7 @@ Turkish word meaning. Only Turkish. Coded @By_Azade
 import logging
 
 import requests
-from uniborg import utils
+
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

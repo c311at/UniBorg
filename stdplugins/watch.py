@@ -5,7 +5,7 @@
 """Syntax: .watch Movie/TV Show"""
 import requests
 from justwatch import JustWatch, justwatchapi
-from uniborg import utils
+
 
 # https://github.com/dawoudt/JustWatchAPI/issues/47#issuecomment-691357371
 justwatchapi.__dict__["HEADER"] = {

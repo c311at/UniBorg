@@ -4,10 +4,9 @@ import os
 from hachoir.metadata import extractMetadata
 from hachoir.parser import createParser
 from remotezip import RemoteZip
+import os
+import logging
 from sample_config import Config
-from telethon.tl.types import DocumentAttributeVideo
-from uniborg import utils
-
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 logger = logging.getLogger(__name__)

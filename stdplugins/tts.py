@@ -4,7 +4,6 @@ from datetime import datetime
 
 from gtts import gTTS
 from sample_config import Config
-from uniborg import utils
 
 
 @borg.on(utils.admin_cmd(pattern="tts (.*)"))

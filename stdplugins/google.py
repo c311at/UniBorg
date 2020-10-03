@@ -12,7 +12,6 @@ from datetime import datetime
 import aiohttp
 from bs4 import BeautifulSoup
 from telethon.utils import guess_extension
-from uniborg import utils
 
 
 @borg.on(utils.admin_cmd(pattern="google search (.*)"))

@@ -6,7 +6,6 @@ Your account might get banned for offensive use of this script,
 The below script is only intended for "fun" and "entertainment"
 and please read https://t.me/UniBorg/39 before proceeding to run this!"""
 from telethon.tl.types import InputMediaDice
-from uniborg import utils
 
 # EMOJI CONSTANTS
 DART_E_MOJI = "🎯"

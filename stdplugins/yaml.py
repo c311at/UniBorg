@@ -6,8 +6,6 @@
 Syntax: .yaml"""
 import io
 
-from uniborg import utils
-
 
 @borg.on(utils.admin_cmd(pattern="yaml"))
 async def _(event):
