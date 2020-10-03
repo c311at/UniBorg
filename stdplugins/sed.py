@@ -6,7 +6,6 @@ from collections import defaultdict, deque
 from sample_config import Config
 from telethon import events, utils
 from telethon.tl import functions, types
-from uniborg import utils
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

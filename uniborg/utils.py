@@ -151,8 +151,7 @@ def time_formatter(seconds: int) -> str:
         "minutes": 60,
         "seconds": 1
     }
-    for age in r_ange_s:
-        divisor = r_ange_s[age]
+    for age, divisor in r_ange_s.items():
         v_m, remainder = divmod(remainder, divisor)
         v_m = int(v_m)
         if v_m != 0:
