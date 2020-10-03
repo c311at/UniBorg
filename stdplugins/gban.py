@@ -6,12 +6,14 @@ Available Commands:
 import asyncio
 import logging
 
+from sample_config import Config
+
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 logger = logging.getLogger(__name__)
 
 
-@borg.on(utils.admin_cmd(pattern="gban ?(.*)"))
+@borg.on(utils.admin_cmd(pattern="fban ?(.*)"))
 async def _(event):
     if Config.G_BAN_LOGGER_GROUP is None:
         await event.edit("ENV VAR is not set. This module will not work.")
@@ -35,7 +37,7 @@ async def _(event):
     await event.delete()
 
 
-@borg.on(utils.admin_cmd(pattern="ungban ?(.*)"))
+@borg.on(utils.admin_cmd(pattern="unfban ?(.*)"))
 async def _(event):
     if Config.G_BAN_LOGGER_GROUP is None:
         await event.edit("ENV VAR is not set. This module will not work.")
