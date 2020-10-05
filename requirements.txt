@@ -1,4 +1,4 @@
-# https://github.com/LonamiWebs/Telethon/archive/master.zip
-telethon==1.16.0
+https://github.com/LonamiWebs/Telethon/archive/master.zip
+# telethon==1.16.0
 cryptg
 -r ./requirements-stdborg.txt
