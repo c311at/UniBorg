@@ -35,14 +35,14 @@ async def _(event):
     free = utils.humanbytes(free)
 
     help_string = "@UniBorg\n"
-    help_string += f"✅ <b>UpTime</b> <code>{current_run_time}</code>\n"
-    help_string += f"✅ <b>Python</b> <code>{sys.version}</code>\n"
-    help_string += f"✅ <b>Telethon</b> <code>{__version__}</code>\n"
-    help_string += f"{check_sgnirts} <b>Database</b>\n"
-    help_string += f"<b>Total Disk Space</b>: <code>{total}</code>\n"
-    help_string += f"<b>Used Disk Space</b>: <code>{used}</code>\n"
-    help_string += f"<b>Free Disk Space</b>: <code>{free}</code>\n\n"
-    help_string += f"UserBot Forked from https://github.com/udf/uniborg"
+    help_string += f"✅ **UpTime** `{current_run_time}`\n"
+    help_string += f"✅ **Python** `{sys.version}`\n"
+    help_string += f"✅ **Telethon** `{__version__}`\n"
+    help_string += f"{check_sgnirts} **Database**\n"
+    help_string += f"**Total Disk Space**: `{total}`\n"
+    help_string += f"**Used Disk Space**: `{used}`\n"
+    help_string += f"**Free Disk Space**: `{free}`\n\n"
+    help_string += f"UserBot Forked from https://github.com/muhammedfurkan/uniborg"
     borg._iiqsixfourstore[str(event.chat_id)] = {}
     borg._iiqsixfourstore[
         str(event.chat_id)
