@@ -4,9 +4,11 @@
 import asyncio
 import json
 import logging
+import os
 import re
 from math import ceil
 
+from sample_config import Config
 from telethon import custom, events
 
 
@@ -133,7 +135,7 @@ if Config.TG_BOT_USER_NAME_BF_HER is not None and tgbot is not None:
                             format_ext = formats.get("ext")
                             approx_file_size = ""
                             if "filesize" in formats:
-                                approx_file_size = humanbytes(
+                                approx_file_size = utils.humanbytes(
                                     formats["filesize"])
                             cb_string_video = "ytdl|{}|{}|{}".format(
                                 "video", format_id, format_ext)
