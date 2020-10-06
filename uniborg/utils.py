@@ -3,20 +3,28 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import asyncio
-import re
+import datetime
+import logging
 import math
 import os
+import re
 import time
 from typing import List
+
 from telethon import events
-from telethon.utils import add_surrogate
-from telethon.tl.functions.messages import GetPeerDialogsRequest
-from telethon.tl.functions.channels import GetParticipantRequest
-from telethon.tl.types import ChannelParticipantAdmin, ChannelParticipantCreator
-from telethon.tl.types import MessageEntityPre, DocumentAttributeFilename
-from telethon.tl.tlobject import TLObject
 from telethon.errors import MessageTooLongError
-import datetime
+from telethon.tl.functions.channels import GetParticipantRequest
+from telethon.tl.functions.messages import GetPeerDialogsRequest
+from telethon.tl.tlobject import TLObject
+from telethon.tl.types import (ChannelParticipantAdmin,
+                               ChannelParticipantCreator,
+                               DocumentAttributeFilename, MessageEntityPre)
+from telethon.utils import add_surrogate
+
+logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
+                    level=logging.WARNING)
+logger = logging.getLogger(__name__)
+# from alive_progress import alive_bar
 
 # the secret configuration specific things
 ENV = bool(os.environ.get("ENV", False))
@@ -24,7 +32,7 @@ if ENV:
     from sample_config import Config
 else:
     if os.path.exists("config.py"):
-        from config import Development as Config
+        from sample_config import Development as Config
 
 
 def admin_cmd(**args):
@@ -143,8 +151,7 @@ def time_formatter(seconds: int) -> str:
         "minutes": 60,
         "seconds": 1
     }
-    for age in r_ange_s:
-        divisor = r_ange_s[age]
+    for age, divisor in r_ange_s.items():
         v_m, remainder = divmod(remainder, divisor)
         v_m = int(v_m)
         if v_m != 0:
@@ -221,6 +228,7 @@ async def take_screen_shot(video_file, output_directory, ttl):
 
 # https://github.com/Nekmo/telegram-upload/blob/master/telegram_upload/video.py#L26
 
+
 async def cult_small_video(video_file, output_directory, start_time, end_time):
     # https://stackoverflow.com/a/13891070/4723940
     out_put_file_name = output_directory + \
@@ -250,11 +258,13 @@ async def cult_small_video(video_file, output_directory, start_time, end_time):
 # these two functions are stolen from
 # https://github.com/udf/uniborg/blob/kate/stdplugins/info.py
 
+
 def parse_pre(text):
     text = text.strip()
     return (
         text,
-        [MessageEntityPre(offset=0, length=len(add_surrogate(text)), language='')]
+        [MessageEntityPre(offset=0, length=len(
+            add_surrogate(text)), language='')]
     )
 
 
@@ -322,4 +332,3 @@ def yaml_format(obj, indent=0, max_str_len=256, max_byte_len=64):
         return repr(obj)
 
     return ''.join(result)
-
