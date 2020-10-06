@@ -13,9 +13,7 @@ from pySmartDL import SmartDL
 from sample_config import Config
 from telethon import events
 from telethon.tl.types import DocumentAttributeVideo
-from uniborg.util import admin_cmd, humanbytes, time_formatter
-
-from stdplugins.fastdownload import progress_status
+from uniborg.util import admin_cmd, humanbytes, progress, time_formatter
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
@@ -39,7 +37,7 @@ async def _(event):
                 reply_message,
                 Config.TMP_DOWNLOAD_DIRECTORY,
                 progress_callback=lambda d, t: asyncio.get_event_loop().create_task(
-                    progress_status(d, t, mone, c_time, "trying to download")
+                    progress(d, t, mone, c_time, "trying to download")
                 )
             )
         except Exception as e:  # pylint:disable=C0103,W0703
