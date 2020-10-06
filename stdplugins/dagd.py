@@ -14,7 +14,7 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
 logger = logging.getLogger(__name__)
 
 
-@borg.on(slitu.admin_cmd(pattern="dns (.*)"))
+@borg.on(utils.admin_cmd(pattern="dns (.*)"))
 async def _(event):
     if event.fwd_from:
         return
@@ -40,7 +40,7 @@ async def _(event):
         await event.edit("something is wrong. please try again later.")
 
 
-@borg.on(slitu.admin_cmd(pattern="unshort (.*)"))
+@borg.on(utils.admin_cmd(pattern="unshort (.*)"))
 async def _(event):
     if event.fwd_from:
         return

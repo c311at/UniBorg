@@ -8,7 +8,7 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
 logger = logging.getLogger(__name__)
 
 
-@borg.on(slitu.admin_cmd(pattern="whatscrapp"))
+@borg.on(utils.admin_cmd(pattern="whatscrapp"))
 async def _(event):
     if event.fwd_from:
         return

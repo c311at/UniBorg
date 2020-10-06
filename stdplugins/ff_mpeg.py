@@ -14,7 +14,7 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
 logger = logging.getLogger(__name__)
 
 
-@borg.on(slitu.admin_cmd(pattern="ffmpegtrim"))
+@borg.on(utils.admin_cmd(pattern="ffmpegtrim"))
 async def ff_mpeg_trim_cmd(event):
     if event.fwd_from:
         return
@@ -59,7 +59,7 @@ async def ff_mpeg_trim_cmd(event):
     if len(cmt) == 3:
         # output should be video
         cmd, start_time, end_time = cmt
-        o = await slitu.cult_small_video(
+        o = await utils.cult_small_video(
             FF_MPEG_DOWN_LOAD_MEDIA_PATH,
             Config.TMP_DOWNLOAD_DIRECTORY,
             start_time,
@@ -77,7 +77,7 @@ async def ff_mpeg_trim_cmd(event):
                 allow_cache=False,
                 # reply_to=event.message.id,
                 progress_callback=lambda d, t: asyncio.get_event_loop().create_task(
-                    slitu.progress(d, t, event, c_time, "trying to upload")
+                    utils.progress(d, t, event, c_time, "trying to upload")
                 )
             )
             os.remove(o)
@@ -86,7 +86,7 @@ async def ff_mpeg_trim_cmd(event):
     elif len(cmt) == 2:
         # output should be image
         cmd, start_time = cmt
-        o = await slitu.take_screen_shot(
+        o = await utils.take_screen_shot(
             FF_MPEG_DOWN_LOAD_MEDIA_PATH,
             Config.TMP_DOWNLOAD_DIRECTORY,
             start_time
@@ -103,7 +103,7 @@ async def ff_mpeg_trim_cmd(event):
                 allow_cache=False,
                 # reply_to=event.message.id,
                 progress_callback=lambda d, t: asyncio.get_event_loop().create_task(
-                    slitu.progress(d, t, event, c_time, "trying to upload")
+                    utils.progress(d, t, event, c_time, "trying to upload")
                 )
             )
             os.remove(o)

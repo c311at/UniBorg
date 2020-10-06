@@ -17,7 +17,7 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
 logger = logging.getLogger(__name__)
 
 
-@borg.on(slitu.admin_cmd(pattern="exec ?(.*)"))
+@borg.on(utils.admin_cmd(pattern="exec ?(.*)"))
 async def _(event):
     if event.fwd_from or event.via_bot_id:
         return

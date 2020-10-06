@@ -4,7 +4,7 @@ Available Commands:
 from telethon.tl import functions, types
 
 
-@borg.on(slitu.admin_cmd(pattern="create (b|g|c) (.*)"))  # pylint:disable=E0602
+@borg.on(utils.admin_cmd(pattern="create (b|g|c) (.*)"))  # pylint:disable=E0602
 async def _(event):
     if event.fwd_from:
         return

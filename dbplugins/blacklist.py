@@ -18,9 +18,9 @@ from telethon.tl import types, functions
 # from sample_config import Config
 
 
-@borg.on(slitu.admin_cmd(incoming=True))
+@borg.on(utils.admin_cmd(incoming=True))
 async def on_new_message(event):
-    if await slitu.is_admin(event.client, event.chat_id, event.from_id):
+    if await utils.is_admin(event.client, event.chat_id, event.from_id):
         return
     if borg.me.id == event.from_id:
         return
@@ -37,7 +37,7 @@ async def on_new_message(event):
             break
 
 
-@borg.on(slitu.admin_cmd(pattern="addblacklist ((.|\n)*)"))
+@borg.on(utils.admin_cmd(pattern="addblacklist ((.|\n)*)"))
 async def on_add_black_list(event):
     text = event.pattern_match.group(1)
     to_blacklist = list(
@@ -48,7 +48,7 @@ async def on_add_black_list(event):
     await event.edit("Added {} triggers to the blacklist in the current chat".format(len(to_blacklist)))
 
 
-@borg.on(slitu.admin_cmd(pattern="listblacklist"))
+@borg.on(utils.admin_cmd(pattern="listblacklist"))
 async def on_view_blacklist(event):
     all_blacklisted = sql.get_chat_blacklist(event.chat_id)
     OUT_STR = "Blacklists in the Current Chat:\n"
@@ -73,7 +73,7 @@ async def on_view_blacklist(event):
         await event.edit(OUT_STR)
 
 
-@borg.on(slitu.admin_cmd(pattern="rmblacklist ((.|\n)*)"))
+@borg.on(utils.admin_cmd(pattern="rmblacklist ((.|\n)*)"))
 async def on_delete_blacklist(event):
     text = event.pattern_match.group(1)
     to_unblacklist = list(

@@ -5,7 +5,7 @@ Options: typing, contact, game, location, voice, round, video, photo, document, 
 import asyncio
 
 
-@borg.on(slitu.admin_cmd(pattern="sca ?(.*)"))
+@borg.on(utils.admin_cmd(pattern="sca ?(.*)"))
 async def _(event):
     if event.fwd_from:
         return

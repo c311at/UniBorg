@@ -17,7 +17,7 @@ from sample_config import Config
 from telethon import __version__, events, functions
 
 
-@borg.on(slitu.admin_cmd(pattern="helpme ?(.*)", allow_sudo=True))  # pylint:disable=E0602
+@borg.on(utils.admin_cmd(pattern="helpme ?(.*)", allow_sudo=True))  # pylint:disable=E0602
 async def _(event):
     if event.fwd_from:
         return
@@ -28,11 +28,11 @@ async def _(event):
         s_help_string = ""
     _, check_sgnirts = check_data_base_heal_th()
 
-    current_run_time = slitu.time_formatter((time.time() - BOT_START_TIME))
+    current_run_time = utils.time_formatter((time.time() - BOT_START_TIME))
     total, used, free = shutil.disk_usage("/")
-    total = slitu.humanbytes(total)
-    used = slitu.humanbytes(used)
-    free = slitu.humanbytes(free)
+    total = utils.humanbytes(total)
+    used = utils.humanbytes(used)
+    free = utils.humanbytes(free)
 
     help_string = "@UniBorg\n"
     help_string += f"✅ **UpTime** `{current_run_time}`\n"
@@ -69,7 +69,7 @@ async def _(event):
     await event.delete()
 
 
-@borg.on(slitu.admin_cmd(pattern="dc"))  # pylint:disable=E0602
+@borg.on(utils.admin_cmd(pattern="dc"))  # pylint:disable=E0602
 async def _(event):
     if event.fwd_from:
         return
@@ -77,7 +77,7 @@ async def _(event):
     await event.edit(result.stringify())
 
 
-@borg.on(slitu.admin_cmd(pattern="config"))  # pylint:disable=E0602
+@borg.on(utils.admin_cmd(pattern="config"))  # pylint:disable=E0602
 async def _(event):
     if event.fwd_from:
         return
@@ -87,7 +87,7 @@ async def _(event):
     await event.edit("""Telethon UserBot powered by @UniBorg""")
 
 
-@borg.on(slitu.admin_cmd(pattern="syntax (.*)"))
+@borg.on(utils.admin_cmd(pattern="syntax (.*)"))
 async def _(event):
     if event.fwd_from:
         return

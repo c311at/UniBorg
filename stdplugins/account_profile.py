@@ -34,7 +34,7 @@ async def _(event):
         await event.edit(str(e))
 
 
-@borg.on(slitu.admin_cmd(pattern="pname ((.|\n)*)"))  # pylint:disable=E0602,W0703
+@borg.on(utils.admin_cmd(pattern="pname ((.|\n)*)"))  # pylint:disable=E0602,W0703
 async def _(event):
     if event.fwd_from:
         return
@@ -53,7 +53,7 @@ async def _(event):
         await event.edit(str(e))
 
 
-@borg.on(slitu.admin_cmd(pattern="ppic"))  # pylint:disable=E0602
+@borg.on(utils.admin_cmd(pattern="ppic"))  # pylint:disable=E0602
 async def _(event):
     if event.fwd_from:
         return

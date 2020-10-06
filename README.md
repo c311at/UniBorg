@@ -102,7 +102,7 @@ a new file under the plugin directory to do the job:
 
 ```python
 # stdplugins/myplugin.py
-@borg.on(slitu.admin_cmd(pattern="hi"))
+@borg.on(utils.admin_cmd(pattern="hi"))
 async def handler(event):
     await event.reply("hey")
 ```

@@ -35,13 +35,14 @@ from hachoir.parser import createParser
 # from PIL import Image
 from telethon.tl.types import DocumentAttributeAudio
 
-@borg.on(slitu.admin_cmd(pattern="deezload (.+?|) --(FLAC|MP3\_320|MP3\_256|MP3\_128)"))
+
+@borg.on(utils.admin_cmd(pattern="deezload (.+?|) --(FLAC|MP3\_320|MP3\_256|MP3\_128)"))
 async def _(event):
     """DeezLoader by @An0nimia
     Ported for UniBorg by @SpEcHlDe"""
     if event.fwd_from:
         return
-    
+
     strings = {
         "name": "DeezLoad",
         "arl_token_cfg_doc": "ARL Token for Deezer",
@@ -52,7 +53,7 @@ async def _(event):
     }
 
     ARL_TOKEN = Config.DEEZER_ARL_TOKEN
-    
+
     if ARL_TOKEN is None:
         await event.edit(strings["invalid_arl_token"])
         return
@@ -63,7 +64,8 @@ async def _(event):
         await event.edit(str(er))
         return
 
-    temp_dl_path = os.path.join(Config.TMP_DOWNLOAD_DIRECTORY, str(time.time()))
+    temp_dl_path = os.path.join(
+        Config.TMP_DOWNLOAD_DIRECTORY, str(time.time()))
     if not os.path.exists(temp_dl_path):
         os.makedirs(temp_dl_path)
 

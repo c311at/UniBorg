@@ -12,7 +12,7 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
                     level=logging.WARNING)
 
 
-@borg.on(slitu.admin_cmd(pattern="whois ?(.*)"))
+@borg.on(utils.admin_cmd(pattern="whois ?(.*)"))
 async def _(event):
     if event.fwd_from:
         return

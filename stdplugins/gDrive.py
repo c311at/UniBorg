@@ -41,7 +41,7 @@ G_DRIVE_F_PARENT_ID = Config.G_DRIVE_F_PARENT_ID
 G_DRIVE_DIR_MIME_TYPE = "application/vnd.google-apps.folder"
 
 
-@borg.on(slitu.admin_cmd(pattern="ugdrive ?(.*)", allow_sudo=True))
+@borg.on(utils.admin_cmd(pattern="ugdrive ?(.*)", allow_sudo=True))
 async def _(event):
     if event.fwd_from:
         return
@@ -65,7 +65,7 @@ async def _(event):
                 reply_message,
                 Config.TMP_DOWNLOAD_DIRECTORY,
                 progress_callback=lambda d, t: asyncio.get_event_loop().create_task(
-                    slitu.progress(d, t, mone, c_time, "trying to download")
+                    utils.progress(d, t, mone, c_time, "trying to download")
                 )
             )
         except Exception as e:  # pylint:disable=C0103,W0703
@@ -111,7 +111,7 @@ async def _(event):
         await mone.edit("File Not found in local server. Give me a file path :((")
 
 
-@borg.on(slitu.admin_cmd(pattern="gdrivesp https?://drive\.google\.com/drive/u/\d/folders/([-\w]{25,})", allow_sudo=True))
+@borg.on(utils.admin_cmd(pattern="gdrivesp https?://drive\.google\.com/drive/u/\d/folders/([-\w]{25,})", allow_sudo=True))
 async def _(event):
     if event.fwd_from:
         return
@@ -125,7 +125,7 @@ async def _(event):
         await mone.edit("Send `.gdrivesp https://drive.google.com/drive/u/X/folders/Y` to set the folder to upload new files to")
 
 
-@borg.on(slitu.admin_cmd(pattern="gdriveclear", allow_sudo=True))
+@borg.on(utils.admin_cmd(pattern="gdriveclear", allow_sudo=True))
 async def _(event):
     if event.fwd_from:
         return
@@ -135,7 +135,7 @@ async def _(event):
     await event.delete()
 
 
-@borg.on(slitu.admin_cmd(pattern="gdrivedir ?(.*)", allow_sudo=True))
+@borg.on(utils.admin_cmd(pattern="gdrivedir ?(.*)", allow_sudo=True))
 async def _(event):
     if event.fwd_from:
         return
@@ -168,7 +168,7 @@ async def _(event):
         await mone.edit(f"directory {input_str} does not seem to exist")
 
 
-@borg.on(slitu.admin_cmd(pattern="drive (delete|get) ?(.*)", allow_sudo=True))
+@borg.on(utils.admin_cmd(pattern="drive (delete|get) ?(.*)", allow_sudo=True))
 async def _(event):
     if event.fwd_from:
         return
@@ -200,7 +200,7 @@ async def _(event):
     await mone.edit(response_from_svc)
 
 
-@borg.on(slitu.admin_cmd(pattern="drive search ?(.*)", allow_sudo=True))
+@borg.on(utils.admin_cmd(pattern="drive search ?(.*)", allow_sudo=True))
 async def _(event):
     if event.fwd_from:
         return

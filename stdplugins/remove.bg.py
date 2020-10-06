@@ -23,7 +23,7 @@ from sample_config import Config
 import requests
 
 
-@borg.on(slitu.admin_cmd(pattern="remove\.bg ?(.*)"))
+@borg.on(utils.admin_cmd(pattern="remove\.bg ?(.*)"))
 async def _(event):
     if event.fwd_from:
         return

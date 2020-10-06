@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 logger.info(Config.OPEN_LOAD_LOGIN)
 
 
-@borg.on(slitu.admin_cmd(pattern="rl"))
+@borg.on(utils.admin_cmd(pattern="rl"))
 async def _(event):
     if event.fwd_from:
         return

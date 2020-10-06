@@ -2,7 +2,7 @@
 from datetime import datetime
 
 
-@borg.on(slitu.admin_cmd(pattern="ping", allow_sudo=True))
+@borg.on(utils.admin_cmd(pattern="ping", allow_sudo=True))
 async def _(event):
     if event.fwd_from:
         return

@@ -15,7 +15,7 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
 logger = logging.getLogger(__name__)
 
 
-@borg.on(slitu.admin_cmd(pattern=r'\#(\S+)', outgoing=True))
+@borg.on(utils.admin_cmd(pattern=r'\#(\S+)', outgoing=True))
 async def on_snip(event):
     name = event.pattern_match.group(1)
     snip = await check_one(name)
@@ -54,7 +54,7 @@ async def on_snip(event):
                 )
 
 
-@borg.on(slitu.admin_cmd(pattern="snips (.*)"))
+@borg.on(utils.admin_cmd(pattern="snips (.*)"))
 async def on_snip_save(event):
     name = event.pattern_match.group(1)
     msg = await event.get_reply_message()
@@ -74,7 +74,7 @@ async def on_snip_save(event):
         await event.edit("Reply to a message with `snips keyword` to save the snip")
 
 
-@borg.on(slitu.admin_cmd(pattern="snipl"))
+@borg.on(utils.admin_cmd(pattern="snipl"))
 async def on_snip_list(event):
     all_snips = await check()
     OUT_STR = "Available Snips:\n"
@@ -99,7 +99,7 @@ async def on_snip_list(event):
         await event.edit(OUT_STR)
 
 
-@borg.on(slitu.admin_cmd(pattern="snipd (\S+)"))
+@borg.on(utils.admin_cmd(pattern="snipd (\S+)"))
 async def on_snip_delete(event):
     name = event.pattern_match.group(1)
     await delete_one(name)

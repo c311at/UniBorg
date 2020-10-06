@@ -5,7 +5,7 @@ Available Commands:
 from googletrans import Translator
 
 
-@borg.on(slitu.admin_cmd(pattern="tr ?(.*)"))
+@borg.on(utils.admin_cmd(pattern="tr ?(.*)"))
 async def _(event):
     if event.fwd_from:
         return

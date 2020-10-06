@@ -18,7 +18,7 @@ def progress(current, total):
         current, total, (current / total) * 100))
 
 
-@borg.on(slitu.admin_cmd(pattern="paste ?(.*)"))
+@borg.on(utils.admin_cmd(pattern="paste ?(.*)"))
 async def _(event):
     if event.fwd_from:
         return
@@ -34,7 +34,7 @@ async def _(event):
         if previous_message.media:
             downloaded_file_name = await previous_message.download_media(
                 Config.TMP_DOWNLOAD_DIRECTORY,
-                progress_callback=slitu.progress
+                progress_callback=utils.progress
             )
             m_list = None
             with open(downloaded_file_name, "rb") as fd:

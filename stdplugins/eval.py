@@ -14,7 +14,7 @@ from sample_config import Config
 from telethon import errors, events, functions, types
 
 
-@borg.on(slitu.admin_cmd(pattern="eval"))
+@borg.on(utils.admin_cmd(pattern="eval"))
 async def _(event):
     if event.fwd_from or event.via_bot_id:
         return

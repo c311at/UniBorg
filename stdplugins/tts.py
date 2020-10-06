@@ -6,7 +6,7 @@ from gtts import gTTS
 from sample_config import Config
 
 
-@borg.on(slitu.admin_cmd(pattern="tts (.*)"))
+@borg.on(utils.admin_cmd(pattern="tts (.*)"))
 async def _(event):
     if event.fwd_from:
         return
@@ -44,7 +44,7 @@ async def _(event):
             "on",
             required_file_name + ".opus"
         ]
-        await slitu.run_command(command_to_execute)
+        await utils.run_command(command_to_execute)
         if not os.path.exists(required_file_name + ".opus"):
             await event.edit("failed to convert")
             # continue sending required_file_name

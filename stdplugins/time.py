@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 FONT_FILE_TO_USE = "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf"
 
 
-@borg.on(slitu.admin_cmd(pattern="getime ?(.*)"))  # pylint:disable=E0602
+@borg.on(utils.admin_cmd(pattern="getime ?(.*)"))  # pylint:disable=E0602
 async def _(event):
     if event.fwd_from:
         return
@@ -54,7 +54,7 @@ async def _(event):
     await event.delete()
 
 
-@borg.on(slitu.admin_cmd(pattern="time (.*)"))  # pylint:disable=E0602
+@borg.on(utils.admin_cmd(pattern="time (.*)"))  # pylint:disable=E0602
 async def _(event):
     if event.fwd_from:
         return

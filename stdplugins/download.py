@@ -19,7 +19,7 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
 logger = logging.getLogger(__name__)
 
 
-@borg.on(slitu.admin_cmd(pattern="download ?(.*)", allow_sudo=True))
+@borg.on(utils.admin_cmd(pattern="download ?(.*)", allow_sudo=True))
 async def _(event):
     if event.fwd_from:
         return
@@ -36,7 +36,7 @@ async def _(event):
                 reply_message,
                 Config.TMP_DOWNLOAD_DIRECTORY,
                 progress_callback=lambda d, t: asyncio.get_event_loop().create_task(
-                    slitu.progress(d, t, mone, c_time, "trying to download")
+                    utils.progress(d, t, mone, c_time, "trying to download")
                 )
             )
         except Exception as e:  # pylint:disable=C0103,W0703

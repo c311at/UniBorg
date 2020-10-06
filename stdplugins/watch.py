@@ -69,7 +69,7 @@ def get_provider(url):
     return url
 
 
-@borg.on(slitu.admin_cmd(pattern="watch (.*)"))
+@borg.on(utils.admin_cmd(pattern="watch (.*)"))
 async def _(event):
     if event.fwd_from:
         return

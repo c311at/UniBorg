@@ -7,7 +7,7 @@ Syntax: .yaml"""
 import io
 
 
-@borg.on(slitu.admin_cmd(pattern="yaml"))
+@borg.on(utils.admin_cmd(pattern="yaml"))
 async def _(event):
     if event.fwd_from:
         return
@@ -16,7 +16,7 @@ async def _(event):
     reply_to_id = None
     if event.reply_to_msg_id:
         event = await event.get_reply_message()
-    the_real_message = slitu.yaml_format(event)
+    the_real_message = utils.yaml_format(event)
     if len(the_real_message) > Config.MAX_MESSAGE_SIZE_LIMIT:
         with io.BytesIO(str.encode(the_real_message)) as out_file:
             out_file.name = "yaml.html"
@@ -27,5 +27,5 @@ async def _(event):
     else:
         await event.reply(
             the_real_message,
-            parse_mode=slitu.parse_pre
+            parse_mode=utils.parse_pre
         )

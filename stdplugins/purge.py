@@ -11,7 +11,7 @@ level = logging.INFO
 print(level)
 
 
-@borg.on(slitu.admin_cmd(pattern="purge ?(.*)"))
+@borg.on(utils.admin_cmd(pattern="purge ?(.*)"))
 async def _(event):
     if event.fwd_from:
         return
