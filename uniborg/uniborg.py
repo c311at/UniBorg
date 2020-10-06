@@ -86,7 +86,7 @@ class Uniborg(TelegramClient):
         await self.start(**kwargs)
 
         self.me = await self.get_me()
-        self.uid = telethon. get_peer_id(self.me)
+        self.uid = telethon.util.get_peer_id(self.me)
 
         self._logger.info(
             f"Logged in as {self.uid} "
