@@ -4,13 +4,14 @@ Available Commands:
 .clearthumbnail
 .getthumbnail"""
 
-import os
 import asyncio
+import os
 import time
+
 from hachoir.metadata import extractMetadata
 from hachoir.parser import createParser
 from PIL import Image
-
+from sample_config import Config
 
 thumb_image_path = Config.TMP_DOWNLOAD_DIRECTORY + "/thumb_image.jpg"
 
@@ -46,7 +47,7 @@ async def _(event):
         # https://pillow.readthedocs.io/en/3.1.x/reference/Image.html#create-thumbnails
         os.remove(downloaded_file_name)
         await event.edit(
-            "Custom video / file thumbnail saved. " + \
+            "Custom video / file thumbnail saved. " +
             "This image will be used in the upload, till `.clearthumbnail`."
         )
     else:

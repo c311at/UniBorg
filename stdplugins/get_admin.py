@@ -1,8 +1,13 @@
 """Get Administrators of any Chat*
 Syntax: .get_admin"""
+import logging
 from telethon.tl.types import (
     ChannelParticipantsAdmins, ChannelParticipantAdmin, ChannelParticipantCreator
 )
+
+logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
+                    level=logging.WARNING)
+logger = logging.getLogger(__name__)
 
 
 @borg.on(slitu.admin_cmd(pattern="get_ad(m)?in ?(.*)"))
@@ -24,7 +29,7 @@ async def _(event):
         mentions_heading = "Admins in {} channel: \n".format(input_str)
         mentions = mentions_heading
         try:
-            chat = await borg.get_entity(input_str)
+            chat = await event.client.get_entity(input_str)
         except Exception as e:
             await event.edit(str(e))
             return None
@@ -35,14 +40,16 @@ async def _(event):
             if not x.deleted and isinstance(
                 x.participant, ChannelParticipantCreator
             ):
-                mentions += "\n 👑 [{}](tg://user?id={}) `{}`".format(x.first_name, x.id, x.id)
+                mentions += "\n 👑 [{}](tg://user?id={}) `{}`".format(
+                    x.first_name, x.id, x.id)
         mentions += "\n"
         async for x in event.client.iter_participants(chat, filter=ChannelParticipantsAdmins):
             if x.deleted:
                 mentions += "\n `{}`".format(x.id)
             else:
                 if isinstance(x.participant, ChannelParticipantAdmin):
-                    mentions += "\n ⚜️ [{}](tg://user?id={}) `{}`".format(x.first_name, x.id, x.id)
+                    mentions += "\n ⚜️ [{}](tg://user?id={}) `{}`".format(
+                        x.first_name, x.id, x.id)
     except Exception as e:
         mentions += " " + str(e) + "\n"
     if should_mention_admins:

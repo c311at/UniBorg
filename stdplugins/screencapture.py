@@ -1,10 +1,16 @@
 """Take screenshot of any website
 Syntax: .screencapture <Website URL>"""
-
 import io
+import logging
 import traceback
 from datetime import datetime
+
+from sample_config import Config
 from selenium import webdriver
+
+logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
+                    level=logging.WARNING)
+logger = logging.getLogger(__name__)
 
 
 @borg.on(slitu.admin_cmd(pattern="screencapture (.*)"))
@@ -30,11 +36,13 @@ async def _(event):
         input_str = event.pattern_match.group(1)
         driver.get(input_str)
         await event.edit("Calculating Page Dimensions")
-        height = driver.execute_script("return Math.max(document.body.scrollHeight, document.body.offsetHeight, document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight);")
-        width = driver.execute_script("return Math.max(document.body.scrollWidth, document.body.offsetWidth, document.documentElement.clientWidth, document.documentElement.scrollWidth, document.documentElement.offsetWidth);")
+        height = driver.execute_script(
+            "return Math.max(document.body.scrollHeight, document.body.offsetHeight, document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight);")
+        width = driver.execute_script(
+            "return Math.max(document.body.scrollWidth, document.body.offsetWidth, document.documentElement.clientWidth, document.documentElement.scrollWidth, document.documentElement.offsetWidth);")
         await event.edit("Painting web-page")
         driver.set_window_size(width + 100, height + 100)
-        # Add some pixels on top of the calculated dimensions 
+        # Add some pixels on top of the calculated dimensions
         # for good measure to make the scroll bars disappear
         im_png = driver.get_screenshot_as_png()
         # saves screenshot of entire page

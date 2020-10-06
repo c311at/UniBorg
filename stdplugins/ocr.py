@@ -3,8 +3,9 @@ Syntax: .ocr <LangCode>
 Available Languages: .ocrlanguages"""
 import json
 import os
-from PIL import Image
+
 import requests
+from sample_config import Config
 
 
 def ocr_space_file(filename, overlay=False, api_key=Config.OCR_SPACE_API_KEY, language='eng'):
@@ -105,18 +106,20 @@ async def parse_ocr_space_api(event):
     if not os.path.isdir(Config.TMP_DOWNLOAD_DIRECTORY):
         os.makedirs(Config.TMP_DOWNLOAD_DIRECTORY)
     lang_code = event.pattern_match.group(1)
-    downloaded_file_name = await borg.download_media(
+    downloaded_file_name = await event.client.download_media(
         await event.get_reply_message(),
         Config.TMP_DOWNLOAD_DIRECTORY,
         progress_callback=slitu.progress
     )
     if downloaded_file_name.endswith((".webp")):
         downloaded_file_name = conv_image(downloaded_file_name)
-    test_file = ocr_space_file(filename=downloaded_file_name, language=lang_code)
+    test_file = ocr_space_file(
+        filename=downloaded_file_name, language=lang_code)
     ParsedText = "hmm"
     try:
         ParsedText = test_file["ParsedResults"][0]["ParsedText"]
-        ProcessingTimeInMilliseconds = str(int(test_file["ProcessingTimeInMilliseconds"]) // 1000)
+        ProcessingTimeInMilliseconds = str(
+            int(test_file["ProcessingTimeInMilliseconds"]) // 1000)
     except Exception as e:
         await event.edit("Errors.\n `{}`\nReport This to @UniBorg\n\n`{}`".format(str(e), json.dumps(test_file, sort_keys=True, indent=4)))
     else:

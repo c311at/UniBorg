@@ -15,10 +15,11 @@
 """Remove.BG Plugin for @UniBorg
 Syntax: .remove.bg https://link.to/image.extension
 Syntax: .remove.bg as reply to a media"""
-import asyncio
-from datetime import datetime
 import io
+import logging
 import os
+from datetime import datetime
+from sample_config import Config
 import requests
 
 
@@ -59,7 +60,7 @@ async def _(event):
     contentType = output_file_name.headers.get("content-type")
     if "image" in contentType:
         with io.BytesIO(output_file_name.content) as remove_bg_image:
-            remove_bg_image.name = "@UniBorg_ReMove.png"
+            remove_bg_image.name = "@By_Azade_ReMove.png"
             await borg.send_file(
                 event.chat_id,
                 remove_bg_image,
@@ -70,7 +71,7 @@ async def _(event):
             )
         end = datetime.now()
         ms = (end - start).seconds
-        await event.edit("Background Removed in {} seconds using ReMove.BG API, powered by @UniBorg".format(ms))
+        await event.edit("Background Removed in {} seconds using ReMove.BG API, powered by @By_Azade".format(ms))
     else:
         await event.edit("ReMove.BG API returned Errors. Please report to @UniBorg\n`{}".format(output_file_name.content.decode("UTF-8")))
 
@@ -98,7 +99,7 @@ def ReTrieveURL(input_url):
         "X-API-Key": Config.REM_BG_API_KEY,
     }
     data = {
-      "image_url": input_url
+        "image_url": input_url
     }
     return requests.post(
         "https://api.remove.bg/v1.0/removebg",

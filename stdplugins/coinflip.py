@@ -1,6 +1,12 @@
 """CoinFlip for @UniBorg
 Syntax: .coinflip [optional_choice]"""
-import random, re
+import logging
+import random
+import re
+
+logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
+                    level=logging.WARNING)
+logger = logging.getLogger(__name__)
 
 
 @borg.on(slitu.admin_cmd(pattern="coinflip ?(.*)"))

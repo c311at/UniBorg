@@ -1,7 +1,12 @@
 """Invite the user(s) to the current chat
 Syntax: .invite <User(s)>"""
+import logging
 
 from telethon import functions
+
+logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
+                    level=logging.WARNING)
+logger = logging.getLogger(__name__)
 
 
 @borg.on(slitu.admin_cmd(pattern="invite ?(.*)"))

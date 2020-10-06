@@ -3,12 +3,23 @@ Commands:
 .clearwelcome
 .savewelcome <Welcome Message>"""
 
-from telethon import events
 from sql_helpers.welcome_sql import get_current_welcome_settings, \
     add_welcome_setting, rm_welcome_setting, update_previous_welcome
+from sql_helpers.welcome_sql import (add_welcome_setting,
+                                     get_current_welcome_settings,
+                                     rm_welcome_setting,
+                                     update_previous_welcome)
+from sample_config import Config
+from telethon import events
+import logging
 
 
-@borg.on(events.ChatAction())  # pylint:disable=E0602
+logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
+                    level=logging.WARNING)
+logger = logging.getLogger(__name__)
+
+
+@borg.on(events.ChatAction())
 async def _(event):
     cws = get_current_welcome_settings(event.chat_id)
     if cws:
@@ -25,7 +36,7 @@ async def _(event):
                         cws.previous_welcome
                     )
                 except Exception as e:  # pylint:disable=C0103,W0703
-                    logger.warn(str(e))  # pylint:disable=E0602
+                    logger.warning(str(e))
             a_user = await event.get_user()
             msg_o = await event.client.get_messages(
                 entity=Config.PRIVATE_CHANNEL_BOT_API_ID,
@@ -64,7 +75,7 @@ async def _(event):
     cws = get_current_welcome_settings(event.chat_id)
     rm_welcome_setting(event.chat_id)
     await event.edit(
-        "Welcome note cleared. " + \
+        "Welcome note cleared. " +
         "[This](https://t.me/c/{}/{}) was your previous welcome message.".format(
             str(Config.PRIVATE_CHANNEL_BOT_API_ID)[4:],
             int(cws.f_mesg_id)

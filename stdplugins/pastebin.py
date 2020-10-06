@@ -1,13 +1,21 @@
 """IX.IO pastebin like site
 Syntax: .paste"""
 import asyncio
-from datetime import datetime
+import logging
 import os
+from datetime import datetime
+
 import requests
+from sample_config import Config
+
+logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
+                    level=logging.WARNING)
+logger = logging.getLogger(__name__)
 
 
 def progress(current, total):
-    logger.info("Downloaded {} of {}\nCompleted {}".format(current, total, (current / total) * 100))
+    logger.info("Downloaded {} of {}\nCompleted {}".format(
+        current, total, (current / total) * 100))
 
 
 @borg.on(slitu.admin_cmd(pattern="paste ?(.*)"))
@@ -33,6 +41,7 @@ async def _(event):
                 m_list = fd.readlines()
             message = ""
             for m in m_list:
+                # message += m.decode("UTF-8") + "\r\n"
                 message += m.decode("UTF-8")
             os.remove(downloaded_file_name)
         else:

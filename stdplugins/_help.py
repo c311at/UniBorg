@@ -8,11 +8,13 @@
 ◇ to know syntax
 ◆ `.syntax` <plugin name>
 """
-
+import logging
 import shutil
 import sys
 import time
-from telethon import events, functions, __version__
+
+from sample_config import Config
+from telethon import __version__, events, functions
 
 
 @borg.on(slitu.admin_cmd(pattern="helpme ?(.*)", allow_sudo=True))  # pylint:disable=E0602
@@ -33,14 +35,14 @@ async def _(event):
     free = slitu.humanbytes(free)
 
     help_string = "@UniBorg\n"
-    help_string += f"✅ <b>UpTime</b> <code>{current_run_time}</code>\n"
-    help_string += f"✅ <b>Python</b> <code>{sys.version}</code>\n"
-    help_string += f"✅ <b>Telethon</b> <code>{__version__}</code>\n"
-    help_string += f"{check_sgnirts} <b>Database</b>\n"
-    help_string += f"<b>Total Disk Space</b>: <code>{total}</code>\n"
-    help_string += f"<b>Used Disk Space</b>: <code>{used}</code>\n"
-    help_string += f"<b>Free Disk Space</b>: <code>{free}</code>\n\n"
-    help_string += f"UserBot Forked from https://github.com/udf/uniborg"
+    help_string += f"✅ **UpTime** `{current_run_time}`\n"
+    help_string += f"✅ **Python** `{sys.version}`\n"
+    help_string += f"✅ **Telethon** `{__version__}`\n"
+    help_string += f"{check_sgnirts} **Database**\n"
+    help_string += f"**Total Disk Space**: `{total}`\n"
+    help_string += f"**Used Disk Space**: `{used}`\n"
+    help_string += f"**Free Disk Space**: `{free}`\n\n"
+    help_string += f"UserBot Forked from https://github.com/muhammedfurkan/uniborg"
     borg._iiqsixfourstore[str(event.chat_id)] = {}
     borg._iiqsixfourstore[
         str(event.chat_id)
@@ -49,9 +51,9 @@ async def _(event):
     ] = help_string + "\n\n" + s_help_string
     tgbotusername = Config.TG_BOT_USER_NAME_BF_HER  # pylint:disable=E0602
     if tgbotusername is not None:
-        results = await borg.inline_query(  # pylint:disable=E0602
+        results = await borg.inline_query(
             tgbotusername,
-            f"@UniBorg {event.chat_id} {event.id}"
+            help_string + "\n\n" + s_help_string
         )
         await results[0].click(
             event.chat_id,
@@ -81,7 +83,7 @@ async def _(event):
         return
     result = await event.client(functions.help.GetConfigRequest())  # pylint:disable=E0602
     result = result.stringify()
-    logger.info(result)  # pylint:disable=E0602
+    logger.info(result)
     await event.edit("""Telethon UserBot powered by @UniBorg""")
 
 
@@ -102,28 +104,6 @@ async def _(event):
     await event.edit(plugin_syntax)
 
 
-""" h
-t
-t UniBorg Telegram UseRBot 
-p Copyright (C) 2020 @UniBorg
-s
-: This code is licensed under
-/
-/
-g the "you can't use this for anything - public or private,
-i unless you know the two prime factors to the number below" license
-t
-. 543935563961418342898620676239017231876605452284544942043082635399903451854594062955
-to
-g വിവരണം അടിച്ചുമാറ്റിക്കൊണ്ട് പോകുന്നവർ
-r ക്രെഡിറ്റ് വെച്ചാൽ സന്തോഷമേ ഉള്ളു..!
-and
-.
-xyz
-/
-uniborg
-/
-uniborg"""
 def check_data_base_heal_th():
     # https://stackoverflow.com/a/41961968
     is_database_working = False

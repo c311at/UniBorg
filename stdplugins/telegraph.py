@@ -2,10 +2,18 @@
 Available Commands:
 .telegraph media as reply to a media
 .telegraph text as reply to a large text"""
+import logging
 import os
-from PIL import Image
 from datetime import datetime
-from telegraph import Telegraph, upload_file, exceptions
+from sample_config import Config
+
+
+from telegraph import Telegraph, exceptions, upload_file
+
+logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
+                    level=logging.WARNING)
+logger = logging.getLogger(__name__)
+
 
 telegraph = Telegraph()
 r = telegraph.create_account(short_name=Config.TELEGRAPH_SHORT_NAME)
@@ -23,7 +31,8 @@ async def _(event):
         os.makedirs(Config.TMP_DOWNLOAD_DIRECTORY)
     await event.client.send_message(
         Config.PRIVATE_GROUP_BOT_API_ID,
-        "Created New Telegraph account {} for the current session. \n**Do not give this url to anyone, even if they say they are from Telegram!**".format(auth_url)
+        "Created New Telegraph account {} for the current session. \n**Do not give this url to anyone, even if they say they are from Telegram!**".format(
+            auth_url)
     )
     optional_title = event.pattern_match.group(2)
     if event.reply_to_msg_id:
@@ -53,7 +62,7 @@ async def _(event):
                 await event.edit("Uploaded to https://telegra.ph{} in {} seconds.".format(media_urls[0], (ms + ms_two)), link_preview=True)
         elif input_str == "text":
             user_object = await event.client.get_entity(r_message.from_id)
-            title_of_page = user_object.first_name # + " " + user_object.last_name
+            title_of_page = user_object.first_name  # + " " + user_object.last_name
             # apparently, all Users do not have last_name field
             if optional_title:
                 title_of_page = optional_title
@@ -65,7 +74,7 @@ async def _(event):
                     r_message,
                     Config.TMP_DOWNLOAD_DIRECTORY
                 )
-                m_list = ''
+                m_list = None
                 with open(downloaded_file_name, "rb") as fd:
                     m_list = fd.readlines()
                 for m in m_list:
@@ -78,7 +87,7 @@ async def _(event):
             )
             end = datetime.now()
             ms = (end - start).seconds
-            await event.edit("Pasted to https://telegra.ph/{} in {} seconds.".format(response["path"], ms), link_preview=True)
+            await event.edit("Pasted to https://telegra.ph/{} in {} seconds.".format(response["path"], ms))
     else:
         await event.edit("Reply to a message to get a permanent telegra.ph link. (Inspired by @ControllerBot)")
 

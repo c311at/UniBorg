@@ -1,3 +1,4 @@
+
 from datetime import datetime
 
 
@@ -5,9 +6,8 @@ from datetime import datetime
 async def _(event):
     if event.fwd_from:
         return
-    ed = await slitu.edit_or_reply(event, "...")
     start = datetime.now()
-    await ed.edit("Pong!")
+    await event.edit("Pong!")
     end = datetime.now()
     ms = (end - start).microseconds / 1000
-    await ed.edit("**Pong!**\n`{}` __ms__".format(ms))
+    await event.edit("Pong!\n`{}`".format(ms))

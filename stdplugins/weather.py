@@ -1,10 +1,13 @@
 """Get weather data using OpenWeatherMap
 Syntax: .weather <Location> """
-
-import aiohttp
 import io
+import logging
 import time
 from datetime import tzinfo, datetime
+
+logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
+                    level=logging.WARNING)
+logger = logging.getLogger(__name__)
 
 
 @borg.on(slitu.admin_cmd(pattern="weather (.*)"))
@@ -22,17 +25,15 @@ async def _(event):
         sun_rise_time = int(response_api["sys"]["sunrise"]) + country_time_zone
         sun_set_time = int(response_api["sys"]["sunset"]) + country_time_zone
         await event.edit(
-            (
-                "{}\n"
-                "**Temperature**: {}°С\n"
-                "    __minimium__: {}°С\n"
-                "    __maximum__ : {}°С\n"
-                "**Humidity**: {}%\n"
-                "**wind**: {}m/s\n"
-                "clouds: {}hpa\n"
-                "**Sunrise**: {} {}\n"
-                "**Sunset**: {} {}"
-            ).format(
+            """{}
+**Sıcaklık**: {}°С
+    __minimium__: {}°С
+    __maksimum__ : {}°С
+**Nem**: {}%
+**Rüzgar**: {}m/s
+**Bulut**: {}hpa
+**Gün Doğumu**: {} {}
+**Gün Batımı**: {} {}""".format(
                 input_str,
                 response_api["main"]["temp"],
                 response_api["main"]["temp_min"],
@@ -67,4 +68,3 @@ async def _(event):
                 file=out_file
             )
     await event.edit(input_str)
-

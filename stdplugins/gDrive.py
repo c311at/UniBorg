@@ -9,27 +9,25 @@ Syntax:
 
 import asyncio
 import json
+import logging
 import math
 import os
 import time
 from datetime import datetime
-from telethon import events
 #
 from mimetypes import guess_type
+
+import httplib2
 from apiclient.discovery import build
 from apiclient.http import MediaFileUpload
-from apiclient.errors import ResumableUploadError
 from oauth2client.client import OAuth2WebServerFlow
 from oauth2client.file import Storage
-from oauth2client import file, client, tools
-import httplib2
-
+from sample_config import Config
+from telethon import events
 
 # Path to token json file, it should be in same directory as script
 G_DRIVE_TOKEN_FILE = os.path.join(
-    Config.TMP_DOWNLOAD_DIRECTORY,
-    "auth_token.txt"
-)
+    Config.TMP_DOWNLOAD_DIRECTORY, "auth_token.txt")
 # Copy your credentials from the APIs Console
 CLIENT_ID = Config.G_DRIVE_CLIENT_ID
 CLIENT_SECRET = Config.G_DRIVE_CLIENT_SECRET
@@ -38,7 +36,7 @@ OAUTH_SCOPE = "https://www.googleapis.com/auth/drive.file"
 # Redirect URI for installed apps, can be left as is
 REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob"
 # global variable to set Folder ID to upload to
-G_DRIVE_F_PARENT_ID = None
+G_DRIVE_F_PARENT_ID = Config.G_DRIVE_F_PARENT_ID
 # global variable to indicate mimeType of directories in gDrive
 G_DRIVE_DIR_MIME_TYPE = "application/vnd.google-apps.folder"
 
@@ -294,7 +292,8 @@ async def upload_file(http, file_path, file_name, mime_type, event, parent_id):
         "withLink": True
     }
     # Insert a file
-    file = drive_service.files().insert(body=body, media_body=media_body, supportsTeamDrives=True)
+    file = drive_service.files().insert(
+        body=body, media_body=media_body, supportsTeamDrives=True)
     response = None
     display_message = ""
     while response is None:
@@ -313,7 +312,7 @@ async def upload_file(http, file_path, file_name, mime_type, event, parent_id):
                     await event.edit(current_message)
                     display_message = current_message
                 except Exception as e:
-                    logger.info(str(e))
+                    logging.info(str(e))
     file_id = response.get("id")
     try:
         # Insert new permissions
@@ -339,13 +338,15 @@ async def create_directory(http, directory_name, parent_id):
     }
     if parent_id is not None:
         file_metadata["parents"] = [{"id": parent_id}]
-    file = drive_service.files().insert(body=file_metadata, supportsTeamDrives=True).execute()
+    file = drive_service.files().insert(
+        body=file_metadata, supportsTeamDrives=True).execute()
     file_id = file.get("id")
     try:
         drive_service.permissions().insert(fileId=file_id, body=permissions).execute()
     except:
         pass
-    logger.info("Created Gdrive Folder:\nName: {}\nID: {} ".format(file.get("title"), file_id))
+    logging.info("Created Gdrive Folder:\nName: {}\nID: {} ".format(
+        file.get("title"), file_id))
     return file_id
 
 
@@ -391,8 +392,10 @@ async def gdrive_list_file_md(service, file_id):
             # is a file.
             file_meta_data["mimeType"] = file["mimeType"]
             file_meta_data["md5Checksum"] = file["md5Checksum"]
-            file_meta_data["fileSize"] = str(slitu.humanbytes(int(file["fileSize"])))
-            file_meta_data["quotaBytesUsed"] = str(slitu.humanbytes(int(file["quotaBytesUsed"])))
+            file_meta_data["fileSize"] = str(
+                utils.humanbytes(int(file["fileSize"])))
+            file_meta_data["quotaBytesUsed"] = str(
+                utils.humanbytes(int(file["quotaBytesUsed"])))
             file_meta_data["previewURL"] = file["downloadUrl"]
         return json.dumps(file_meta_data, sort_keys=True, indent=4)
     except Exception as e:
@@ -401,7 +404,8 @@ async def gdrive_list_file_md(service, file_id):
 
 async def gdrive_search(http, search_query):
     if G_DRIVE_F_PARENT_ID is not None:
-        query = "'{}' in parents and (title contains '{}')".format(G_DRIVE_F_PARENT_ID, search_query)
+        query = "'{}' in parents and (title contains '{}')".format(
+            G_DRIVE_F_PARENT_ID, search_query)
     else:
         query = "title contains '{}'".format(search_query)
     drive_service = build("drive", "v2", http=http, cache_discovery=False)
@@ -417,7 +421,7 @@ async def gdrive_search(http, search_query):
                 fields="nextPageToken, items(id, title, mimeType)",
                 pageToken=page_token
             ).execute()
-            for file in response.get("items",[]):
+            for file in response.get("items", []):
                 file_title = file.get("title")
                 file_id = file.get("id")
                 if file.get("mimeType") == G_DRIVE_DIR_MIME_TYPE:

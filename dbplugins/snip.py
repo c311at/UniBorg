@@ -1,36 +1,57 @@
-# This Source Code Form is subject to the terms of the Mozilla Public
-# License, v. 2.0. If a copy of the MPL was not distributed with this
-# file, You can obtain one at http://mozilla.org/MPL/2.0/.
 """Snips
 Available Commands:
 .snips
 .snipl
 .snipd"""
-from telethon import events
+
+import logging
+
+from database.snipsdb import add, check, check_one, delete_one
+from sample_config import Config
 from telethon.tl import types
-from sql_helpers.snips_sql import get_snips, add_snip, remove_snip, get_all_snips
+
+logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
+                    level=logging.WARNING)
+logger = logging.getLogger(__name__)
 
 
 @borg.on(slitu.admin_cmd(pattern=r'\#(\S+)', outgoing=True))
 async def on_snip(event):
     name = event.pattern_match.group(1)
-    snip = get_snips(name)
+    snip = await check_one(name)
+    reply_message = await event.get_reply_message()
     if snip:
+        await event.delete()
         msg_o = await event.client.get_messages(
             entity=Config.PRIVATE_CHANNEL_BOT_API_ID,
-            ids=int(snip.f_mesg_id)
+            ids=int(snip['Value'])
         )
-        message_id = event.message.id
-        if event.reply_to_msg_id:
-            message_id = event.reply_to_msg_id
-        media_message = msg_o.media
-        if isinstance(media_message, types.MessageMediaWebPage):
-            media_message = None
-        await event.reply(
-            msg_o,
-            reply_to=message_id
-        )
-        await event.delete()
+        if msg_o.media is not None:
+            if reply_message:
+                await event.client.send_file(
+                    event.chat_id,
+                    msg_o.media,
+                    supports_streaming=True,
+                    reply_to=reply_message.id
+                )
+            else:
+                await event.client.send_file(
+                    event.chat_id,
+                    msg_o.media,
+                    supports_streaming=True
+                )
+        else:
+            if reply_message:
+                await event.client.send_message(
+                    entity=event.chat_id,
+                    message=msg_o.message,
+                    reply_to=reply_message.id
+                )
+            else:
+                await event.client.send_message(
+                    entity=event.chat_id,
+                    message=msg_o.message
+                )
 
 
 @borg.on(slitu.admin_cmd(pattern="snips (.*)"))
@@ -44,19 +65,22 @@ async def on_snip_save(event):
             from_peer=event.chat_id,
             silent=True
         )
-        add_snip(name, msg_o.id)
-        await event.edit("snip {name} saved successfully. Get it with #{name}".format(name=name))
+        if not await check_one(name):
+            await add(name, msg_o.id)
+            await event.edit("snip {name} saved successfully. Get it with #{name}".format(name=name))
+        else:
+            await event.edit("snip {name} already have it. Get it with #{name}".format(name=name))
     else:
         await event.edit("Reply to a message with `snips keyword` to save the snip")
 
 
 @borg.on(slitu.admin_cmd(pattern="snipl"))
 async def on_snip_list(event):
-    all_snips = get_all_snips()
+    all_snips = await check()
     OUT_STR = "Available Snips:\n"
-    if len(all_snips) > 0:
+    if all_snips:
         for a_snip in all_snips:
-            OUT_STR += f"👉 #{a_snip.snip} \n"
+            OUT_STR += f"👉 #{a_snip['Key']} \n"
     else:
         OUT_STR = "No Snips. Start Saving using `.snips`"
     if len(OUT_STR) > Config.MAX_MESSAGE_SIZE_LIMIT:
@@ -78,5 +102,5 @@ async def on_snip_list(event):
 @borg.on(slitu.admin_cmd(pattern="snipd (\S+)"))
 async def on_snip_delete(event):
     name = event.pattern_match.group(1)
-    remove_snip(name)
+    await delete_one(name)
     await event.edit("snip #{} deleted successfully".format(name))

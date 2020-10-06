@@ -1,9 +1,15 @@
-from collections import defaultdict, deque
-import re
 
-import regex
+import logging
+import re
+from collections import defaultdict, deque
+
+from sample_config import Config
 from telethon import events, utils
-from telethon.tl import types, functions
+from telethon.tl import functions, types
+
+logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
+                    level=logging.WARNING)
+logger = logging.getLogger(__name__)
 
 HEADER = "「sed」\n"
 KNOWN_RE_BOTS = re.compile(
@@ -34,7 +40,7 @@ def doit(chat_id, match, original):
     flags = 0
     for f in fl:
         if f == 'i':
-            flags |= regex.IGNORECASE
+            flags |= re.IGNORECASE
         elif f == 'g':
             count = 0
         else:
@@ -45,7 +51,7 @@ def doit(chat_id, match, original):
             s = original.message
             if s.startswith(HEADER):
                 s = s[len(HEADER):]
-            s, i = regex.subn(fr, to, s, count=count, flags=flags)
+            s, i = re.subn(fr, to, s, count=count, flags=flags)
             if i > 0:
                 return original, s
         except Exception as e:
@@ -64,9 +70,9 @@ def doit(chat_id, match, original):
 
 async def group_has_sedbot(group):
     if isinstance(group, types.InputPeerChannel):
-        full = await borg(functions.channels.GetFullChannelRequest(group))
+        full = await event.client(functions.channels.GetFullChannelRequest(group))
     elif isinstance(group, types.InputPeerChat):
-        full = await borg(functions.messages.GetFullChatRequest(group.chat_id))
+        full = await event.client(functions.messages.GetFullChatRequest(group.chat_id))
     else:
         return False
 
@@ -77,12 +83,14 @@ async def group_has_sedbot(group):
 async def on_message(event):
     last_msgs[event.chat_id].appendleft(event.message)
 
+
 @borg.on(events.MessageEdited)
 async def on_edit(event):
     for m in last_msgs[event.chat_id]:
         if m.id == event.id:
             m.raw_text = event.raw_text
             break
+
 
 @borg.on(events.NewMessage(
     pattern=re.compile(r"^s/((?:\\/|[^/])+)/((?:\\/|[^/])*)(/.*)?"), outgoing=True))
@@ -100,7 +108,7 @@ async def on_regex(event):
 
     if m is not None:
         s = f"{HEADER}{s}"
-        out = await borg.send_message(
+        out = await event.client.send_message(
             await event.get_input_chat(), s, reply_to=m.id
         )
         last_msgs[chat_id].appendleft(out)

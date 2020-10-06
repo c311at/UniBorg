@@ -1,4 +1,4 @@
-# UniBorg Telegram UseRBot 
+# UniBorg Telegram UseRBot
 # Copyright (C) 2020 @UniBorg
 
 """Uploads Files to Telegram
@@ -6,15 +6,18 @@ Available Commands:
 .upload <Path To File>
 .uploadir <Path To Directory>
 .uploadasstream <Path To File>"""
-
 import asyncio
+import logging
 import os
 import time
 from datetime import datetime
+
+from telethon.tl.types import DocumentAttributeAudio, DocumentAttributeVideo
+
 from hachoir.metadata import extractMetadata
 from hachoir.parser import createParser
-from telethon.tl.types import DocumentAttributeVideo
-from telethon.tl.types import DocumentAttributeAudio
+from sample_config import Config
+from telethon.tl.types import DocumentAttributeAudio, DocumentAttributeVideo
 
 
 thumb_image_path = Config.TMP_DOWNLOAD_DIRECTORY + "/thumb_image.jpg"
@@ -43,8 +46,8 @@ async def _(event):
         logger.info(lst_of_files)
         u = 0
         await event.edit(
-            "Found {} files. ".format(len(lst_of_files)) + \
-            "Uploading will start soon. " + \
+            "Found {} files. ".format(len(lst_of_files)) +
+            "Uploading will start soon. " +
             "Please wait!"
         )
         thumb = None
@@ -143,21 +146,18 @@ async def _(event):
 async def _(event):
     if event.fwd_from:
         return
-    mone = await event.reply("Processing ...")
+    mone = await event.edit("Processing ...")
     input_str = event.pattern_match.group(1)
     thumb = None
     if os.path.exists(thumb_image_path):
         thumb = thumb_image_path
     if os.path.exists(input_str):
-        force_document = True
-        if input_str.upper().endswith(Config.TL_FF_NOAQ_TYPES):
-            force_document = False
         start = datetime.now()
         c_time = time.time()
         await borg.send_file(
             event.chat_id,
             input_str,
-            force_document=force_document,
+            force_document=True,
             supports_streaming=False,
             allow_cache=False,
             reply_to=event.message.id,
@@ -169,7 +169,9 @@ async def _(event):
         end = datetime.now()
         # os.remove(input_str)
         ms = (end - start).seconds
-        await mone.edit("Uploaded in {} seconds.".format(ms))
+        j = await mone.edit("Uploaded in {} seconds.".format(ms))
+        await asyncio.sleep(2)
+        await j.delete()
     else:
         await mone.edit("404: File Not Found")
 
@@ -178,15 +180,15 @@ async def _(event):
 async def _(event):
     if event.fwd_from:
         return
-    mone = await event.reply("Processing ...")
+    mone = await event.edit("Processing ...")
     input_str = event.pattern_match.group(1)
     thumb = None
     file_name = input_str
     if os.path.exists(file_name):
         if not file_name.endswith((".mkv", ".mp4", ".mp3", ".flac")):
             await mone.edit(
-                "Sorry. But I don't think {} is a streamable file.".format(file_name) + \
-                " Please try again.\n" + \
+                "Sorry. But I don't think {} is a streamable file.".format(file_name) +
+                " Please try again.\n" +
                 "**Supported Formats**: MKV, MP4, MP3, FLAC"
             )
             return False

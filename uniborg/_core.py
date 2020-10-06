@@ -3,11 +3,14 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import asyncio
-import traceback
+import logging
 import os
+import traceback
 from datetime import datetime
 
-
+logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
+                    level=logging.WARNING)
+logger = logging.getLogger(__name__)
 DELETE_TIMEOUT = 5
 
 
@@ -16,16 +19,16 @@ async def load_reload(event):
     await event.delete()
     shortname = event.pattern_match["shortname"]
     try:
-        if shortname in borg._plugins:  # pylint:disable=E0602
-            borg.remove_plugin(shortname)  # pylint:disable=E0602
-        borg.load_plugin(shortname)  # pylint:disable=E0602
+        if shortname in borg._plugins:
+            borg.remove_plugin(shortname)
+        borg.load_plugin(shortname)
         msg = await event.respond(f"Successfully (re)loaded plugin {shortname}")
         await asyncio.sleep(DELETE_TIMEOUT)
         await msg.delete()
     except Exception as e:  # pylint:disable=C0103,W0703
         trace_back = traceback.format_exc()
-        # pylint:disable=E0602
-        logger.warn(f"Failed to (re)load plugin {shortname}: {trace_back}")
+
+        logger.warning(f"Failed to (re)load plugin {shortname}: {trace_back}")
         await event.respond(f"Failed to (re)load plugin {shortname}: {e}")
 
 
@@ -35,8 +38,8 @@ async def remove(event):
     shortname = event.pattern_match["shortname"]
     if shortname == "_core":
         msg = await event.respond(f"Not removing {shortname}")
-    elif shortname in borg._plugins:  # pylint:disable=E0602
-        borg.remove_plugin(shortname)  # pylint:disable=E0602
+    elif shortname in borg._plugins:
+        borg.remove_plugin(shortname)
         msg = await event.respond(f"Removed plugin {shortname}")
     else:
         msg = await event.respond(f"Plugin {shortname} is not loaded")
@@ -52,7 +55,7 @@ async def send_plug_in(event):
     input_str = event.pattern_match["shortname"]
     the_plugin_file = "./stdplugins/{}.py".format(input_str)
     start = datetime.now()
-    await event.client.send_file(  # pylint:disable=E0602
+    await event.client.send_file(
         event.chat_id,
         the_plugin_file,
         force_document=True,
@@ -74,10 +77,10 @@ async def install_plug_in(event):
         try:
             downloaded_file_name = await event.client.download_media(
                 await event.get_reply_message(),
-                borg.n_plugin_path  # pylint:disable=E0602
+                borg.n_plugin_path
             )
             if "(" not in downloaded_file_name:
-                borg.load_plugin_from_file(downloaded_file_name)  # pylint:disable=E0602
+                borg.load_plugin_from_file(downloaded_file_name)
                 await event.edit("Installed Plugin `{}`".format(os.path.basename(downloaded_file_name)))
             else:
                 os.remove(downloaded_file_name)

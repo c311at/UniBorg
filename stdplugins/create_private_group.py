@@ -44,7 +44,7 @@ async def _(event):
                 peer=created_chat_id,
             ))
             await event.edit("Channel `{}` created successfully. Join {}".format(group_name, result.link))
-        except Exception as e:  # pylint:disable=C0103,W0703
+        except Exception as e:
             await event.edit(str(e))
     else:
         await event.edit("Read .helpme to know how to use me")

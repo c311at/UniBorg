@@ -4,9 +4,16 @@ Available Commands:
 .gban REASON
 .ungban REASON"""
 import asyncio
+import logging
+
+from sample_config import Config
+
+logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
+                    level=logging.WARNING)
+logger = logging.getLogger(__name__)
 
 
-@borg.on(slitu.admin_cmd(pattern="gban ?(.*)"))
+@borg.on(utils.admin_cmd(pattern="fban ?(.*)"))
 async def _(event):
     if Config.G_BAN_LOGGER_GROUP is None:
         await event.edit("ENV VAR is not set. This module will not work.")
@@ -19,12 +26,18 @@ async def _(event):
         r_from_id = r.forward.from_id or r.from_id if r.forward else r.from_id
         await event.client.send_message(
             Config.G_BAN_LOGGER_GROUP,
-            "!gban [user](tg://user?id={}) {}".format(r_from_id, reason)
+            "!fban {} {}".format(r_from_id, reason)
+        )
+    else:
+        user_id = event.pattern_match.group(1)
+        await event.client.send_message(
+            Config.G_BAN_LOGGER_GROUP,
+            "!fban {}".format(user_id)
         )
     await event.delete()
 
 
-@borg.on(slitu.admin_cmd(pattern="ungban ?(.*)"))
+@borg.on(utils.admin_cmd(pattern="unfban ?(.*)"))
 async def _(event):
     if Config.G_BAN_LOGGER_GROUP is None:
         await event.edit("ENV VAR is not set. This module will not work.")
@@ -37,6 +50,12 @@ async def _(event):
         r_from_id = r.from_id
         await event.client.send_message(
             Config.G_BAN_LOGGER_GROUP,
-            "!ungban [user](tg://user?id={}) {}".format(r_from_id, reason)
+            "!unfban {} {}".format(r_from_id, reason)
+        )
+    else:
+        user_id = event.pattern_match.group(1)
+        await event.client.send_message(
+            Config.G_BAN_LOGGER_GROUP,
+            "!unfban {}".format(user_id)
         )
     await event.delete()

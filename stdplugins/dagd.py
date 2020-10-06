@@ -4,10 +4,14 @@ Available Commands:
 .dns google.com
 .url <long url>
 .unshort <short url>"""
-from telethon import events
-import os
-import requests
 import json
+import logging
+
+import requests
+
+logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
+                    level=logging.WARNING)
+logger = logging.getLogger(__name__)
 
 
 @borg.on(slitu.admin_cmd(pattern="dns (.*)"))
@@ -23,7 +27,7 @@ async def _(event):
         await event.edit("i can't seem to find {} on the internet".format(input_str))
 
 
-@borg.on(slitu.admin_cmd(pattern="url (.*)"))
+@borg.on(utils.admin_cmd(pattern="shortlink (.*)"))
 async def _(event):
     if event.fwd_from:
         return

@@ -3,19 +3,19 @@ Available Commands:
 .unbanall
 .kick option
 Available Options: d, y, m, w, o, q, r """
-from datetime import datetime, timedelta
-from telethon.tl.types import (
-    UserStatusEmpty,
-    UserStatusLastMonth,
-    UserStatusLastWeek,
-    UserStatusOffline,
-    UserStatusOnline,
-    UserStatusRecently,
-    ChannelParticipantsKicked,
-    ChatBannedRights
-)
-from telethon.tl import functions, types
+import logging
 from asyncio import sleep
+from datetime import datetime, timedelta
+
+from telethon.tl import functions, types
+from telethon.tl.types import (ChannelParticipantsKicked, ChatBannedRights,
+                               UserStatusEmpty, UserStatusLastMonth,
+                               UserStatusLastWeek, UserStatusOffline,
+                               UserStatusOnline, UserStatusRecently)
+
+logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
+                    level=logging.WARNING)
+logger = logging.getLogger(__name__)
 
 
 @borg.on(slitu.admin_cmd(pattern="unbanall ?(.*)"))
@@ -47,7 +47,7 @@ async def _(event):
         await event.edit("{}: {} unbanned".format(event.chat_id, p))
 
 
-@borg.on(slitu.admin_cmd(pattern="ikuck ?(.*)"))
+@borg.on(utils.admin_cmd(pattern="ukick ?(.*)"))
 async def _(event):
     if event.fwd_from:
         return

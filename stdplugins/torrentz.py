@@ -1,7 +1,15 @@
+import logging
+from datetime import datetime
+
+import requests
+
 import cfscrape  # https://github.com/Anorov/cloudflare-scrape
 import requests
-from datetime import datetime
 from bs4 import BeautifulSoup
+
+logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
+                    level=logging.WARNING)
+logger = logging.getLogger(__name__)
 
 
 @borg.on(slitu.admin_cmd(  # pylint:disable=E0602
@@ -19,13 +27,14 @@ async def _(event):
         search_results = search_torrentz_eu(input_str)
     elif input_type == "idop.se":
         search_results = search_idop_se(input_str)
-    # logger.info(search_results)  # pylint:disable=E0602
+    # logger.info(search_results)
     output_str = ""
     i = 0
     for result in search_results:
         if i > 10:
             break
-        message_text = "👉 <a href=https://t.me/TorrentSearchRoBot?start=" + result["hash"] +  ">" + result["title"] + ": " + "</a>" + " \r\n"
+        message_text = "👉 <a href=https://t.me/TorrentSearchRoBot?start=" + \
+            result["hash"] + ">" + result["title"] + ": " + "</a>" + " \r\n"
         message_text += " FILE SIZE: " + result["size"] + "\r\n"
         # message_text += " Uploaded " + result["date"] + "\r\n"
         message_text += " SEEDS: " + \

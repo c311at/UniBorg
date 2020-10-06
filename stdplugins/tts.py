@@ -1,12 +1,9 @@
-""" Google Text to Speech
-Available Commands:
-.tts LanguageCode as reply to a message
-.tts LangaugeCode | text to speak"""
-
 import asyncio
 import os
 from datetime import datetime
+
 from gtts import gTTS
+from sample_config import Config
 
 
 @borg.on(slitu.admin_cmd(pattern="tts (.*)"))
@@ -56,7 +53,7 @@ async def _(event):
             required_file_name = required_file_name + ".opus"
         end = datetime.now()
         ms = (end - start).seconds
-        await borg.send_file(
+        await event.client.send_file(
             event.chat_id,
             required_file_name,
             # caption="Processed {} ({}) in {} seconds!".format(text[0:97], lan, ms),

@@ -1,14 +1,18 @@
 """Get Poll Info on non supported clients
 Syntax: .get_poll"""
+import logging
+
+
+logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
+                    level=logging.WARNING)
+logger = logging.getLogger(__name__)
 
 
 @borg.on(slitu.admin_cmd(pattern="get_poll"))
 async def _(event):
     reply_message = await event.get_reply_message()
     if reply_message.media is None or reply_message.media.poll is None:
-        await event.edit(
-            "Please reply to a media_type == @gPoll to view the questions and answers"
-        )
+        await event.edit("Please reply to a media_type == @gPoll to view the questions and answers")
     else:
         media = reply_message.media
         poll = media.poll

@@ -1,8 +1,13 @@
 """Reply to a user to .promote them in the current chat"""
-import asyncio
+import logging
 from datetime import datetime
+
 from telethon.tl.functions.channels import EditAdminRequest
 from telethon.tl.types import ChatAdminRights
+
+logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
+                    level=logging.WARNING)
+logger = logging.getLogger(__name__)
 
 
 @borg.on(slitu.admin_cmd(pattern="promote ?(.*)"))

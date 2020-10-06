@@ -4,12 +4,14 @@ Syntax: .eval PythonCode"""
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-from telethon import events, errors, functions, types
-import inspect
-import traceback
 import asyncio
-import sys
+import inspect
 import io
+import sys
+import traceback
+
+from sample_config import Config
+from telethon import errors, events, functions, types
 
 
 @borg.on(slitu.admin_cmd(pattern="eval"))
@@ -48,12 +50,13 @@ async def _(event):
     else:
         evaluation = "Success"
 
-    final_output = "**EVAL**: `{}` \n\n **OUTPUT**: \n`{}` \n".format(cmd, evaluation)
+    final_output = "**EVAL**: `{}` \n\n **OUTPUT**: \n`{}` \n".format(
+        cmd, evaluation)
 
     if len(final_output) > Config.MAX_MESSAGE_SIZE_LIMIT:
         with io.BytesIO(str.encode(final_output)) as out_file:
-            out_file.name = "eval.text"
-            await borg.send_file(
+            out_file.name = "eval.txt"
+            await event.client.send_file(
                 event.chat_id,
                 out_file,
                 force_document=True,
@@ -67,10 +70,8 @@ async def _(event):
 
 
 async def aexec(code, event):
-    p = lambda _x: print(slitu.yaml_format(_x))
-    reply = await event.get_reply_message()
     exec(
-        f'async def __aexec(message, reply, client, p): ' +
+        'async def __aexec(event): ' +
         ''.join(f'\n {l}' for l in code.split('\n'))
     )
-    return await locals()['__aexec'](event, reply, event.client, p)
+    return await locals()['__aexec'](event)

@@ -3,14 +3,14 @@ Available Commands:
 .google search <query>
 .google image <query>
 .google reverse search"""
-
 import asyncio
-import aiohttp
 import os
 import shutil
 import time
-from bs4 import BeautifulSoup
 from datetime import datetime
+
+import aiohttp
+from bs4 import BeautifulSoup
 from telethon.utils import guess_extension
 
 
@@ -21,7 +21,8 @@ async def _(event):
     start = datetime.now()
     await event.edit("Processing ...")
     # SHOW_DESCRIPTION = False
-    input_str = event.pattern_match.group(1) # + " -inurl:(htm|html|php|pls|txt) intitle:index.of \"last modified\" (mkv|mp4|avi|epub|pdf|mp3)"
+    # + " -inurl:(htm|html|php|pls|txt) intitle:index.of \"last modified\" (mkv|mp4|avi|epub|pdf|mp3)"
+    input_str = event.pattern_match.group(1)
     input_url = "https://bots.shrimadhavuk.me/search/?q={}".format(input_str)
     headers = {"USER-AGENT": "UniBorg"}
     async with aiohttp.ClientSession() as requests:

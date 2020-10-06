@@ -13,6 +13,10 @@ import sql_helpers.blacklist_sql as sql
 from telethon import events
 from telethon.tl import types, functions
 
+# import sql_helpers.blacklist_sql as sql
+#
+# from sample_config import Config
+
 
 @borg.on(slitu.admin_cmd(incoming=True))
 async def on_new_message(event):

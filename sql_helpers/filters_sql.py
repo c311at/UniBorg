@@ -1,5 +1,5 @@
-from sqlalchemy import Column, UnicodeText, LargeBinary, Numeric, String
-from sql_helpers import SESSION, BASE
+from sql_helpers import BASE, SESSION
+from sqlalchemy import Column, Numeric, UnicodeText
 
 
 class Filters(BASE):

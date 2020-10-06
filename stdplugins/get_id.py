@@ -1,6 +1,13 @@
 """Get ID of any Telegram media, or any user
 Syntax: .get_id"""
 
+import logging
+
+
+logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
+                    level=logging.WARNING)
+logger = logging.getLogger(__name__)
+
 
 @borg.on(slitu.admin_cmd(pattern="get_id"))
 async def _(event):

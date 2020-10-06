@@ -2,6 +2,8 @@
 Syntax: .sca <option>
 Options: typing, contact, game, location, voice, round, video, photo, document, cancel"""
 
+import asyncio
+
 
 @borg.on(slitu.admin_cmd(pattern="sca ?(.*)"))
 async def _(event):

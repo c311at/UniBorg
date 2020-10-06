@@ -2,6 +2,13 @@
 to know how many users have seen your message
 Syntax: .fwd as reply to any message"""
 
+import logging
+
+
+logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
+                    level=logging.WARNING)
+logger = logging.getLogger(__name__)
+
 
 @borg.on(slitu.admin_cmd(pattern="fwd"))
 async def _(event):
@@ -29,4 +36,5 @@ async def _(event):
             event.chat_id,
             fwd_message
         )
+        await fwd_message.delete()
         await event.delete()

@@ -5,6 +5,11 @@ Available Commands:
 .emoji :/
 .emoji -_-"""
 import asyncio
+import logging
+
+logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
+                    level=logging.WARNING)
+logger = logging.getLogger(__name__)
 
 
 @borg.on(slitu.admin_cmd(pattern="emoji (.*)"))

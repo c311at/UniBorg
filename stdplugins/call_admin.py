@@ -1,9 +1,15 @@
 """.admin Plugin for @UniBorg"""
 import asyncio
+import logging
+
 from telethon.tl.types import ChannelParticipantsAdmins
 
+logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
+                    level=logging.WARNING)
+logger = logging.getLogger(__name__)
 
-@borg.on(slitu.admin_cmd(pattern="admin"))
+
+@borg.on(utils.admin_cmd(pattern="spamadmin"))
 async def _(event):
     if event.fwd_from:
         return

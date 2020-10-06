@@ -1,26 +1,57 @@
 """FFMpeg for @UniBorg
 """
 import asyncio
-import io
+import logging
 import os
 import time
 from datetime import datetime
+
 from hachoir.metadata import extractMetadata
 from hachoir.parser import createParser
+
+logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
+                    level=logging.WARNING)
+logger = logging.getLogger(__name__)
 
 
 @borg.on(slitu.admin_cmd(pattern="ffmpegtrim"))
 async def ff_mpeg_trim_cmd(event):
     if event.fwd_from:
         return
-    
-    FF_MPEG_DOWN_LOAD_MEDIA_PATH = await bleck_megic(event)
-    logger.info(FF_MPEG_DOWN_LOAD_MEDIA_PATH)
+    if not os.path.exists(FF_MPEG_DOWN_LOAD_MEDIA_PATH):
+        if not os.path.isdir(Config.TMP_DOWNLOAD_DIRECTORY):
+            os.makedirs(Config.TMP_DOWNLOAD_DIRECTORY)
+        if event.reply_to_msg_id:
+            start = datetime.now()
+            reply_message = await event.get_reply_message()
+            try:
+                c_time = time.time()
+                downloaded_file_name = await event.client.download_media(
+                    reply_message,
+                    FF_MPEG_DOWN_LOAD_MEDIA_PATH,
+                    progress_callback=lambda d, t: asyncio.get_event_loop().create_task(
+                        progress(d, t, event, c_time, "trying to download")
+                    )
+                )
+            except Exception as e:  # pylint:disable=C0103,W0703
+                await event.edit(str(e))
+            else:
+                end = datetime.now()
+                ms = (end - start).seconds
+                await event.edit("Downloaded to `{}` in {} seconds.".format(downloaded_file_name, ms))
+        else:
+            await event.edit("Reply to a Telegram media file")
+    else:
+        await event.edit(f"a media file already exists in path. Please remove the media and try again!\n`.exec rm {FF_MPEG_DOWN_LOAD_MEDIA_PATH}`")
 
-    if FF_MPEG_DOWN_LOAD_MEDIA_PATH is None:
-        await event.edit("please set the required ENVironment VARiables")
+
+@borg.on(utils.admin_cmd(pattern="ffmpegtrim"))
+async def ff_mpeg_trim_cmd(event):
+    if event.fwd_from:
         return
-
+    if not os.path.exists(FF_MPEG_DOWN_LOAD_MEDIA_PATH):
+        await event.edit(f"a media file needs to be downloaded, and saved to the following path: `{FF_MPEG_DOWN_LOAD_MEDIA_PATH}`")
+        return
     current_message_text = event.raw_text
     cmt = current_message_text.split(" ")
     logger.info(cmt)
@@ -37,7 +68,7 @@ async def ff_mpeg_trim_cmd(event):
         logger.info(o)
         try:
             c_time = time.time()
-            await borg.send_file(
+            await event.cilent.send_file(
                 event.chat_id,
                 o,
                 caption=" ".join(cmt[1:]),
@@ -63,7 +94,7 @@ async def ff_mpeg_trim_cmd(event):
         logger.info(o)
         try:
             c_time = time.time()
-            await borg.send_file(
+            await event.client.send_file(
                 event.chat_id,
                 o,
                 caption=" ".join(cmt[1:]),
@@ -88,7 +119,7 @@ async def ff_mpeg_trim_cmd(event):
 
 async def bleck_megic(evt_message) -> str:
     if Config.LT_QOAN_NOE_FF_MPEG_URL is None or \
-        Config.LT_QOAN_NOE_FF_MPEG_CTD is None:
+            Config.LT_QOAN_NOE_FF_MPEG_CTD is None:
         return None
     r_m_y = await evt_message.get_reply_message()
     fwd_mesg = await r_m_y.forward_to(

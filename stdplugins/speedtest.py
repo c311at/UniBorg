@@ -1,9 +1,14 @@
 """Check your internet speed powered by speedtest.net
 Syntax: .speedtest
 Available Options: image, file, text"""
+import logging
 from datetime import datetime
-import io
+
 import speedtest
+
+logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
+                    level=logging.WARNING)
+logger = logging.getLogger(__name__)
 
 
 @borg.on(slitu.admin_cmd(pattern="speedtest ?(.*)"))
@@ -55,7 +60,7 @@ async def _(event):
                     i_s_p,
                     i_s_p_rating
                 )
-            ) 
+            )
         else:
             await borg.send_file(
                 event.chat_id,

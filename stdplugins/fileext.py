@@ -1,11 +1,16 @@
 """Get info about a File Extension
 Syntax: .filext EXTENSION"""
-from telethon import events
+import logging
+
 import requests
 from bs4 import BeautifulSoup
 
+logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
+                    level=logging.WARNING)
+logger = logging.getLogger(__name__)
 
-@borg.on(slitu.admin_cmd(pattern="filext (.*)"))
+
+@borg.on(utils.admin_cmd(pattern="filext (.*)"))
 async def _(event):
     if event.fwd_from:
         return

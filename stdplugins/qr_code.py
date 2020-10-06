@@ -3,14 +3,21 @@ Available Commands
 .getqr
 .makeqr <long text to include>"""
 import asyncio
-from datetime import datetime
+import logging
 import os
+
 import qrcode
 from bs4 import BeautifulSoup
+from sample_config import Config
+
+logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
+                    level=logging.WARNING)
+logger = logging.getLogger(__name__)
 
 
 def progress(current, total):
-    logger.info("Downloaded {} of {}\nCompleted {}".format(current, total, (current / total) * 100))
+    logger.info("Downloaded {} of {}\nCompleted {}".format(
+        current, total, (current / total) * 100))
 
 
 @borg.on(slitu.admin_cmd(pattern="getqr"))
@@ -20,7 +27,7 @@ async def _(event):
     start = datetime.now()
     if not os.path.isdir(Config.TMP_DOWNLOAD_DIRECTORY):
         os.makedirs(Config.TMP_DOWNLOAD_DIRECTORY)
-    downloaded_file_name = await borg.download_media(
+    downloaded_file_name = await event.client.download_media(
         await event.get_reply_message(),
         Config.TMP_DOWNLOAD_DIRECTORY,
         progress_callback=progress
@@ -62,7 +69,7 @@ async def _(event):
         previous_message = await event.get_reply_message()
         reply_msg_id = previous_message.id
         if previous_message.media:
-            downloaded_file_name = await borg.download_media(
+            downloaded_file_name = await event.client.download_media(
                 previous_message,
                 Config.TMP_DOWNLOAD_DIRECTORY,
                 progress_callback=progress
@@ -88,7 +95,7 @@ async def _(event):
     qr.make(fit=True)
     img = qr.make_image(fill_color="black", back_color="white")
     img.save("img_file.webp", "PNG")
-    await borg.send_file(
+    await event.client.send_file(
         event.chat_id,
         "img_file.webp",
         caption=message,

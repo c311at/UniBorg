@@ -6,8 +6,13 @@ Available Commands:
 # General Public License, v.3.0. If a copy of the GPL was not distributed with this
 # file, You can obtain one at https://www.gnu.org/licenses/gpl-3.0.en.html
 import asyncio
+import logging
 import os
 import sys
+
+logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
+                    level=logging.WARNING)
+logger = logging.getLogger(__name__)
 
 
 @borg.on(slitu.admin_cmd(pattern="restart"))
@@ -24,7 +29,7 @@ async def _(event):
     # https://archive.is/im3rt
     os.execl(sys.executable, sys.executable, *sys.argv)
     # You probably don't need it but whatever
-    quit()
+    sys.exit()
 
 
 @borg.on(slitu.admin_cmd(pattern="shutdown"))

@@ -1,7 +1,7 @@
 """@RollADie and @AnimatedDart
 Viewer and Executor discretion is advised,
 while executing / running any parts of the code
-Nobody is reponsible for your account,
+Nobody is reponsible for your account, 
 Your account might get banned for offensive use of this script,
 The below script is only intended for "fun" and "entertainment"
 and please read https://t.me/UniBorg/39 before proceeding to run this!"""

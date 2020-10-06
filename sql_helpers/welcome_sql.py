@@ -1,5 +1,5 @@
-from sqlalchemy import BigInteger, Boolean, Column, LargeBinary, Numeric, String, UnicodeText
-from sql_helpers import SESSION, BASE
+from sql_helpers import BASE, SESSION
+from sqlalchemy import BigInteger, Boolean, Column, Numeric
 
 
 class Welcome(BASE):

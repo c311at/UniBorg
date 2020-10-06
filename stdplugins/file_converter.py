@@ -1,9 +1,16 @@
 """File Converter
 .nfc """
 import asyncio
+import logging
 import os
 import time
 from datetime import datetime
+
+from sample_config import Config
+
+logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
+                    level=logging.WARNING)
+logger = logging.getLogger(__name__)
 
 
 @borg.on(slitu.admin_cmd(pattern="nfc (.*)"))  # pylint:disable=E0602
@@ -38,8 +45,10 @@ async def _(event):
         voice_note = False
         supports_streaming = False
         if input_str == "voice":
-            new_required_file_caption = "NLFC_" + str(round(time.time())) + ".opus"
-            new_required_file_name = Config.TMP_DOWNLOAD_DIRECTORY + "/" + new_required_file_caption
+            new_required_file_caption = "NLFC_" + \
+                str(round(time.time())) + ".opus"
+            new_required_file_name = Config.TMP_DOWNLOAD_DIRECTORY + \
+                "/" + new_required_file_caption
             command_to_run = [
                 "ffmpeg",
                 "-i",
@@ -57,8 +66,10 @@ async def _(event):
             voice_note = True
             supports_streaming = True
         elif input_str == "mp3":
-            new_required_file_caption = "NLFC_" + str(round(time.time())) + ".mp3"
-            new_required_file_name = Config.TMP_DOWNLOAD_DIRECTORY + "/" + new_required_file_caption
+            new_required_file_caption = "NLFC_" + \
+                str(round(time.time())) + ".mp3"
+            new_required_file_name = Config.TMP_DOWNLOAD_DIRECTORY + \
+                "/" + new_required_file_caption
             command_to_run = [
                 "ffmpeg",
                 "-i",
@@ -94,4 +105,3 @@ async def _(event):
             ms_two = (end_two - end).seconds
             os.remove(new_required_file_name)
             await event.edit(f"converted in {ms_two} seconds")
-

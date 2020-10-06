@@ -5,13 +5,12 @@ import re
 from functools import partial
 
 from telethon import events
-from telethon.tl.functions.messages import EditMessageRequest
 from telethon.extensions.markdown import DEFAULT_URL_RE
+from telethon.tl.functions.messages import EditMessageRequest
+from telethon.tl.types import (MessageEntityBold, MessageEntityCode,
+                               MessageEntityItalic, MessageEntityPre,
+                               MessageEntityTextUrl)
 from telethon.utils import add_surrogate, del_surrogate
-from telethon.tl.types import (
-    MessageEntityBold, MessageEntityItalic, MessageEntityCode,
-    MessageEntityPre, MessageEntityTextUrl
-)
 
 
 def parse_url_match(m):
@@ -32,6 +31,8 @@ def get_tag_parser(tag, entity):
 
 
 PRINTABLE_ASCII = range(0x21, 0x7f)
+
+
 def parse_aesthetics(m):
     def aesthetify(string):
         for c in string:
@@ -56,7 +57,7 @@ def parse_subreddit(m):
 
 def parse_strikethrough(m):
     text = m.group(2)
-    text =  "\u0336".join(text) + "\u0336 "
+    text = "\u0336".join(text) + "\u0336 "
     return text, None
 
 
@@ -74,58 +75,62 @@ MATCHERS = [
     (get_tag_parser('`', MessageEntityCode)),
     (re.compile(r'\+\+(.+?)\+\+'), parse_aesthetics),
     (re.compile(r'([^/\w]|^)(/?(r/\w+))'), parse_subreddit),
-    (re.compile(r"(?<!\w)(~{2})(?!~~)(.+?)(?<!~)\1(?!\w)"), parse_strikethrough)
+    (re.compile(r"(?<!\w)(~{2})(?!~~)(.+?)(?<!~)\1(?!\w)"),
+     parse_strikethrough)
 ]
 
 
 def parse(message, old_entities=None):
-    entities = []
-    old_entities = sorted(old_entities or [], key=lambda e: e.offset)
+    try:
+        entities = []
+        old_entities = sorted(old_entities or [], key=lambda e: e.offset)
 
-    i = 0
-    after = 0
-    message = add_surrogate(message)
-    while i < len(message):
-        for after, e in enumerate(old_entities[after:], start=after):
-            # If the next entity is strictly to our right, we're done here
-            if i < e.offset:
-                break
-            # Skip already existing entities if we're at one
-            if i == e.offset:
-                i += e.length
+        i = 0
+        after = 0
+        message = add_surrogate(message)
+        while i < len(message):
+            for after, e in enumerate(old_entities[after:], start=after):
+                # If the next entity is strictly to our right, we're done here
+                if i < e.offset:
+                    break
+                # Skip already existing entities if we're at one
+                if i == e.offset:
+                    i += e.length
 
-        # Find the first pattern that matches
-        for pattern, parser in MATCHERS:
-            match = pattern.match(message, pos=i)
-            if match:
-                break
-        else:
-            i += 1
-            continue
+            # Find the first pattern that matches
+            for pattern, parser in MATCHERS:
+                match = pattern.match(message, pos=i)
+                if match:
+                    break
+            else:
+                i += 1
+                continue
 
-        text, entity = parser(match)
+            text, entity = parser(match)
 
-        # Shift old entities after our current position (so they stay in place)
-        shift = len(text) - len(match[0])
-        if shift:
-            for e in old_entities[after:]:
-                e.offset += shift
+            # Shift old entities after our current position (so they stay in place)
+            shift = len(text) - len(match[0])
+            if shift:
+                for e in old_entities[after:]:
+                    e.offset += shift
 
-        # Replace whole match with text from parser
-        message = ''.join((
-            message[:match.start()],
-            text,
-            message[match.end():]
-        ))
+            # Replace whole match with text from parser
+            message = ''.join((
+                message[:match.start()],
+                text,
+                message[match.end():]
+            ))
 
-        # Append entity if we got one
-        if entity:
-            entities.append(entity)
+            # Append entity if we got one
+            if entity:
+                entities.append(entity)
 
-        # Skip past the match
-        i += len(text)
+            # Skip past the match
+            i += len(text)
 
-    return del_surrogate(message), entities + old_entities
+        return del_surrogate(message), entities + old_entities
+    except TypeError:
+        return
 
 
 @borg.on(events.MessageEdited(outgoing=True))
