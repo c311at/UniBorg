@@ -103,7 +103,7 @@ class Uniborg(TelegramClient):
 
         spec = importlib.util.spec_from_file_location(name, path)
         mod = importlib.util.module_from_spec(spec)
-
+        # TODO spec.loader.exec_module(mod)
         mod.borg = self
         mod.logger = logging.getLogger(shortname)
         # declare Config and tgbot to be accessible by all modules

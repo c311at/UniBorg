@@ -10,7 +10,7 @@ from requests import get
 from sample_config import Config
 from telethon import events
 from telethon.tl.functions.account import UpdateProfileRequest
-
+from uniborg.util import admin_cmd
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
