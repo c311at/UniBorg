@@ -8,6 +8,7 @@ import io
 import math
 import os
 import random
+from uniborg.util import admin_cmd
 import urllib.request
 
 from telethon import events
@@ -31,7 +32,7 @@ KANGING_STR = [
 
 
 # @register(outgoing=True, pattern="^.kang")
-@borg.on(utils.admin_cmd(pattern="kang ?(.*)"))
+@borg.on(admin_cmd(pattern="kang ?(.*)"))
 async def kang(args):
     """ For .kang command, kangs stickers or creates new ones. """
     if args.text[0].isalpha() or args.text[0] in ("/", "#", "@", "!"):
@@ -274,7 +275,7 @@ async def resize_photo(photo):
 
 
 # @register(outgoing=True, pattern="^.stkrinfo$")
-@borg.on(utils.admin_cmd(pattern="stkrinfo ?(.*)"))
+@borg.on(admin_cmd(pattern="stkrinfo ?(.*)"))
 async def get_pack_info(event):
     if event.text[0].isalpha() or event.text[0] in ("/", "#", "@", "!"):
         return

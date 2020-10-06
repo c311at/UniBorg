@@ -15,6 +15,7 @@ import ssl
 import time
 from datetime import datetime
 from mimetypes import guess_type
+from uniborg.util import admin_cmd, progress
 
 import httplib2
 from apiclient.discovery import build
@@ -51,7 +52,7 @@ else:
     ssl._create_default_https_context = _create_unverified_https_context
 
 
-@borg.on(utils.admin_cmd(pattern="glink ?(.*)", allow_sudo=True))
+@borg.on(admin_cmd(pattern="glink ?(.*)", allow_sudo=True))
 async def download(dryb):
     """ For .gdrive command, upload files to google drive. """
     if not dryb.text[0].isalpha() and dryb.text[0] not in ("/", "#", "@", "!"):
@@ -60,7 +61,7 @@ async def download(dryb):
         await dryb.edit("Processing ...")
         input_str = dryb.pattern_match.group(1)
         if CLIENT_ID is None or CLIENT_SECRET is None:
-            return false
+            return False
         if not os.path.isdir(Config.TMP_DOWNLOAD_DIRECTORY):
             os.makedirs(Config.TMP_DOWNLOAD_DIRECTORY)
             required_file_name = None
@@ -242,7 +243,7 @@ async def upload_file(http, file_path, file_name, mime_type, event):
     return response.get("webContentLink")
 
 
-@borg.on(utils.admin_cmd(pattern="gfolder ?(.*)", allow_sudo=True))
+@borg.on(admin_cmd(pattern="gfolder ?(.*)", allow_sudo=True))
 async def _(event):
     if event.fwd_from:
         return

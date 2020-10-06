@@ -8,6 +8,7 @@ import logging
 import os
 import time
 from datetime import datetime
+from uniborg.util import admin_cmd, progress
 
 import requests
 
@@ -22,7 +23,7 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
 logger = logging.getLogger(__name__)
 
 
-@borg.on(utils.admin_cmd(pattern="verystream ?(.*)", allow_sudo=True))
+@borg.on(admin_cmd(pattern="verystream ?(.*)", allow_sudo=True))
 async def _(event):
     if event.fwd_from:
         return

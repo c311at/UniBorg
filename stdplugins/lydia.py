@@ -27,7 +27,7 @@
 #     lydia_session = LydiaAI(coffeehouse_api)
 
 
-# @borg.on(utils.admin_cmd(pattern="cf", allow_sudo=True))
+# @borg.on( admin_cmd(pattern="cf", allow_sudo=True))
 # async def lydia_enable(event):
 #     if event.fwd_from:
 #         return
@@ -56,7 +56,7 @@
 #     await event.edit("Lydia AI Turned On for User: "+str(user_id))
 
 
-# @borg.on(utils.admin_cmd(pattern="delcf", allow_sudo=True))
+# @borg.on( admin_cmd(pattern="delcf", allow_sudo=True))
 # async def lydia_disable(event):
 #     if event.fwd_from:
 #         return
@@ -77,7 +77,7 @@
 #     await event.edit("Lydia AI Turned OFF for User: "+str(user_id))
 
 
-# @borg.on(utils.admin_cmd(pattern="listcf", allow_sudo=True))
+# @borg.on( admin_cmd(pattern="listcf", allow_sudo=True))
 # async def lydia_list(event):
 #     if event.fwd_from:
 #         return

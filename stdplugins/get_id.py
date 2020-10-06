@@ -2,6 +2,7 @@
 Syntax: .get_id"""
 
 import logging
+from uniborg.util import admin_cmd
 
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
@@ -9,7 +10,7 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
 logger = logging.getLogger(__name__)
 
 
-@borg.on(utils.admin_cmd(pattern="get_id"))
+@borg.on(admin_cmd(pattern="get_id"))
 async def _(event):
     if event.fwd_from:
         return

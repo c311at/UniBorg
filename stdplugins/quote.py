@@ -19,6 +19,7 @@ import json
 import logging
 import os
 from io import BytesIO
+from uniborg.util import admin_cmd
 
 import requests
 import telethon
@@ -56,7 +57,7 @@ if True:
               "default_username_color": "#b48bf2"}
     client = borg
 
-    @borg.on(utils.admin_cmd(pattern="quote(.*)"))
+    @borg.on(admin_cmd(pattern="quote(.*)"))
     async def quotecmd(message):  # noqa: C901
         """Quote a message.
         Usage: .quote [template]
@@ -101,21 +102,21 @@ if True:
         else:
             user = await reply.get_sender()
 
-        username = telethon.utils.get_display_name(user)
+        username = telethon. get_display_name(user)
         user_id = reply.from_id
 
         if reply.fwd_from:
             if reply.fwd_from.saved_from_peer:
-                username = telethon.utils.get_display_name(reply.forward.chat)
+                username = telethon. get_display_name(reply.forward.chat)
                 profile_photo_url = reply.forward.chat
                 admintitle = strings["channel"]
             elif reply.fwd_from.from_name:
                 username = reply.fwd_from.from_name
             elif reply.forward.sender:
-                username = telethon.utils.get_display_name(
+                username = telethon. get_display_name(
                     reply.forward.sender)
             elif reply.forward.chat:
-                username = telethon.utils.get_display_name(reply.forward.chat)
+                username = telethon. get_display_name(reply.forward.chat)
 
         pfp = await client.download_profile_photo(profile_photo_url, bytes)
         if pfp is not None:

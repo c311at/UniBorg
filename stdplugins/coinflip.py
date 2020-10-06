@@ -3,13 +3,14 @@ Syntax: .coinflip [optional_choice]"""
 import logging
 import random
 import re
+from uniborg.util import admin_cmd
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 logger = logging.getLogger(__name__)
 
 
-@borg.on(utils.admin_cmd(pattern="coinflip ?(.*)"))
+@borg.on(admin_cmd(pattern="coinflip ?(.*)"))
 async def _(event):
     if event.fwd_from:
         return

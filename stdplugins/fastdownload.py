@@ -4,6 +4,7 @@ command: .url
 """
 import asyncio
 import os
+from uniborg.util import admin_cmd
 
 import aria2p
 
@@ -23,7 +24,7 @@ aria2 = aria2p.API(
 EDIT_SLEEP_TIME_OUT = 10
 
 
-@borg.on(utils.admin_cmd(pattern="ariaurl ?(.*)"))
+@borg.on(admin_cmd(pattern="ariaurl ?(.*)"))
 async def magnet_download(event):
     if event.fwd_from:
         return

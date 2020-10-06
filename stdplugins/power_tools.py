@@ -9,13 +9,14 @@ import asyncio
 import logging
 import os
 import sys
+from uniborg.util import admin_cmd
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 logger = logging.getLogger(__name__)
 
 
-@borg.on(utils.admin_cmd(pattern="restart"))
+@borg.on(admin_cmd(pattern="restart"))
 async def _(event):
     if event.fwd_from:
         return
@@ -32,7 +33,7 @@ async def _(event):
     sys.exit()
 
 
-@borg.on(utils.admin_cmd(pattern="shutdown"))
+@borg.on(admin_cmd(pattern="shutdown"))
 async def _(event):
     if event.fwd_from:
         return

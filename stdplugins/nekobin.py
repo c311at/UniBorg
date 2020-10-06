@@ -3,6 +3,7 @@ Syntax: .paste"""
 import logging
 import os
 from datetime import datetime
+from uniborg.util import admin_cmd
 
 import requests
 
@@ -19,7 +20,7 @@ def progress(current, total):
         current, total, (current / total) * 100))
 
 
-@borg.on(utils.admin_cmd(pattern="npaste ?(.*)"))
+@borg.on(admin_cmd(pattern="npaste ?(.*)"))
 async def _(event):
     if event.fwd_from:
         return

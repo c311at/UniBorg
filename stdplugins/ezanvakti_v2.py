@@ -2,6 +2,7 @@ import datetime
 import json
 import logging
 from datetime import datetime
+from uniborg.util import admin_cmd
 
 import pytz
 
@@ -17,7 +18,7 @@ logger = logging.getLogger(__name__)
 TEMP = ''
 
 
-@borg.on(utils.admin_cmd(pattern=("ezanv ?(.*) + ?(.*)")))
+@borg.on(admin_cmd(pattern=("ezanv ?(.*) + ?(.*)")))
 async def namaz_(event):
     """kullanımı .ezanv <şehir> <ilçe>"""
     if not event.text.startswith("."):

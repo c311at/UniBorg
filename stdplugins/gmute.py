@@ -7,6 +7,7 @@ By:- JaskaranSM ( @Zero_cool7870 )
 """
 
 import logging
+from uniborg.util import admin_cmd
 
 from pymongo import MongoClient
 from sample_config import Config
@@ -29,7 +30,7 @@ except Exception as e:
     logging.error(str(e))
 
 
-@borg.on(utils.admin_cmd(pattern="gmute ?(.*)", allow_sudo=True))
+@borg.on(admin_cmd(pattern="gmute ?(.*)", allow_sudo=True))
 async def gmute_user(event):
     if event.fwd_from:
         return
@@ -73,7 +74,7 @@ async def gmute_user(event):
         await event.edit("`You are not admin Here.`")
 
 
-@borg.on(utils.admin_cmd(pattern="ungmute ?(.*)", allow_sudo=True))
+@borg.on(admin_cmd(pattern="ungmute ?(.*)", allow_sudo=True))
 async def un_gmute_user(event):
     if event.fwd_from:
         return
@@ -96,7 +97,7 @@ async def un_gmute_user(event):
         await event.edit("Error: "+str(e))
 
 
-@borg.on(utils.admin_cmd(pattern="listgmuted", allow_sudo=True))
+@borg.on(admin_cmd(pattern="listgmuted", allow_sudo=True))
 async def list_gmuted(event):
     if event.fwd_from:
         return

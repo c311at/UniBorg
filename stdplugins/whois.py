@@ -2,6 +2,7 @@
 Syntax: .whois @username"""
 import html
 import logging
+from uniborg.util import admin_cmd
 
 from telethon.tl.functions.photos import GetUserPhotosRequest
 from telethon.tl.functions.users import GetFullUserRequest
@@ -12,7 +13,7 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
                     level=logging.WARNING)
 
 
-@borg.on(utils.admin_cmd(pattern="whois ?(.*)"))
+@borg.on(admin_cmd(pattern="whois ?(.*)"))
 async def _(event):
     if event.fwd_from:
         return

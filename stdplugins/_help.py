@@ -9,15 +9,18 @@
 ◆ `.syntax` <plugin name>
 """
 import logging
-import shutil
 import sys
-import time
 
 from sample_config import Config
-from telethon import __version__, events, functions
+from telethon import __version__, functions
+from uniborg.util import admin_cmd
+
+logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
+                    level=logging.WARNING)
+logger = logging.getLogger(__name__)
 
 
-@borg.on(utils.admin_cmd(pattern="helpme ?(.*)", allow_sudo=True))  # pylint:disable=E0602
+@borg.on(admin_cmd(pattern="helpme ?(.*)", allow_sudo=True))
 async def _(event):
     if event.fwd_from:
         return
@@ -26,30 +29,14 @@ async def _(event):
         s_help_string = borg._plugins[splugin_name].__doc__
     else:
         s_help_string = ""
-    _, check_sgnirts = check_data_base_heal_th()
-
-    current_run_time = utils.time_formatter((time.time() - BOT_START_TIME))
-    total, used, free = shutil.disk_usage("/")
-    total = utils.humanbytes(total)
-    used = utils.humanbytes(used)
-    free = utils.humanbytes(free)
-
-    help_string = "@UniBorg\n"
-    help_string += f"✅ **UpTime** `{current_run_time}`\n"
-    help_string += f"✅ **Python** `{sys.version}`\n"
-    help_string += f"✅ **Telethon** `{__version__}`\n"
-    help_string += f"{check_sgnirts} **Database**\n"
-    help_string += f"**Total Disk Space**: `{total}`\n"
-    help_string += f"**Used Disk Space**: `{used}`\n"
-    help_string += f"**Free Disk Space**: `{free}`\n\n"
-    help_string += f"UserBot Forked from https://github.com/muhammedfurkan/uniborg"
-    borg._iiqsixfourstore[str(event.chat_id)] = {}
-    borg._iiqsixfourstore[
-        str(event.chat_id)
-    ][
-        str(event.id)
-    ] = help_string + "\n\n" + s_help_string
-    tgbotusername = Config.TG_BOT_USER_NAME_BF_HER  # pylint:disable=E0602
+    help_string = """@UniBorg
+Python {}
+Telethon {}
+UserBot Forked from https://github.com/muhammedfurkan/uniborg""".format(
+        sys.version,
+        __version__
+    )
+    tgbotusername = Config.TG_BOT_USER_NAME_BF_HER
     if tgbotusername is not None:
         results = await borg.inline_query(
             tgbotusername,
@@ -61,33 +48,30 @@ async def _(event):
             hide_via=True
         )
     else:
-        await event.reply(
-            help_string + "\n\n" + s_help_string,
-            parse_mode="html"
-        )
+        await event.reply(help_string + "\n\n" + s_help_string)
 
     await event.delete()
 
 
-@borg.on(utils.admin_cmd(pattern="dc"))  # pylint:disable=E0602
+@borg.on(admin_cmd(pattern="dc"))
 async def _(event):
     if event.fwd_from:
         return
-    result = await event.client(functions.help.GetNearestDcRequest())
+    result = await borg(functions.help.GetNearestDcRequest())
     await event.edit(result.stringify())
 
 
-@borg.on(utils.admin_cmd(pattern="config"))  # pylint:disable=E0602
+@borg.on(admin_cmd(pattern="config"))
 async def _(event):
     if event.fwd_from:
         return
-    result = await event.client(functions.help.GetConfigRequest())  # pylint:disable=E0602
+    result = await borg(functions.help.GetConfigRequest())
     result = result.stringify()
     logger.info(result)
     await event.edit("""Telethon UserBot powered by @UniBorg""")
 
 
-@borg.on(utils.admin_cmd(pattern="syntax (.*)"))
+@borg.on(admin_cmd(pattern="syntax (.*)"))
 async def _(event):
     if event.fwd_from:
         return
@@ -102,26 +86,3 @@ async def _(event):
     else:
         plugin_syntax = "Enter valid **Plugin** name.\nDo `.exec ls stdplugins` or `.helpme` to get list of valid plugin names."
     await event.edit(plugin_syntax)
-
-
-def check_data_base_heal_th():
-    # https://stackoverflow.com/a/41961968
-    is_database_working = False
-    output = "❌"
-
-    if not Config.DB_URI:
-        return is_database_working, output
-
-    from sql_helpers import SESSION
-
-    try:
-        # to check database we will execute raw query
-        SESSION.execute("SELECT 1")
-    except Exception as e:
-        output = f"❌ {str(e)}"
-        is_database_working = False
-    else:
-        output = "✅"
-        is_database_working = True
-
-    return is_database_working, output

@@ -13,6 +13,7 @@ import logging
 import os
 import subprocess
 import time
+from uniborg.util import admin_cmd, progress
 
 import patoolib
 from sample_config import Config
@@ -26,7 +27,7 @@ extracted = Config.TMP_DOWNLOAD_DIRECTORY + "extracted/"
 thumb_image_path = Config.TMP_DOWNLOAD_DIRECTORY + "/thumb_image.jpg"
 
 
-@borg.on(utils.admin_cmd(pattern=("rar ?(.*)")))
+@borg.on(admin_cmd(pattern=("rar ?(.*)")))
 async def _(event):
     if event.fwd_from:
         return
@@ -73,7 +74,7 @@ async def _(event):
         await event.edit("Local file compressed to `{}`".format(directory_name + ".rar"))
 
 
-@borg.on(utils.admin_cmd(pattern=("7z ?(.*)")))
+@borg.on(admin_cmd(pattern=("7z ?(.*)")))
 async def _(event):
     if event.fwd_from:
         return
@@ -122,7 +123,7 @@ async def _(event):
         await event.edit("Local file compressed to `{}`".format(directory_name + ".7z"))
 
 
-@borg.on(utils.admin_cmd(pattern=("unzipper ?(.*)")))
+@borg.on(admin_cmd(pattern=("unzipper ?(.*)")))
 async def _(event):
     if event.fwd_from:
         return

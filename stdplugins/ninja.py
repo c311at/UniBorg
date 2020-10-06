@@ -3,6 +3,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 import asyncio
 import logging
+from uniborg.util import admin_cmd, is_read
 
 from telethon import events
 
@@ -21,22 +22,22 @@ async def get_target_message(event):
 
 
 async def await_read(chat, message):
-    chat = telethon.utils.get_peer_id(chat)
+    chat = telethon. get_peer_id(chat)
 
     async def read_filter(read_event):
         return (read_event.chat_id == chat
                 and read_event.is_read(message))
     fut = borg.await_event(events.MessageRead(inbox=False), read_filter)
 
-    if await utils.is_read(borg, chat, message):
+    if await is_read(borg, chat, message):
         fut.cancel()
         return
 
     await fut
 
 
-@borg.on(utils.admin_cmd(pattern="(del)(?:ete)?$"))
-@borg.on(utils.admin_cmd(pattern="(edit)(?:\s+(.*))?$"))
+@borg.on(admin_cmd(pattern="(del)(?:ete)?$"))
+@borg.on(admin_cmd(pattern="(edit)(?:\s+(.*))?$"))
 async def delete(event):
     await event.delete()
     command = event.pattern_match.group(1)

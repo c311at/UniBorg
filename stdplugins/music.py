@@ -1,6 +1,7 @@
 "get music from .m <music query>  Credits https://t.me/By_Azade"
 import logging
 from asyncio.exceptions import TimeoutError
+from uniborg.util import admin_cmd
 
 from telethon import events
 from telethon.errors.rpcerrorlist import YouBlockedUserError
@@ -10,7 +11,7 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
 logger = logging.getLogger(__name__)
 
 
-@borg.on(utils.admin_cmd(pattern="music ?(.*)"))  # pylint:disable=E0602
+@borg.on(admin_cmd(pattern="music ?(.*)"))  # pylint:disable=E0602
 async def music_find(event):
     if event.fwd_from:
         return
@@ -37,7 +38,7 @@ async def music_find(event):
         )
 
 
-@borg.on(utils.admin_cmd(pattern="spotbot ?(.*)"))  # pylint:disable=E0602
+@borg.on(admin_cmd(pattern="spotbot ?(.*)"))  # pylint:disable=E0602
 async def _(event):
     if event.fwd_from:
         return
@@ -161,7 +162,7 @@ async def _(event):
         await event.client.send_file(event.chat_id, response.message.media)
 
 
-@borg.on(utils.admin_cmd(pattern="fm ?(.*)"))  # pylint:disable=E0602
+@borg.on(admin_cmd(pattern="fm ?(.*)"))  # pylint:disable=E0602
 async def _(event):
     msg = await event.get_reply_message()
     await event.delete()
@@ -176,7 +177,7 @@ async def _(event):
         await event.edit("`mesajı yanıtla`")
 
 
-@borg.on(utils.admin_cmd(pattern="sdown ?(.*)"))
+@borg.on(admin_cmd(pattern="sdown ?(.*)"))
 async def _(event):
     if event.fwd_from:
         return

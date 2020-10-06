@@ -3,12 +3,14 @@ Available Commands
 .getqr
 .makeqr <long text to include>"""
 import asyncio
+import datetime
 import logging
 import os
 
 import qrcode
 from bs4 import BeautifulSoup
 from sample_config import Config
+from uniborg.util import admin_cmd, run_command
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
@@ -20,7 +22,7 @@ def progress(current, total):
         current, total, (current / total) * 100))
 
 
-@borg.on(utils.admin_cmd(pattern="getqr"))
+@borg.on(admin_cmd(pattern="getqr"))
 async def _(event):
     if event.fwd_from:
         return
@@ -39,7 +41,7 @@ async def _(event):
         "-F", "f=@" + downloaded_file_name + "",
         "https://zxing.org/w/decode"
     ]
-    t_response, e_response = await utils.run_command(command_to_exec)
+    t_response, e_response = await run_command(command_to_exec)
     os.remove(downloaded_file_name)
     if not t_response:
         logger.info(e_response)
@@ -55,7 +57,7 @@ async def _(event):
     await event.edit(qr_contents)
 
 
-@borg.on(utils.admin_cmd(pattern="makeqr ?(.*)"))
+@borg.on(admin_cmd(pattern="makeqr ?(.*)"))
 async def _(event):
     if event.fwd_from:
         return

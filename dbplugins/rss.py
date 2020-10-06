@@ -20,7 +20,7 @@
 #                     level=logging.WARNING)
 # logger = logging.getLogger(__name__)
 
-# @borg.on(utils.admin_cmd(pattern=("rss ?(.*)")))
+# @borg.on( admin_cmd(pattern=("rss ?(.*)")))
 # async def show_url(event):
 #     tg_chat_id = str(event.chat_id)
 #     entity=await borg.get_input_entity(Config.RSS_POST_MSG_GROUP_ID)
@@ -69,7 +69,7 @@
 #     else:
 #         await event.edit("URL missing")
 
-# @borg.on(utils.admin_cmd(pattern=("listrss ?(.*)")))
+# @borg.on( admin_cmd(pattern=("listrss ?(.*)")))
 # async def list_urls(event):
 #     tg_chat_id = str(event.chat_id)
 #     entity=await borg.get_input_entity(Config.RSS_POST_MSG_GROUP_ID)
@@ -99,7 +99,7 @@
 #         )
 
 
-# @borg.on(utils.admin_cmd(pattern=("addrss ?(.*)")))
+# @borg.on( admin_cmd(pattern=("addrss ?(.*)")))
 # async def add_url_(event):
 #     if event.pattern_match.group(1):
 #         chat = await event.get_chat()
@@ -132,7 +132,7 @@
 #     else:
 #         await event.edit("URL missing")
 
-# @borg.on(utils.admin_cmd(pattern=("removerss ?(.*)")))
+# @borg.on( admin_cmd(pattern=("removerss ?(.*)")))
 # async def remove_url_(event):
 #     if event.pattern_match.group(1):
 #         tg_chat_id = str(event.chat_id)

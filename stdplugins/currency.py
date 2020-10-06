@@ -2,7 +2,7 @@
 Syntax: .currency number from to"""
 import logging
 from datetime import datetime
-
+from uniborg.util import admin_cmd
 import requests
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
@@ -10,7 +10,7 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
 logger = logging.getLogger(__name__)
 
 
-@borg.on(utils.admin_cmd(pattern="currency (.*)"))
+@borg.on(admin_cmd(pattern="currency (.*)"))
 async def _(event):
     if event.fwd_from:
         return

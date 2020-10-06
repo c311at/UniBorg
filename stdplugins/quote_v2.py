@@ -1,4 +1,5 @@
 import logging
+from uniborg.util import admin_cmd
 
 from telethon import events
 from telethon.errors.rpcerrorlist import YouBlockedUserError
@@ -9,7 +10,7 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
 logger = logging.getLogger(__name__)
 
 
-@borg.on(utils.admin_cmd(pattern=("q ?(.*)")))
+@borg.on(admin_cmd(pattern=("q ?(.*)")))
 # @borg.on(outgoing=True, pattern="^.q(?: |$)(.*)")
 async def _(event):
     if event.fwd_from:

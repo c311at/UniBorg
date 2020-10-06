@@ -1,6 +1,7 @@
 """Purge your messages without the admins seeing it in Recent Actions"""
 import asyncio
 import logging
+from uniborg.util import admin_cmd
 
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
@@ -11,7 +12,7 @@ level = logging.INFO
 print(level)
 
 
-@borg.on(utils.admin_cmd(pattern="purge ?(.*)"))
+@borg.on(admin_cmd(pattern="purge ?(.*)"))
 async def _(event):
     if event.fwd_from:
         return
@@ -41,7 +42,7 @@ async def _(event):
             await event.edit("**PURGE** Failed!")
 
 
-@borg.on(utils.admin_cmd(pattern="purgme ?(.*)"))
+@borg.on(admin_cmd(pattern="purgme ?(.*)"))
 async def purgeme(delme):
     """ For .purgeme, delete x count of your latest message."""
     message = delme.text
@@ -63,7 +64,7 @@ async def purgeme(delme):
     await asyncio.sleep(5)
 
 
-@borg.on(utils.admin_cmd(pattern="selfd ?(.*) + ?(.*)", outgoing=True))
+@borg.on(admin_cmd(pattern="selfd ?(.*) + ?(.*)", outgoing=True))
 async def selfdestruct(destroy):
     if not destroy.text[0].isalpha() and destroy.text[0] not in ("/", "#", "@", "!"):
         await destroy.delete()

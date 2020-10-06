@@ -5,6 +5,7 @@ Available Commands:
 import logging
 import os
 from datetime import datetime
+from uniborg.util import admin_cmd
 from sample_config import Config
 
 
@@ -20,7 +21,7 @@ r = telegraph.create_account(short_name=Config.TELEGRAPH_SHORT_NAME)
 auth_url = r["auth_url"]
 
 
-@borg.on(utils.admin_cmd(pattern="telegraph (media|text) ?(.*)"))
+@borg.on(admin_cmd(pattern="telegraph (media|text) ?(.*)"))
 async def _(event):
     if event.fwd_from:
         return

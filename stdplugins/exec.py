@@ -7,6 +7,7 @@ import asyncio
 import io
 import logging
 import time
+from uniborg.util import admin_cmd
 
 from sample_config import Config
 from telethon.errors import (MessageEmptyError, MessageNotModifiedError,
@@ -17,7 +18,7 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
 logger = logging.getLogger(__name__)
 
 
-@borg.on(utils.admin_cmd(pattern="exec ?(.*)"))
+@borg.on(admin_cmd(pattern="exec ?(.*)"))
 async def _(event):
     if event.fwd_from or event.via_bot_id:
         return

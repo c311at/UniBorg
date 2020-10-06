@@ -4,6 +4,7 @@
 """WikiPedia.ORG
 Syntax: .wikipedia Query"""
 import logging
+from uniborg.util import admin_cmd
 
 import wikipedia
 
@@ -13,7 +14,7 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
 logger = logging.getLogger(__name__)
 
 
-@borg.on(utils.admin_cmd(pattern="wikipedia (.*)"))
+@borg.on(admin_cmd(pattern="wikipedia (.*)"))
 async def _(event):
     if event.fwd_from:
         return

@@ -7,6 +7,7 @@
 \n`Don't Copy Without Credits.`"""
 import logging
 from html import unescape
+from uniborg.util import admin_cmd
 
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
@@ -21,7 +22,7 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
 logger = logging.getLogger(__name__)
 
 
-@borg.on(utils.admin_cmd(pattern=r"youtubesearch ?(\d+)? ?(.*)?"))
+@borg.on(admin_cmd(pattern=r"youtubesearch ?(\d+)? ?(.*)?"))
 async def yt_search(video_q):
     reply = await video_q.get_reply_message()
     if video_q.pattern_match.group(2):

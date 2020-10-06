@@ -4,6 +4,7 @@
 import asyncio
 import logging
 from collections import deque
+from uniborg.util import admin_cmd
 
 from telethon import events
 
@@ -24,7 +25,7 @@ async def _(event):
         deq.rotate(1)
 
 
-@borg.on(utils.admin_cmd(pattern="bkalp", outgoing=True))
+@borg.on(admin_cmd(pattern="bkalp", outgoing=True))
 async def bkallp(event):
     a = "❤️ 🧡 💛 💚 💙 💜 🖤 🤍 🤎 💔 💘 💝".split(" ")
     d = await event.reply("...")

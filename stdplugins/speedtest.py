@@ -3,6 +3,7 @@ Syntax: .speedtest
 Available Options: image, file, text"""
 import logging
 from datetime import datetime
+from uniborg.util import admin_cmd
 
 import speedtest
 
@@ -11,7 +12,7 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
 logger = logging.getLogger(__name__)
 
 
-@borg.on(utils.admin_cmd(pattern="speedtest ?(.*)"))
+@borg.on(admin_cmd(pattern="speedtest ?(.*)"))
 async def _(event):
     if event.fwd_from:
         return
@@ -54,8 +55,8 @@ async def _(event):
                 "Internet Service Provider: {}\n"
                 "ISP Rating: {}".format(
                     ms,
-                    utils.humanbytes(download_speed),
-                    utils.humanbytes(upload_speed),
+                    humanbytes(download_speed),
+                    humanbytes(upload_speed),
                     ping_time,
                     i_s_p,
                     i_s_p_rating
@@ -80,8 +81,8 @@ async def _(event):
             "__With the Following ERRORs__\n"
             "{}".format(
                 ms,
-                utils.humanbytes(download_speed),
-                utils.humanbytes(upload_speed),
+                humanbytes(download_speed),
+                humanbytes(upload_speed),
                 ping_time,
                 str(exc)
             )

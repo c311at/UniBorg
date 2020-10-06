@@ -7,6 +7,7 @@ Available Commands:
 import asyncio
 import os
 import time
+from uniborg.util import admin_cmd, take_screen_shot
 
 from hachoir.metadata import extractMetadata
 from hachoir.parser import createParser
@@ -16,7 +17,7 @@ from sample_config import Config
 thumb_image_path = Config.TMP_DOWNLOAD_DIRECTORY + "/thumb_image.jpg"
 
 
-@borg.on(utils.admin_cmd(pattern="savethumbnail"))
+@borg.on(admin_cmd(pattern="savethumbnail"))
 async def _(event):
     if event.fwd_from:
         return
@@ -33,7 +34,7 @@ async def _(event):
             ttl = 0
             if metadata and metadata.has("duration"):
                 ttl = metadata.get("duration").seconds / 2
-            downloaded_file_name = await utils.take_screen_shot(
+            downloaded_file_name = await take_screen_shot(
                 downloaded_file_name,
                 Config.TMP_DOWNLOAD_DIRECTORY,
                 ttl
@@ -54,7 +55,7 @@ async def _(event):
         await event.edit("Reply to a photo to save custom thumbnail")
 
 
-@borg.on(utils.admin_cmd(pattern="clearthumbnail"))
+@borg.on(admin_cmd(pattern="clearthumbnail"))
 async def _(event):
     if event.fwd_from:
         return
@@ -63,7 +64,7 @@ async def _(event):
     await event.edit("✅ Custom thumbnail cleared succesfully.")
 
 
-@borg.on(utils.admin_cmd(pattern="getthumbnail"))
+@borg.on(admin_cmd(pattern="getthumbnail"))
 async def _(event):
     if event.fwd_from:
         return

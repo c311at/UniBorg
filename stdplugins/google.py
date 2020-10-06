@@ -5,16 +5,18 @@ Available Commands:
 .google reverse search"""
 import asyncio
 import os
+from sample_config import Config
 import shutil
 import time
 from datetime import datetime
+from uniborg.util import admin_cmd
 
 import aiohttp
 from bs4 import BeautifulSoup
 from telethon.utils import guess_extension
 
 
-@borg.on(utils.admin_cmd(pattern="google search (.*)"))
+@borg.on(admin_cmd(pattern="google search (.*)"))
 async def _(event):
     if event.fwd_from:
         return
@@ -42,7 +44,7 @@ async def _(event):
     await event.edit("Google: {}\n{}".format(input_str, output_str), link_preview=False)
 
 
-@borg.on(utils.admin_cmd(pattern="google image (.*)"))
+@borg.on(admin_cmd(pattern="google image (.*)"))
 async def _(event):
     if event.fwd_from:
         return
@@ -104,7 +106,7 @@ async def _(event):
     await event.delete()
 
 
-@borg.on(utils.admin_cmd(pattern="google reverse search"))
+@borg.on(admin_cmd(pattern="google reverse search"))
 async def _(event):
     if event.fwd_from:
         return

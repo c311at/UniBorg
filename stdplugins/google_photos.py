@@ -19,6 +19,7 @@ import logging
 import os
 import time
 from mimetypes import guess_type
+from uniborg.util import admin_cmd, progress
 
 import aiofiles
 import aiohttp
@@ -46,7 +47,7 @@ PHOTOS_BASE_URI = "https://photoslibrary.googleapis.com"
 TOKEN_FILE_NAME = "gPhoto_credentials_UniBorg.json"
 
 
-@borg.on(utils.admin_cmd(pattern="gphoto setup"))
+@borg.on(admin_cmd(pattern="gphoto setup"))
 async def setup_google_photos(event):
     if event.chat_id != Config.PRIVATE_GROUP_BOT_API_ID:
         return
@@ -125,7 +126,7 @@ async def check_creds(token_file, event):
     return False, None
 
 
-@borg.on(utils.admin_cmd(pattern="gphoto upload( -- (.*))?"))
+@borg.on(admin_cmd(pattern="gphoto upload( -- (.*))?"))
 async def upload_google_photos(event):
     if event.fwd_from:
         return
@@ -176,7 +177,7 @@ async def upload_google_photos(event):
         file_path = await media_message.download_media(
             file=Config.TMP_DOWNLOAD_DIRECTORY,
             progress_callback=lambda d, t: asyncio.get_event_loop().create_task(
-                utils.progress(d, t, event, c_time, "trying to download")
+                progress(d, t, event, c_time, "trying to download")
             )
         )
 
@@ -259,7 +260,7 @@ async def upload_google_photos(event):
                     data=current_chunk
                 )
                 loop.create_task(
-                    utils.progress(
+                    progress(
                         offset + part_size,
                         file_size,
                         event,

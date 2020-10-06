@@ -3,6 +3,7 @@ Commands:
 .clearwelcome
 .savewelcome <Welcome Message>"""
 
+from uniborg.util import admin_cmd
 from sql_helpers.welcome_sql import get_current_welcome_settings, \
     add_welcome_setting, rm_welcome_setting, update_previous_welcome
 from sql_helpers.welcome_sql import (add_welcome_setting,
@@ -52,7 +53,7 @@ async def _(event):
             update_previous_welcome(event.chat_id, current_message.id)
 
 
-@borg.on(utils.admin_cmd(pattern="savewelcome"))  # pylint:disable=E0602
+@borg.on(admin_cmd(pattern="savewelcome"))  # pylint:disable=E0602
 async def _(event):
     if event.fwd_from:
         return
@@ -68,7 +69,7 @@ async def _(event):
         await event.edit("Welcome note saved. ")
 
 
-@borg.on(utils.admin_cmd(pattern="clearwelcome"))  # pylint:disable=E0602
+@borg.on(admin_cmd(pattern="clearwelcome"))  # pylint:disable=E0602
 async def _(event):
     if event.fwd_from:
         return

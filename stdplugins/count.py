@@ -3,6 +3,7 @@
 # there are changes made by "me" to suit the needs of this repository
 
 import time
+from uniborg.util import admin_cmd
 
 from telethon.events import NewMessage
 from telethon.tl.custom import Dialog
@@ -11,10 +12,10 @@ from telethon.tl.types import Channel, Chat, User
 """Type `.count` and see Magic."""
 
 
-@borg.on(utils.admin_cmd(pattern='count'))
+@borg.on(admin_cmd(pattern='count'))
 async def stats(event: NewMessage.Event) -> None:  # pylint: disable = R0912, R0914, R0915
     """Command to get stats about the account"""
-    waiting_message = await event.edit('`Collecting stats, Wait Nibba`')
+    waiting_message = await event.edit('`Collecting stats`')
     start_time = time.time()
     private_chats = 0
     bots = 0

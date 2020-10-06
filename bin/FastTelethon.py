@@ -188,7 +188,7 @@ class ParallelTransferrer:
             file_size)
         print("init_upload count is ", connection_count)
         part_size = (
-            part_size_kb or utils.get_appropriated_part_size(file_size)) * 1024
+            part_size_kb or get_appropriated_part_size(file_size)) * 1024
         part_count = (file_size + part_size - 1) // part_size
         is_large = file_size > 10 * 1024 * 1024
         await self._init_upload(connection_count, file_id, part_count, is_large)
@@ -209,7 +209,7 @@ class ParallelTransferrer:
         print("download count is ", connection_count)
 
         part_size = (
-            part_size_kb or utils.get_appropriated_part_size(file_size)) * 1024
+            part_size_kb or get_appropriated_part_size(file_size)) * 1024
         part_count = math.ceil(file_size / part_size)
         log.debug("Starting parallel download: "
                   f"{connection_count} {part_size} {part_count} {file!s}")
@@ -281,7 +281,7 @@ async def download_file(client: TelegramClient,
                         progress_callback: callable = None
                         ) -> BinaryIO:
     size = location.size
-    dc_id, location = utils.get_input_location(location)
+    dc_id, location = get_input_location(location)
     # We lock the transfers because telegram has connection count limits
     downloader = ParallelTransferrer(client, dc_id)
     downloaded = downloader.download(location, size)

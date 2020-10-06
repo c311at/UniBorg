@@ -1,10 +1,11 @@
 
 from asyncio import sleep
+from uniborg.util import admin_cmd
 
 from sample_config import Config
 
 
-@borg.on(utils.admin_cmd(pattern="unmutechat"))
+@borg.on(admin_cmd(pattern="unmutechat"))
 async def unmute_chat(unm_e):
     """ For .unmutechat command, unmute a muted chat. """
     try:
@@ -18,7 +19,7 @@ async def unmute_chat(unm_e):
     await unm_e.delete()
 
 
-@borg.on(utils.admin_cmd(pattern="mutechat"))
+@borg.on(admin_cmd(pattern="mutechat"))
 async def mute_chat(mute_e):
     """ For .mutechat command, mute any chat. """
     try:

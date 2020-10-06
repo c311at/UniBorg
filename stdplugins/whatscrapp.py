@@ -1,6 +1,7 @@
 """Syntax: .whatscrapp as reply to a message copied from @WhatsCRApp"""
 
 import logging
+from uniborg.util import admin_cmd
 
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
@@ -8,7 +9,7 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
 logger = logging.getLogger(__name__)
 
 
-@borg.on(utils.admin_cmd(pattern="whatscrapp"))
+@borg.on(admin_cmd(pattern="whatscrapp"))
 async def _(event):
     if event.fwd_from:
         return

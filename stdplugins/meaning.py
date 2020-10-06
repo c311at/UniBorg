@@ -1,6 +1,7 @@
 """Dictionary Plugin for @UniBorg
 Syntax: .meaning <word>"""
 import logging
+from uniborg.util import admin_cmd
 
 import requests
 
@@ -9,7 +10,7 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
 logger = logging.getLogger(__name__)
 
 
-@borg.on(utils.admin_cmd(pattern="meaning (.*)"))
+@borg.on(admin_cmd(pattern="meaning (.*)"))
 async def _(event):
     if event.fwd_from:
         return

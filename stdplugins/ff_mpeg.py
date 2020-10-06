@@ -8,17 +8,20 @@ from datetime import datetime
 
 from hachoir.metadata import extractMetadata
 from hachoir.parser import createParser
+from sample_config import Config
+from uniborg.util import (admin_cmd, cult_small_video, progress,
+                          take_screen_shot)
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 logger = logging.getLogger(__name__)
 
 
-@borg.on(utils.admin_cmd(pattern="ffmpegtrim"))
+@borg.on(admin_cmd(pattern="ffmpegtrim"))
 async def ff_mpeg_trim_cmd(event):
     if event.fwd_from:
         return
-    if not os.path.exists(FF_MPEG_DOWN_LOAD_MEDIA_PATH):
+    if not os.path.exists(Config.TMP_DOWNLOAD_DIRECTORY):
         if not os.path.isdir(Config.TMP_DOWNLOAD_DIRECTORY):
             os.makedirs(Config.TMP_DOWNLOAD_DIRECTORY)
         if event.reply_to_msg_id:
@@ -28,7 +31,7 @@ async def ff_mpeg_trim_cmd(event):
                 c_time = time.time()
                 downloaded_file_name = await event.client.download_media(
                     reply_message,
-                    FF_MPEG_DOWN_LOAD_MEDIA_PATH,
+                    Config.TMP_DOWNLOAD_DIRECTORY,
                     progress_callback=lambda d, t: asyncio.get_event_loop().create_task(
                         progress(d, t, event, c_time, "trying to download")
                     )
@@ -45,11 +48,11 @@ async def ff_mpeg_trim_cmd(event):
         await event.edit(f"a media file already exists in path. Please remove the media and try again!\n`.exec rm {FF_MPEG_DOWN_LOAD_MEDIA_PATH}`")
 
 
-@borg.on(utils.admin_cmd(pattern="ffmpegtrim"))
+@borg.on(admin_cmd(pattern="ffmpegtrim"))
 async def ff_mpeg_trim_cmd(event):
     if event.fwd_from:
         return
-    if not os.path.exists(FF_MPEG_DOWN_LOAD_MEDIA_PATH):
+    if not os.path.exists(Config.TMP_DOWNLOAD_DIRECTORY):
         await event.edit(f"a media file needs to be downloaded, and saved to the following path: `{FF_MPEG_DOWN_LOAD_MEDIA_PATH}`")
         return
     current_message_text = event.raw_text
@@ -59,8 +62,8 @@ async def ff_mpeg_trim_cmd(event):
     if len(cmt) == 3:
         # output should be video
         cmd, start_time, end_time = cmt
-        o = await utils.cult_small_video(
-            FF_MPEG_DOWN_LOAD_MEDIA_PATH,
+        o = await cult_small_video(
+            Config.TMP_DOWNLOAD_DIRECTORY,
             Config.TMP_DOWNLOAD_DIRECTORY,
             start_time,
             end_time
@@ -77,7 +80,7 @@ async def ff_mpeg_trim_cmd(event):
                 allow_cache=False,
                 # reply_to=event.message.id,
                 progress_callback=lambda d, t: asyncio.get_event_loop().create_task(
-                    utils.progress(d, t, event, c_time, "trying to upload")
+                    progress(d, t, event, c_time, "trying to upload")
                 )
             )
             os.remove(o)
@@ -86,8 +89,8 @@ async def ff_mpeg_trim_cmd(event):
     elif len(cmt) == 2:
         # output should be image
         cmd, start_time = cmt
-        o = await utils.take_screen_shot(
-            FF_MPEG_DOWN_LOAD_MEDIA_PATH,
+        o = await take_screen_shot(
+            Config.TMP_DOWNLOAD_DIRECTORY,
             Config.TMP_DOWNLOAD_DIRECTORY,
             start_time
         )
@@ -103,7 +106,7 @@ async def ff_mpeg_trim_cmd(event):
                 allow_cache=False,
                 # reply_to=event.message.id,
                 progress_callback=lambda d, t: asyncio.get_event_loop().create_task(
-                    utils.progress(d, t, event, c_time, "trying to upload")
+                    progress(d, t, event, c_time, "trying to upload")
                 )
             )
             os.remove(o)

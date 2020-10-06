@@ -51,7 +51,7 @@ async def get_media(event):
     await event.edit("Downloaded "+output+" files.")
 
 
-@borg.on(utils.admin_cmd(pattern="geta ?(.*)", allow_sudo=True))
+@borg.on(admin_cmd(pattern="geta ?(.*)", allow_sudo=True))
 async def get_media(event):
     if event.fwd_from:
         return

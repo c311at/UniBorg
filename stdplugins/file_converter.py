@@ -5,6 +5,7 @@ import logging
 import os
 import time
 from datetime import datetime
+from uniborg.util import admin_cmd, progress, run_command
 
 from sample_config import Config
 
@@ -13,7 +14,7 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
 logger = logging.getLogger(__name__)
 
 
-@borg.on(utils.admin_cmd(pattern="nfc (.*)"))  # pylint:disable=E0602
+@borg.on(admin_cmd(pattern="nfc (.*)"))  # pylint:disable=E0602
 async def _(event):
     if event.fwd_from:
         return
@@ -30,7 +31,7 @@ async def _(event):
             reply_message,
             Config.TMP_DOWNLOAD_DIRECTORY,
             progress_callback=lambda d, t: asyncio.get_event_loop().create_task(
-                utils.progress(d, t, event, c_time, "trying to download")
+                progress(d, t, event, c_time, "trying to download")
             )
         )
     except Exception as e:  # pylint:disable=C0103,W0703
@@ -84,7 +85,7 @@ async def _(event):
             os.remove(downloaded_file_name)
             return
         logger.info(command_to_run)
-        t_response, e_response = await utils.run_command(command_to_run)
+        t_response, e_response = await run_command(command_to_run)
         os.remove(downloaded_file_name)
         if os.path.exists(new_required_file_name):
             end_two = datetime.now()
@@ -99,7 +100,7 @@ async def _(event):
                 voice_note=voice_note,
                 supports_streaming=supports_streaming,
                 progress_callback=lambda d, t: asyncio.get_event_loop().create_task(
-                    utils.progress(d, t, event, c_time, "trying to upload")
+                    progress(d, t, event, c_time, "trying to upload")
                 )
             )
             ms_two = (end_two - end).seconds

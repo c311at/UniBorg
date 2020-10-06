@@ -8,6 +8,7 @@ Imdb Module
 """
 import logging
 import re
+from uniborg.util import admin_cmd
 
 import bs4
 import requests
@@ -22,7 +23,7 @@ langi = "en"
 # kanged from Blank-x ;---;
 
 
-@borg.on(utils.admin_cmd(pattern="imdb (.*)"))
+@borg.on(admin_cmd(pattern="imdb (.*)"))
 async def imdb(e):
     try:
         movie_name = e.pattern_match.group(1)

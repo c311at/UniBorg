@@ -3,14 +3,14 @@ import logging
 
 from telethon import events
 from telethon.errors.rpcerrorlist import YouBlockedUserError
-
+from uniborg.util import admin_cmd
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 logger = logging.getLogger(__name__)
 
 
-@borg.on(utils.admin_cmd(pattern=("sg ?(.*)")))
+@borg.on(admin_cmd(pattern=("sg ?(.*)")))
 async def _(event):
     if event.fwd_from:
         return
@@ -42,7 +42,7 @@ async def _(event):
             await event.edit(f"{response.message.message}")
 
 
-@borg.on(utils.admin_cmd(pattern=("fakemail ?(.*)")))
+@borg.on(admin_cmd(pattern=("fakemail ?(.*)")))
 async def _(event):
     if event.fwd_from:
         return
@@ -62,7 +62,7 @@ async def _(event):
         await event.edit(mail)
 
 
-@borg.on(utils.admin_cmd(pattern=("mailid ?(.*)")))
+@borg.on(admin_cmd(pattern=("mailid ?(.*)")))
 async def _(event):
     if event.fwd_from:
         return
@@ -82,7 +82,7 @@ async def _(event):
         await event.edit(mail)
 
 
-@borg.on(utils.admin_cmd(pattern=("ub ?(.*)")))
+@borg.on(admin_cmd(pattern=("ub ?(.*)")))
 async def _(event):
     if event.fwd_from:
         return
@@ -114,7 +114,7 @@ async def _(event):
             await event.edit(f"{response.message.message}")
 
 
-@borg.on(utils.admin_cmd(pattern=("gid ?(.*)")))
+@borg.on(admin_cmd(pattern=("gid ?(.*)")))
 async def _(event):
     if event.fwd_from:
         return
@@ -146,7 +146,7 @@ async def _(event):
             await event.edit(f"{response.message.message}")
 
 
-@borg.on(utils.admin_cmd(pattern="voicy ?(.*)"))
+@borg.on(admin_cmd(pattern="voicy ?(.*)"))
 async def voicy(event):
     if event.fwd_from:
         return

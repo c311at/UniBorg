@@ -8,6 +8,7 @@ import os
 import shutil
 import time
 from datetime import datetime
+from uniborg.util import admin_cmd, progress
 
 import patoolib
 from hachoir.metadata import extractMetadata
@@ -19,7 +20,7 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
 logger = logging.getLogger(__name__)
 
 
-@borg.on(utils.admin_cmd(pattern="unrar"))
+@borg.on(admin_cmd(pattern="unrar"))
 async def _(event):
     if event.fwd_from:
         return

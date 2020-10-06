@@ -9,12 +9,13 @@ import inspect
 import io
 import sys
 import traceback
+from uniborg.util import admin_cmd
 
 from sample_config import Config
 from telethon import errors, events, functions, types
 
 
-@borg.on(utils.admin_cmd(pattern="eval"))
+@borg.on(admin_cmd(pattern="eval"))
 async def _(event):
     if event.fwd_from or event.via_bot_id:
         return

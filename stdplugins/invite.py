@@ -1,6 +1,7 @@
 """Invite the user(s) to the current chat
 Syntax: .invite <User(s)>"""
 import logging
+from uniborg.util import admin_cmd
 
 from telethon import functions
 
@@ -9,7 +10,7 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
 logger = logging.getLogger(__name__)
 
 
-@borg.on(utils.admin_cmd(pattern="invite ?(.*)"))
+@borg.on(admin_cmd(pattern="invite ?(.*)"))
 async def _(event):
     if event.fwd_from:
         return

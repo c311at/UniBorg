@@ -7,6 +7,7 @@ import logging
 import os
 import shutil
 import time
+from uniborg.util import admin_cmd, progress
 import zipfile
 from datetime import datetime
 
@@ -21,7 +22,7 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
 logger = logging.getLogger(__name__)
 
 
-@borg.on(utils.admin_cmd(pattern="unzip"))
+@borg.on(admin_cmd(pattern="unzip"))
 async def _(event):
     if event.fwd_from:
         return

@@ -1,12 +1,13 @@
 import asyncio
 import os
 from datetime import datetime
+from uniborg.util import admin_cmd, run_command
 
 from gtts import gTTS
 from sample_config import Config
 
 
-@borg.on(utils.admin_cmd(pattern="tts (.*)"))
+@borg.on(admin_cmd(pattern="tts (.*)"))
 async def _(event):
     if event.fwd_from:
         return
@@ -44,7 +45,7 @@ async def _(event):
             "on",
             required_file_name + ".opus"
         ]
-        await utils.run_command(command_to_execute)
+        await run_command(command_to_execute)
         if not os.path.exists(required_file_name + ".opus"):
             await event.edit("failed to convert")
             # continue sending required_file_name

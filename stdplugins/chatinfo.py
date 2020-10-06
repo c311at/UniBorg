@@ -1,5 +1,6 @@
 from datetime import datetime
 from math import sqrt
+from uniborg.util import admin_cmd
 
 from telethon.errors import (ChannelInvalidError, ChannelPrivateError,
                              ChannelPublicGroupNaError)
@@ -14,7 +15,7 @@ from telethon.utils import get_input_location
 from emoji import emojize
 
 
-@borg.on(utils.admin_cmd(pattern="chatinfo(?: |$)(.*)"))
+@borg.on(admin_cmd(pattern="chatinfo(?: |$)(.*)"))
 async def info(event):
     await event.edit("`Analysing the chat...`")
     chat = await get_chatinfo(event)

@@ -2,6 +2,7 @@
 Syntax: .color <color_code>"""
 import logging
 import os
+from uniborg.util import admin_cmd
 
 from PIL import Image, ImageColor
 
@@ -10,7 +11,7 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
 logger = logging.getLogger(__name__)
 
 
-@borg.on(utils.admin_cmd(pattern="color (.*)"))
+@borg.on(admin_cmd(pattern="color (.*)"))
 async def _(event):
     if event.fwd_from:
         return

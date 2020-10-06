@@ -1,13 +1,13 @@
 """ Spotify / Deezer downloader plugin by @anubisxx | Syntax: .sdd link"""
 import asyncio
+from uniborg.util import admin_cmd
 
 from telethon.errors.rpcerrorlist import (UserAlreadyParticipantError,
                                           YouBlockedUserError)
 from telethon.tl.functions.messages import ImportChatInviteRequest
-#from userbot.utils import admin_cmd
 
 
-@borg.on(utils.admin_cmd(pattern="spoti ?(.*)"))
+@borg.on(admin_cmd(pattern="spoti ?(.*)"))
 async def _(event):
     if event.fwd_from:
         return

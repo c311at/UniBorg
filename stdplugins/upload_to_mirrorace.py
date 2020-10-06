@@ -6,6 +6,7 @@ import logging
 import os
 import time
 from datetime import datetime
+from uniborg.util import admin_cmd, progress
 
 import aiohttp
 import requests
@@ -26,7 +27,7 @@ else:
         from sample_config import Development as Config
 
 
-@borg.on(utils.admin_cmd(pattern="mirrorace ?(.*)", allow_sudo=True))
+@borg.on(admin_cmd(pattern="mirrorace ?(.*)", allow_sudo=True))
 async def _(event):
     if event.fwd_from:
         return

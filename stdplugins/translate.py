@@ -2,10 +2,11 @@
 Available Commands:
 .tr LanguageCode as reply to a message
 .tr LangaugeCode | text to translate"""
+from uniborg.util import admin_cmd
 from googletrans import Translator
 
 
-@borg.on(utils.admin_cmd(pattern="tr ?(.*)"))
+@borg.on(admin_cmd(pattern="tr ?(.*)"))
 async def _(event):
     if event.fwd_from:
         return

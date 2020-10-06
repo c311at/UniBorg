@@ -1,6 +1,7 @@
 """Get Administrators of any Chat*
 Syntax: .get_admin"""
 import logging
+from uniborg.util import admin_cmd
 from telethon.tl.types import (
     ChannelParticipantsAdmins, ChannelParticipantAdmin, ChannelParticipantCreator
 )
@@ -10,7 +11,7 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
 logger = logging.getLogger(__name__)
 
 
-@borg.on(utils.admin_cmd(pattern="get_ad(m)?in ?(.*)"))
+@borg.on(admin_cmd(pattern="get_ad(m)?in ?(.*)"))
 async def _(event):
     if event.fwd_from:
         return

@@ -3,6 +3,7 @@ import io
 import logging
 import time
 from datetime import datetime
+from uniborg.util import admin_cmd
 
 from sample_config import Config
 
@@ -12,7 +13,7 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
 logger = logging.getLogger(__name__)
 
 
-@borg.on(utils.admin_cmd(pattern=("cmrdl ?(.*)")))
+@borg.on(admin_cmd(pattern=("cmrdl ?(.*)")))
 async def _(event):
     url = event.pattern_match.group(1)
     if event.fwd_from:

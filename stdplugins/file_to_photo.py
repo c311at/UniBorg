@@ -3,6 +3,7 @@ Reply to a file with .f to send it as a photo
 """
 import logging
 from io import BytesIO
+from uniborg.util import admin_cmd
 
 from telethon import types
 from telethon.errors import PhotoInvalidDimensionsError
@@ -13,7 +14,7 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
 logger = logging.getLogger(__name__)
 
 
-@borg.on(utils.admin_cmd(pattern="f ?(.*)"))
+@borg.on(admin_cmd(pattern="f ?(.*)"))
 async def on_file_to_photo(event):
     await event.delete()
     target = await event.get_reply_message()

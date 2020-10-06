@@ -5,14 +5,13 @@ import asyncio
 import importlib.util
 import logging
 import os
-import time
 from pathlib import Path
 
 import telethon.events
 import telethon.utils
 from telethon import TelegramClient
 
-from . import hacks, utils
+from . import hacks
 
 
 class Uniborg(TelegramClient):
@@ -29,7 +28,6 @@ class Uniborg(TelegramClient):
         self._name = "LoggedIn"
         self._logger = logging.getLogger("UniBorg")
         self._plugins = {}
-        self._iiqsixfourstore = {}
         self.n_plugin_path = n_plugin_path
         self.db_plugin_path = db_plugin_path
         self.config = api_config
@@ -88,7 +86,7 @@ class Uniborg(TelegramClient):
         await self.start(**kwargs)
 
         self.me = await self.get_me()
-        self.uid = telethon.utils.get_peer_id(self.me)
+        self.uid = telethon. get_peer_id(self.me)
 
         self._logger.info(
             f"Logged in as {self.uid} "
@@ -112,8 +110,6 @@ class Uniborg(TelegramClient):
         mod.Config = self.config
         if self.config.TG_BOT_USER_NAME_BF_HER is not None:
             mod.tgbot = self.tgbot
-        mod.utils = utils
-        mod.BOT_START_TIME = time.time()
 
         spec.loader.exec_module(mod)
         self._plugins[shortname] = mod

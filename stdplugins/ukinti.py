@@ -6,6 +6,7 @@ Available Options: d, y, m, w, o, q, r """
 import logging
 from asyncio import sleep
 from datetime import datetime, timedelta
+from uniborg.util import admin_cmd
 
 from telethon.tl import functions, types
 from telethon.tl.types import (ChannelParticipantsKicked, ChatBannedRights,
@@ -18,7 +19,7 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
 logger = logging.getLogger(__name__)
 
 
-@borg.on(utils.admin_cmd(pattern="unbanall ?(.*)"))
+@borg.on(admin_cmd(pattern="unbanall ?(.*)"))
 async def _(event):
     if event.fwd_from:
         return
@@ -47,7 +48,7 @@ async def _(event):
         await event.edit("{}: {} unbanned".format(event.chat_id, p))
 
 
-@borg.on(utils.admin_cmd(pattern="ukick ?(.*)"))
+@borg.on(admin_cmd(pattern="ukick ?(.*)"))
 async def _(event):
     if event.fwd_from:
         return

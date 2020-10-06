@@ -1,5 +1,6 @@
 import json
 import logging
+from uniborg.util import admin_cmd
 
 import requests
 
@@ -11,7 +12,7 @@ logger = logging.getLogger(__name__)
 TEMPAT = ''
 
 
-@borg.on(utils.admin_cmd(pattern=("ezanvakti ?(.*)")))
+@borg.on(admin_cmd(pattern=("ezanvakti ?(.*)")))
 async def get_adzan(adzan):
     if not adzan.text.startswith("."):
         return ""

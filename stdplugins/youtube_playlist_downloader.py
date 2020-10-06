@@ -13,6 +13,7 @@ from hachoir.metadata import extractMetadata
 from hachoir.parser import createParser
 from sample_config import Config
 from telethon.tl.types import DocumentAttributeVideo
+from uniborg.util import admin_cmd, progress
 
 from youtube_dl import YoutubeDL
 from youtube_dl.utils import (ContentTooShortError, DownloadError,
@@ -28,7 +29,7 @@ logger = logging.getLogger(__name__)
 DELETE_TIMEOUT = 5
 
 
-@borg.on(utils.admin_cmd(pattern="playlist(a|v) (.*)"))
+@borg.on(admin_cmd(pattern="playlist(a|v) (.*)"))
 async def download_video(v_url):
     """ For .ytdl command, download media from YouTube and many other sites. """
     url = v_url.pattern_match.group(2)

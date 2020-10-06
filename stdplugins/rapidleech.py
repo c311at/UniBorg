@@ -17,7 +17,7 @@ import aiohttp
 from bs4 import BeautifulSoup
 from sample_config import Config
 from telethon.utils import get_inner_text
-
+from uniborg.util import admin_cmd
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 logger = logging.getLogger(__name__)
@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 logger.info(Config.OPEN_LOAD_LOGIN)
 
 
-@borg.on(utils.admin_cmd(pattern="rl"))
+@borg.on(admin_cmd(pattern="rl"))
 async def _(event):
     if event.fwd_from:
         return

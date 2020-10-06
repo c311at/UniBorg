@@ -4,6 +4,7 @@ import asyncio
 import logging
 import os
 from datetime import datetime
+from uniborg.util import admin_cmd
 
 import requests
 from sample_config import Config
@@ -18,7 +19,7 @@ def progress(current, total):
         current, total, (current / total) * 100))
 
 
-@borg.on(utils.admin_cmd(pattern="paste ?(.*)"))
+@borg.on(admin_cmd(pattern="paste ?(.*)"))
 async def _(event):
     if event.fwd_from:
         return
@@ -34,7 +35,7 @@ async def _(event):
         if previous_message.media:
             downloaded_file_name = await previous_message.download_media(
                 Config.TMP_DOWNLOAD_DIRECTORY,
-                progress_callback=utils.progress
+                progress_callback=progress
             )
             m_list = None
             with open(downloaded_file_name, "rb") as fd:

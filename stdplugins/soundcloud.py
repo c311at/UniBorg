@@ -1,6 +1,7 @@
 "download from soundcloud mp3 using telegram. Credits: https://t.me/By_Azade"
 import logging
 import os
+from uniborg.util import admin_cmd
 
 from sample_config import Config
 from sclib.asyncio import SoundcloudAPI, Track
@@ -13,7 +14,7 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
 logger = logging.getLogger(__name__)
 
 
-@borg.on(utils.admin_cmd(pattern="scdl ?(.*)"))  # pylint:disable=E0602
+@borg.on(admin_cmd(pattern="scdl ?(.*)"))  # pylint:disable=E0602
 async def _(event):
     if event.fwd_from:
         return

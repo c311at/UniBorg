@@ -11,8 +11,10 @@ from math import ceil
 from sample_config import Config
 from telethon import custom, events
 
+from uniborg.util import admin_cmd, humanbytes
 
-@borg.on(utils.admin_cmd(  # pylint:disable=E0602
+
+@borg.on(admin_cmd(  # pylint:disable=E0602
     pattern="ib (.[^ ]*) (.*)"
 ))
 async def _(event):
@@ -39,7 +41,7 @@ async def _(event):
             `{}`".format(bot_username, search_query, str(e)))
 
 
-@borg.on(utils.admin_cmd(  # pylint:disable=E0602
+@borg.on(admin_cmd(  # pylint:disable=E0602
     pattern="icb (.[^ ]*) (.[^ ]*) (.*)"
 ))
 async def _(event):
@@ -135,7 +137,7 @@ if Config.TG_BOT_USER_NAME_BF_HER is not None and tgbot is not None:
                             format_ext = formats.get("ext")
                             approx_file_size = ""
                             if "filesize" in formats:
-                                approx_file_size = utils.humanbytes(
+                                approx_file_size = humanbytes(
                                     formats["filesize"])
                             cb_string_video = "ytdl|{}|{}|{}".format(
                                 "video", format_id, format_ext)

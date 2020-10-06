@@ -8,6 +8,7 @@ import os
 import subprocess
 import time
 from datetime import datetime
+from uniborg.util import admin_cmd, progress
 
 from telethon.tl.types import DocumentAttributeVideo
 
@@ -22,7 +23,7 @@ logger = logging.getLogger(__name__)
 # thumb_image_path = Config.TMP_DOWNLOAD_DIRECTORY + "thumb_image.jpg"
 
 
-@borg.on(utils.admin_cmd(pattern="converttovideo ?(.*)"))
+@borg.on(admin_cmd(pattern="converttovideo ?(.*)"))
 async def _(event):
     if event.fwd_from:
         return

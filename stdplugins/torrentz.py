@@ -1,5 +1,6 @@
 import logging
 from datetime import datetime
+from uniborg.util import admin_cmd
 
 import requests
 
@@ -12,7 +13,7 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
 logger = logging.getLogger(__name__)
 
 
-@borg.on(utils.admin_cmd(  # pylint:disable=E0602
+@borg.on(admin_cmd(  # pylint:disable=E0602
     pattern="torrentz (torrentz2\.eu|idop\.se) (.*)"
 ))
 async def _(event):
@@ -68,7 +69,7 @@ def search_idop_se(search_query):
             "title": title,
             "hash": hash,
             "age": age,
-            "size": utils.humanbytes(size),
+            "size":  humanbytes(size),
             "seeds": seeds,
             "peers": "NA"
         })

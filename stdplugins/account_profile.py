@@ -6,6 +6,7 @@ import datetime
 import logging
 import os
 from datetime import datetime
+from uniborg.util import admin_cmd
 
 from sample_config import Config
 from telethon.tl import functions
@@ -20,7 +21,7 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
 logger = logging.getLogger(__name__)
 
 
-@borg.on(utils.admin_cmd(pattern="pbio (.*)"))  # pylint:disable=E0602
+@borg.on(admin_cmd(pattern="pbio (.*)"))  # pylint:disable=E0602
 async def _(event):
     if event.fwd_from:
         return
@@ -34,7 +35,7 @@ async def _(event):
         await event.edit(str(e))
 
 
-@borg.on(utils.admin_cmd(pattern="pname ((.|\n)*)"))  # pylint:disable=E0602,W0703
+@borg.on(admin_cmd(pattern="pname ((.|\n)*)"))  # pylint:disable=E0602,W0703
 async def _(event):
     if event.fwd_from:
         return
@@ -53,7 +54,7 @@ async def _(event):
         await event.edit(str(e))
 
 
-@borg.on(utils.admin_cmd(pattern="ppic"))  # pylint:disable=E0602
+@borg.on(admin_cmd(pattern="ppic"))  # pylint:disable=E0602
 async def _(event):
     if event.fwd_from:
         return
@@ -87,7 +88,7 @@ async def _(event):
         logger.warning(str(e))
 
 
-@borg.on(utils.admin_cmd(pattern="pf (.*)"))
+@borg.on(admin_cmd(pattern="pf (.*)"))
 async def _(event):
     """getting user profile photo last changed time"""
     if event.fwd_from:

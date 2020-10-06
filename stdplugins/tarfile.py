@@ -23,13 +23,14 @@ import shutil
 import time
 
 from sample_config import Config
+from uniborg.util import admin_cmd, progress
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 logger = logging.getLogger(__name__)
 
 
-@borg.on(utils.admin_cmd(pattern=("tar ?(.*)")))
+@borg.on(admin_cmd(pattern=("tar ?(.*)")))
 async def _(event):
     if event.fwd_from:
         return

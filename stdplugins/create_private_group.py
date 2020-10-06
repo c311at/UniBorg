@@ -1,10 +1,11 @@
 """Create Private Groups
 Available Commands:
 .create (b|g) GroupName"""
+from uniborg.util import admin_cmd
 from telethon.tl import functions, types
 
 
-@borg.on(utils.admin_cmd(pattern="create (b|g|c) (.*)"))  # pylint:disable=E0602
+@borg.on(admin_cmd(pattern="create (b|g|c) (.*)"))  # pylint:disable=E0602
 async def _(event):
     if event.fwd_from:
         return

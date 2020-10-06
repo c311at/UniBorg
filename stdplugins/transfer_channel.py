@@ -2,6 +2,8 @@
 Available Commands:
 .otransfer @username"""
 import logging
+from sample_config import Config
+from uniborg.util import admin_cmd
 
 import telethon.password as pwd_mod
 from telethon import events
@@ -13,7 +15,7 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
 logger = logging.getLogger(__name__)
 
 
-@borg.on(utils.admin_cmd(pattern="otransfer (.*)"))  # pylint:disable=E0602
+@borg.on(admin_cmd(pattern="otransfer (.*)"))  # pylint:disable=E0602
 async def _(event):
     if event.fwd_from:
         return

@@ -3,6 +3,8 @@ to know how many users have seen your message
 Syntax: .fwd as reply to any message"""
 
 import logging
+from sample_config import Config
+from uniborg.util import admin_cmd
 
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
@@ -10,7 +12,7 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
 logger = logging.getLogger(__name__)
 
 
-@borg.on(utils.admin_cmd(pattern="fwd"))
+@borg.on(admin_cmd(pattern="fwd"))
 async def _(event):
     if event.fwd_from:
         return
