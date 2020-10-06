@@ -8,6 +8,7 @@ import asyncio
 import logging
 import os
 import subprocess
+from uniborg.util import admin_cmd
 
 from telethon import errors, events
 
