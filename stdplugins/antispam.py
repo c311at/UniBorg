@@ -9,12 +9,24 @@ from requests import get
 from sample_config import Config
 from telethon import events
 from telethon.tl.functions.channels import EditBannedRequest
-
-from stdplugins.admin import BANNED_RIGHTS
+from telethon.tl.types import ChatBannedRights
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 logger = logging.getLogger(__name__)
+
+
+BANNED_RIGHTS = ChatBannedRights(
+    until_date=None,
+    view_messages=True,
+    send_messages=True,
+    send_media=True,
+    send_stickers=True,
+    send_gifs=True,
+    send_games=True,
+    send_inline=True,
+    embed_links=True,
+)
 
 
 @borg.on(events.ChatAction())
@@ -31,7 +43,6 @@ async def _(cas):
             r_dict = r.json()
             if r_dict['ok']:
                 try:
-                    more = r_dict['result']
                     who = "**Who**: {}".format(mention)
                     where = "**Where**: {}".format(mid)
                     await cas.client(
