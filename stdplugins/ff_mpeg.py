@@ -6,22 +6,22 @@ import os
 import time
 from datetime import datetime
 
-from hachoir.metadata import extractMetadata
-from hachoir.parser import createParser
 from sample_config import Config
-from uniborg.util import (admin_cmd, cult_small_video, progress,
-                          take_screen_shot)
+from uniborg.util import admin_cmd, progress
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 logger = logging.getLogger(__name__)
 
 
-@borg.on(admin_cmd(pattern="ffmpegtrim"))
-async def ff_mpeg_trim_cmd(event):
+FF_MPEG_DOWN_LOAD_MEDIA_PATH = "uniborg.media.ffmpeg"
+
+
+@borg.on(admin_cmd(pattern="ffmpegsave"))
+async def ff_mpeg_save_cmd(event):
     if event.fwd_from:
         return
-    if not os.path.exists(Config.TMP_DOWNLOAD_DIRECTORY):
+    if not os.path.exists(FF_MPEG_DOWN_LOAD_MEDIA_PATH):
         if not os.path.isdir(Config.TMP_DOWNLOAD_DIRECTORY):
             os.makedirs(Config.TMP_DOWNLOAD_DIRECTORY)
         if event.reply_to_msg_id:
@@ -31,7 +31,7 @@ async def ff_mpeg_trim_cmd(event):
                 c_time = time.time()
                 downloaded_file_name = await event.client.download_media(
                     reply_message,
-                    Config.TMP_DOWNLOAD_DIRECTORY,
+                    FF_MPEG_DOWN_LOAD_MEDIA_PATH,
                     progress_callback=lambda d, t: asyncio.get_event_loop().create_task(
                         progress(d, t, event, c_time, "trying to download")
                     )
@@ -52,7 +52,7 @@ async def ff_mpeg_trim_cmd(event):
 async def ff_mpeg_trim_cmd(event):
     if event.fwd_from:
         return
-    if not os.path.exists(Config.TMP_DOWNLOAD_DIRECTORY):
+    if not os.path.exists(FF_MPEG_DOWN_LOAD_MEDIA_PATH):
         await event.edit(f"a media file needs to be downloaded, and saved to the following path: `{FF_MPEG_DOWN_LOAD_MEDIA_PATH}`")
         return
     current_message_text = event.raw_text
@@ -63,7 +63,7 @@ async def ff_mpeg_trim_cmd(event):
         # output should be video
         cmd, start_time, end_time = cmt
         o = await cult_small_video(
-            Config.TMP_DOWNLOAD_DIRECTORY,
+            FF_MPEG_DOWN_LOAD_MEDIA_PATH,
             Config.TMP_DOWNLOAD_DIRECTORY,
             start_time,
             end_time
@@ -90,7 +90,7 @@ async def ff_mpeg_trim_cmd(event):
         # output should be image
         cmd, start_time = cmt
         o = await take_screen_shot(
-            Config.TMP_DOWNLOAD_DIRECTORY,
+            FF_MPEG_DOWN_LOAD_MEDIA_PATH,
             Config.TMP_DOWNLOAD_DIRECTORY,
             start_time
         )
@@ -120,14 +120,72 @@ async def ff_mpeg_trim_cmd(event):
     await event.edit(f"Completed Process in {ms} seconds")
 
 
-async def bleck_megic(evt_message) -> str:
-    if Config.LT_QOAN_NOE_FF_MPEG_URL is None or \
-            Config.LT_QOAN_NOE_FF_MPEG_CTD is None:
+async def take_screen_shot(video_file, output_directory, ttl):
+    # https://stackoverflow.com/a/13891070/4723940
+    out_put_file_name = output_directory + \
+        "/" + str(time.time()) + ".jpg"
+    file_genertor_command = [
+        "ffmpeg",
+        "-ss",
+        str(ttl),
+        "-i",
+        video_file,
+        "-vframes",
+        "1",
+        out_put_file_name
+    ]
+    # width = "90"
+    process = await asyncio.create_subprocess_exec(
+        *file_genertor_command,
+        # stdout must a pipe to be accessible as process.stdout
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE,
+    )
+    # Wait for the subprocess to finish
+    stdout, stderr = await process.communicate()
+    e_response = stderr.decode().strip()
+    t_response = stdout.decode().strip()
+    if os.path.lexists(out_put_file_name):
+        return out_put_file_name
+    else:
+        logger.info(e_response)
+        logger.info(t_response)
         return None
-    r_m_y = await evt_message.get_reply_message()
-    fwd_mesg = await r_m_y.forward_to(
-        Config.LT_QOAN_NOE_FF_MPEG_CTD
+
+# https://github.com/Nekmo/telegram-upload/blob/master/telegram_upload/video.py#L26
+
+
+async def cult_small_video(video_file, output_directory, start_time, end_time):
+    # https://stackoverflow.com/a/13891070/4723940
+    out_put_file_name = output_directory + \
+        "/" + str(round(time.time())) + ".mp4"
+    file_genertor_command = [
+        "ffmpeg",
+        "-i",
+        video_file,
+        "-ss",
+        start_time,
+        "-to",
+        end_time,
+        "-async",
+        "1",
+        "-strict",
+        "-2",
+        out_put_file_name
+    ]
+    process = await asyncio.create_subprocess_exec(
+        *file_genertor_command,
+        # stdout must a pipe to be accessible as process.stdout
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE,
     )
-    return Config.LT_QOAN_NOE_FF_MPEG_URL.format(
-        message_id=fwd_mesg.id
-    )
+    # Wait for the subprocess to finish
+    stdout, stderr = await process.communicate()
+    e_response = stderr.decode().strip()
+    t_response = stdout.decode().strip()
+    if os.path.lexists(out_put_file_name):
+        return out_put_file_name
+    else:
+        logger.info(e_response)
+        logger.info(t_response)
+        return None

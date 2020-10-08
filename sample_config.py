@@ -164,14 +164,8 @@ class Config:
     HEROKU_APP_NAME = os.environ.get("HEROKU_APP_NAME", None)
     HEROKU_API_KEY = os.environ.get("HEROKU_API_KEY", None)
     # for video trimming and screenshot plugins
-    LT_QOAN_NOE_FF_MPEG_CTD = os.environ.get(
-        "LT_QOAN_NOE_FF_MPEG_CTD",
-        None
-    )
-    LT_QOAN_NOE_FF_MPEG_URL = os.environ.get(
-        "LT_QOAN_NOE_FF_MPEG_URL",
-        None
-    )
+    FF_MPEG_DOWN_LOAD_MEDIA_PATH = os.environ.get(
+        "FF_MPEG_DOWN_LOAD_MEDIA_PATH", None)
 
 
 class Production(Config):
