@@ -69,9 +69,7 @@ async def _(event):
     try:
         await event.reply(members, parse_mode='html')
     except MessageTooLongError:
-        # print("too message")
         for m in split_message(members):
-            # print(m)
             await asyncio.sleep(2)
             await event.reply(f"{m}", parse_mode="html")
     del members
