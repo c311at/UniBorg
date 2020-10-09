@@ -8,7 +8,7 @@ import logging
 from telethon import events, utils
 from telethon.errors.rpcerrorlist import MessageTooLongError
 from telethon.tl import types
-
+from uniborg.util import admin_cmd
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
@@ -48,7 +48,7 @@ async def _(event):
     await event.edit(get_who_string(who), parse_mode='html')
 
 
-@borg.on(events.NewMessage(pattern=r"\.members", outgoing=True))  # pylint:disable=E0602
+@borg.on(admin_cmd(pattern="members ?(.*)"))
 async def _(event):
     members = []
     async for member in borg.iter_participants(event.chat_id):
