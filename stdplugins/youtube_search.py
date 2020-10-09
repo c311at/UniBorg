@@ -74,11 +74,13 @@ def youtube_search(query,
         location=location,
         locationRadius=location_radius).execute()
 
-    videos = []
+    videos = [
+        search_result
+        for search_result in search_response.get("items", [])
+        if search_result["id"]["kind"] == "youtube#video"
+    ]
 
-    for search_result in search_response.get("items", []):
-        if search_result["id"]["kind"] == "youtube#video":
-            videos.append(search_result)
+
     try:
         nexttok = search_response["nextPageToken"]
         return (nexttok, videos)

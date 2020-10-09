@@ -341,7 +341,7 @@ class Main():
 
     def create_out_dir(self):
         opt_dir = self.options.dir
-        return opt_dir if opt_dir else ''
+        return opt_dir or ''
 
     @staticmethod
     def create_file_name_temp(storage):
