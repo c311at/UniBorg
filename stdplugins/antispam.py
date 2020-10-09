@@ -32,9 +32,9 @@ BANNED_RIGHTS = ChatBannedRights(
 @borg.on(events.ChatAction())
 async def _(cas):
     chat = await cas.get_chat()
+    user = await cas.get_user()
     if (chat.admin_rights or chat.creator):
         if cas.user_joined or cas.user_added:
-            user = await cas.get_user()
             id = user.id
             mid = "{}".format(chat.title)
             mention = "[{}](tg://user?id={})".format(user.first_name, id)
