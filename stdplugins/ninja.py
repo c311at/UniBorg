@@ -3,9 +3,10 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 import asyncio
 import logging
-from uniborg.util import admin_cmd, is_read
 
 from telethon import events
+from telethon.utils import get_peer_id
+from uniborg.util import admin_cmd, is_read
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
@@ -22,7 +23,7 @@ async def get_target_message(event):
 
 
 async def await_read(chat, message):
-    chat = telethon. get_peer_id(chat)
+    chat = get_peer_id(chat)
 
     async def read_filter(read_event):
         return (read_event.chat_id == chat
