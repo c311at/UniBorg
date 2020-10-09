@@ -266,7 +266,7 @@ async def ban(eventBan):
 @borg.on(events.NewMessage(outgoing=True, pattern="^.bots$"))
 async def listbots(eventListBots):
     info = await eventListBots.client.get_entity(eventListBots.chat_id)
-    title = info.title if info.title else "this chat"
+    title = info.title or "this chat"
     mentions = f'<b>Bots in {title}:</b>\n'
     try:
         if isinstance(eventListBots.to_id, PeerChat):
@@ -640,7 +640,7 @@ async def listadmins(eventListAdmins):
         await eventListAdmins.edit("I don't think this is a group.")
         return
     info = await eventListAdmins.client.get_entity(eventListAdmins.chat_id)
-    title = info.title if info.title else "this chat"
+    title = info.title or "this chat"
     mentions = f'<b>Admins in {title}:</b> \n'
     try:
         async for user in eventListAdmins.client.iter_participants(
@@ -759,7 +759,7 @@ async def list_users(eventListUsers):
         await eventListUsers.edit("Are you sure this is a group?")
         return
     info = await eventListUsers.client.get_entity(eventListUsers.chat_id)
-    title = info.title if info.title else "this chat"
+    title = info.title or "this chat"
     mentions = 'Users in {}: \n'.format(title)
     try:
         if eventListUsers.pattern_match.group(1):

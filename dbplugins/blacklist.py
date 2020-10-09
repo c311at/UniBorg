@@ -81,8 +81,10 @@ async def on_delete_blacklist(event):
     to_unblacklist = list(
         {trigger.strip() for trigger in text.split("\n") if trigger.strip()}
     )
-    successful = 0
-    for trigger in to_unblacklist:
-        if sql.rm_from_blacklist(event.chat_id, trigger.lower()):
-            successful += 1
+    successful = sum(
+        1
+        for trigger in to_unblacklist
+        if sql.rm_from_blacklist(event.chat_id, trigger.lower())
+    )
+
     await event.edit(f"Removed {successful} / {len(to_unblacklist)} from the blacklist")

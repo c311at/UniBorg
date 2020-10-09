@@ -53,31 +53,11 @@ async def _(event):
 
         for item_ in song_result:
 
-            if "(FLAC)" in item_.title:
-
-                j = await item_.click(
-                    event.chat_id,
-                    reply_to=event.reply_to_msg_id,
-                    hide_via=True,
-                )
-
-                k = await event.respond(j)
-                await j.delete()
-                await k.edit("Kanal Linki:\nhttps://t.me/joinchat/AAAAAE8NqbV48l7ls-pFtQ")
-
-            elif "(MP3_320)" in item_.title:
-
-                j = await item_.click(
-                    event.chat_id,
-                    reply_to=event.reply_to_msg_id,
-                    hide_via=True,
-                )
-
-                k = await event.respond(j)
-                await j.delete()
-                await k.edit("Kanal Linki:\nhttps://t.me/joinchat/AAAAAE8NqbV48l7ls-pFtQ")
-
-            elif "(MP3_128)" in item_.title:
+            if (
+                "(FLAC)" in item_.title
+                or "(MP3_320)" in item_.title
+                or "(MP3_128)" in item_.title
+            ):
 
                 j = await item_.click(
                     event.chat_id,
@@ -95,31 +75,11 @@ async def _(event):
         song_result = await event.client.inline_query("spotify_to_mp3_bot", msg.message)
         for item in song_result:
 
-            if "(FLAC)" in item.title:
-
-                j = await item.click(
-                    event.chat_id,
-                    reply_to=event.reply_to_msg_id,
-                    hide_via=True,
-                )
-
-                k = await event.respond(j)
-                await j.delete()
-                await k.edit("Kanal Linki:\nhttps://t.me/joinchat/AAAAAE8NqbV48l7ls-pFtQ")
-
-            elif "(MP3_320)" in item.title:
-
-                j = await item.click(
-                    event.chat_id,
-                    reply_to=event.reply_to_msg_id,
-                    hide_via=True,
-                )
-
-                k = await event.respond(j)
-                await j.delete()
-                await k.edit("Kanal Linki:\nhttps://t.me/joinchat/AAAAAE8NqbV48l7ls-pFtQ")
-
-            elif "(MP3_128)" in item.title:
+            if (
+                "(FLAC)" in item.title
+                or "(MP3_320)" in item.title
+                or "(MP3_128)" in item.title
+            ):
 
                 j = await item.click(
                     event.chat_id,

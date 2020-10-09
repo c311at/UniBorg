@@ -22,10 +22,9 @@ async def monito_p_m_s(event):
             try:
                 e = await event.client.get_entity(Config.PM_LOGGR_BOT_API_ID)
                 await event.client.forward_messages(
-                    e,
-                    event.message if event.message else event.media,
-                    silent=True
+                    e, event.message or event.media, silent=True
                 )
+
             except Exception as e:
                 # logger.warning(str(e))
                 exc_type, exc_obj, exc_tb = sys.exc_info()

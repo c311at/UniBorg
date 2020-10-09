@@ -80,7 +80,7 @@ async def download(dryb):
             display_message = None
             while not downloader.isFinished():
                 status = downloader.get_status().capitalize()
-                total_length = downloader.filesize if downloader.filesize else None
+                total_length = downloader.filesize or None
                 downloaded = downloader.get_dl_size()
                 now = time.time()
                 diff = now - c_time
@@ -160,7 +160,7 @@ async def download(dryb):
 # Get mime type and name of given file
 def file_ops(file_path):
     mime_type = guess_type(file_path)[0]
-    mime_type = mime_type if mime_type else "text/plain"
+    mime_type = mime_type or "text/plain"
     file_name = file_path.split("/")[-1]
     return file_name, mime_type
 

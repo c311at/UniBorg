@@ -84,7 +84,7 @@ async def mega_download(url, megadl):
             return
         while not downloader.isFinished():
             status = downloader.get_status().capitalize()
-            total_length = downloader.filesize if downloader.filesize else None
+            total_length = downloader.filesize or None
             downloaded = downloader.get_dl_size()
             percentage = int(downloader.get_progress() * 100)
             progress = downloader.get_progress_bar()
