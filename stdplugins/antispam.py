@@ -37,7 +37,7 @@ async def _(cas):
             user = await cas.get_user()
             id = user.id
             mid = "{}".format(chat.title)
-            mention = "[{}](tg://user?id={})".format(user.first_name, user.id)
+            mention = "[{}](tg://user?id={})".format(user.first_name, id)
 
             r = get(f'https://api.cas.chat/check?user_id={id}')
             r_dict = r.json()
@@ -48,13 +48,13 @@ async def _(cas):
                     await cas.client(
                         EditBannedRequest(
                             cas.chat_id,
-                            user.id,
+                            id,
                             BANNED_RIGHTS
                         )
                     )
                     # await borg.edit_permissions(entity, user.id, view_messages=False)
                     await cas.client.send_message(
-                        Config.PRIVATE_GROUP_BOT_API_ID,
+                        Config.SPAM_WATCH_LOG_CHANNEL,
                         f"**antispam log** \n{who}\n{where}\n**Action**: Banned",
                         link_preview=False
                     )
