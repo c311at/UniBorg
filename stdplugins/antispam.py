@@ -33,7 +33,7 @@ BANNED_RIGHTS = ChatBannedRights(
 async def _(cas):
     chat = await cas.get_chat()
     user = await cas.get_user()
-    if (chat.admin_rights or chat.creator):
+    if not chat.creator or not chat.admin_rights:
         if cas.user_joined or cas.user_added:
             id = cas.user_id
             mid = "{}".format(chat.title)
