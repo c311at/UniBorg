@@ -35,7 +35,7 @@ async def _(cas):
     user = await cas.get_user()
     if (chat.admin_rights or chat.creator):
         if cas.user_joined or cas.user_added:
-            id = user.id
+            id = cas.user_id
             mid = "{}".format(chat.title)
             mention = "[{}](tg://user?id={})".format(user.first_name, id)
 
@@ -52,7 +52,6 @@ async def _(cas):
                             BANNED_RIGHTS
                         )
                     )
-                    # await borg.edit_permissions(entity, user.id, view_messages=False)
                     await cas.client.send_message(
                         Config.SPAM_WATCH_LOG_CHANNEL,
                         f"**antispam log** \n{who}\n{where}\n**Action**: Banned",
