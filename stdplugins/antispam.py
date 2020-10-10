@@ -35,11 +35,10 @@ async def _(cas):
     user = await cas.get_user()
     if (chat.admin_rights or chat.creator):
         if cas.user_joined or cas.user_added:
-            id = user.id
             mid = "{}".format(chat.title)
-            mention = "[{}](tg://user?id={})".format(user.first_name, id)
+            mention = "[{}](tg://user?id={})".format(user.first_name, user.id)
 
-            r = get(f'https://api.cas.chat/check?user_id={id}')
+            r = get(f'https://api.cas.chat/check?user_id={user.id}')
             r_dict = r.json()
             if r_dict['ok']:
                 try:
@@ -48,14 +47,14 @@ async def _(cas):
                     await cas.client(
                         EditBannedRequest(
                             cas.chat_id,
-                            id,
+                            user.id,
                             BANNED_RIGHTS
                         )
                     )
                     # await borg.edit_permissions(entity, user.id, view_messages=False)
                     await cas.client.send_message(
                         Config.SPAM_WATCH_LOG_CHANNEL,
-                        f"**antispam log** \n{who}\n{where}\n**Action**: Banned",
+                        f"**antispam log** \n{who}\nID: `{user.id}`\n{where}\n**Action**: Banned",
                         link_preview=False
                     )
                 except (Exception) as exc:
