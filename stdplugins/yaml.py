@@ -5,9 +5,9 @@
 """Get Detailed info about any message
 Syntax: .yaml"""
 import io
-from sample_config import Config
 
-from uniborg.util import admin_cmd, yaml_format
+from sample_config import Config
+from uniborg.util import admin_cmd, parse_pre, yaml_format
 
 
 @borg.on(admin_cmd(pattern="yaml"))
