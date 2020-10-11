@@ -41,6 +41,7 @@ def download_video(url):
     video_to_download = request.urlopen(url).read()
     with open(Config.TMP_DOWNLOAD_DIRECTORY + 'pinterest_video.mp4', 'wb') as video_stream:
         video_stream.write(video_to_download)
+    return Config.TMP_DOWNLOAD_DIRECTORY + 'pinterest_video.mp4'
 
 
 @borg.on(admin_cmd(pattern="pvid ?(.*)"))
