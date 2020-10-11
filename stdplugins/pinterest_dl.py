@@ -36,6 +36,8 @@ def get_download_url(link):
 
 # Function to download video
 def download_video(url):
+    if not os.path.isdir(Config.TMP_DOWNLOAD_DIRECTORY):
+        os.makedirs(Config.TMP_DOWNLOAD_DIRECTORY)
     video_to_download = request.urlopen(url).read()
     with open(Config.TMP_DOWNLOAD_DIRECTORY + 'pinterest_video.mp4', 'wb') as video_stream:
         video_stream.write(video_to_download)
