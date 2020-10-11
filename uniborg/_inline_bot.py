@@ -8,9 +8,9 @@ import os
 import re
 from math import ceil
 
-from sample_config import Config
 from telethon import custom, events
 
+from sample_config import Config
 from uniborg.util import admin_cmd, humanbytes
 
 

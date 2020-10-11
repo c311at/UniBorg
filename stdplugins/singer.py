@@ -2,9 +2,10 @@
 command: .singer singer name - song name 
 """
 import asyncio
-from uniborg.util import admin_cmd
 
 from PyLyrics import *
+
+from uniborg.util import admin_cmd
 
 
 @borg.on(admin_cmd(pattern="singer (.*)"))

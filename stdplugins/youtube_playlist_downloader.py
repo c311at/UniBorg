@@ -11,15 +11,15 @@ import time
 
 from hachoir.metadata import extractMetadata
 from hachoir.parser import createParser
-from sample_config import Config
 from telethon.tl.types import DocumentAttributeVideo
-from uniborg.util import admin_cmd, progress
-
 from youtube_dl import YoutubeDL
 from youtube_dl.utils import (ContentTooShortError, DownloadError,
                               ExtractorError, GeoRestrictedError,
                               MaxDownloadsReached, PostProcessingError,
                               UnavailableVideoError, XAttrMetadataError)
+
+from sample_config import Config
+from uniborg.util import admin_cmd, progress
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

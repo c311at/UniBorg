@@ -5,8 +5,9 @@ import logging
 import os
 import sys
 
-from sample_config import Config
 from telethon import events
+
+from sample_config import Config
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.WARN)

@@ -1,7 +1,8 @@
 import threading
 
-from sql_helpers import BASE, SESSION
 from sqlalchemy import Column, Integer, String
+
+from sql_helpers import BASE, SESSION
 
 DEF_COUNT = 0
 DEF_LIMIT = 0

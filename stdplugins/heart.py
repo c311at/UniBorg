@@ -4,10 +4,10 @@
 import asyncio
 import logging
 from collections import deque
-from uniborg.util import admin_cmd
 
 from telethon import events
 
+from uniborg.util import admin_cmd
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

@@ -6,13 +6,14 @@ Available Options: d, y, m, w, o, q, r """
 import logging
 from asyncio import sleep
 from datetime import datetime, timedelta
-from uniborg.util import admin_cmd
 
 from telethon.tl import functions, types
 from telethon.tl.types import (ChannelParticipantsKicked, ChatBannedRights,
                                UserStatusEmpty, UserStatusLastMonth,
                                UserStatusLastWeek, UserStatusOffline,
                                UserStatusOnline, UserStatusRecently)
+
+from uniborg.util import admin_cmd
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

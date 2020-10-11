@@ -1,7 +1,7 @@
 from datetime import datetime
 from math import sqrt
-from uniborg.util import admin_cmd
 
+from emoji import emojize
 from telethon.errors import (ChannelInvalidError, ChannelPrivateError,
                              ChannelPublicGroupNaError)
 from telethon.tl.functions.channels import (GetFullChannelRequest,
@@ -12,7 +12,7 @@ from telethon.tl.types import (ChannelParticipantsAdmins,
                                MessageActionChannelMigrateFrom)
 from telethon.utils import get_input_location
 
-from emoji import emojize
+from uniborg.util import admin_cmd
 
 
 @borg.on(admin_cmd(pattern="chatinfo(?: |$)(.*)"))

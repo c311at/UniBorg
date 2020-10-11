@@ -20,11 +20,12 @@
 """
 
 import logging
-from uniborg.util import admin_cmd
 
 from telethon.tl.functions.photos import (DeletePhotosRequest,
                                           GetUserPhotosRequest)
 from telethon.tl.types import InputPhoto
+
+from uniborg.util import admin_cmd
 
 logger = logging.getLogger(__name__)
 

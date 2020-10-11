@@ -8,10 +8,10 @@ import asyncio
 import logging
 import os
 import subprocess
-from uniborg.util import admin_cmd
 
 from telethon import errors, events
 
+from uniborg.util import admin_cmd
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

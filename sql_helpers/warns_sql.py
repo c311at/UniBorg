@@ -1,8 +1,9 @@
 import threading
 
-from sql_helpers import BASE, SESSION
 from sqlalchemy import (Boolean, Column, Integer, String, UnicodeText,
                         distinct, func)
+
+from sql_helpers import BASE, SESSION
 
 
 class Warns(BASE):

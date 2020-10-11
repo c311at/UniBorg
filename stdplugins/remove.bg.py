@@ -19,9 +19,11 @@ import io
 import logging
 import os
 from datetime import datetime
-from uniborg.util import admin_cmd
-from sample_config import Config
+
 import requests
+
+from sample_config import Config
+from uniborg.util import admin_cmd
 
 
 @borg.on(admin_cmd(pattern="remove\.bg ?(.*)"))

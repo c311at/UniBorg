@@ -3,11 +3,12 @@ Reply to a file with .f to send it as a photo
 """
 import logging
 from io import BytesIO
-from uniborg.util import admin_cmd
 
 from telethon import types
 from telethon.errors import PhotoInvalidDimensionsError
 from telethon.tl.functions.messages import SendMediaRequest
+
+from uniborg.util import admin_cmd
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

@@ -6,8 +6,8 @@ logger = logging.getLogger(__name__)
 
 
 def __list_all_modules():
-    from os.path import dirname, basename, isfile
     import glob
+    from os.path import basename, dirname, isfile
 
     mod_paths = glob.glob(dirname(__file__) + "/*.py")
     return [

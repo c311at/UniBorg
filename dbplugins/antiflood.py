@@ -1,11 +1,11 @@
 import asyncio
 import logging
-from uniborg.util import admin_cmd, is_admin
 
 from telethon.tl.functions.channels import EditBannedRequest
 from telethon.tl.types import ChatBannedRights
-import sql_helpers.antiflood_sql as sql
 
+import sql_helpers.antiflood_sql as sql
+from uniborg.util import admin_cmd, is_admin
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

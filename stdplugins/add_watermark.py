@@ -3,10 +3,11 @@ import os
 import shutil
 import time
 from datetime import datetime
-from uniborg.util import admin_cmd, progress
 
 from PyPDF2 import PdfFileReader, PdfFileWriter
+
 from sample_config import Config
+from uniborg.util import admin_cmd, progress
 
 
 @borg.on(admin_cmd(pattern="watermark"))

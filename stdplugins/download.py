@@ -10,9 +10,10 @@ import time
 from datetime import datetime
 
 from pySmartDL import SmartDL
-from sample_config import Config
 from telethon import events
 from telethon.tl.types import DocumentAttributeVideo
+
+from sample_config import Config
 from uniborg.util import admin_cmd, humanbytes, progress, time_formatter
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',

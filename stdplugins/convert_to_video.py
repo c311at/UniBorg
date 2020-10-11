@@ -8,14 +8,13 @@ import os
 import subprocess
 import time
 from datetime import datetime
-from uniborg.util import admin_cmd, progress
-
-from telethon.tl.types import DocumentAttributeVideo
 
 from hachoir.metadata import extractMetadata
 from hachoir.parser import createParser
-from sample_config import Config
+from telethon.tl.types import DocumentAttributeVideo
 
+from sample_config import Config
+from uniborg.util import admin_cmd, progress
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

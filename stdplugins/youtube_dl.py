@@ -12,8 +12,9 @@ import os
 import re
 from datetime import datetime
 
-from sample_config import Config
 from telethon import events
+
+from sample_config import Config
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

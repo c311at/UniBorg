@@ -8,17 +8,16 @@ import io
 import math
 import os
 import random
-from uniborg.util import admin_cmd
 import urllib.request
 
+from PIL import Image
 from telethon import events
 from telethon.tl.functions.messages import GetStickerSetRequest
 from telethon.tl.types import (DocumentAttributeFilename,
                                DocumentAttributeSticker, InputStickerSetID,
                                MessageMediaPhoto)
 
-from PIL import Image
-
+from uniborg.util import admin_cmd
 
 KANGING_STR = [
     "Using Witchery to kang this sticker...",

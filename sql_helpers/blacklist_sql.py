@@ -1,7 +1,8 @@
 import threading
 
-from sql_helpers import BASE, SESSION
 from sqlalchemy import Column, String, UnicodeText, distinct, func
+
+from sql_helpers import BASE, SESSION
 
 
 class BlackListFilters(BASE):

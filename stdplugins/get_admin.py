@@ -1,10 +1,12 @@
 """Get Administrators of any Chat*
 Syntax: .get_admin"""
 import logging
+
+from telethon.tl.types import (ChannelParticipantAdmin,
+                               ChannelParticipantCreator,
+                               ChannelParticipantsAdmins)
+
 from uniborg.util import admin_cmd
-from telethon.tl.types import (
-    ChannelParticipantsAdmins, ChannelParticipantAdmin, ChannelParticipantCreator
-)
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

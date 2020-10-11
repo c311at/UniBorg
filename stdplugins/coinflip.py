@@ -3,6 +3,7 @@ Syntax: .coinflip [optional_choice]"""
 import logging
 import random
 import re
+
 from uniborg.util import admin_cmd
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',

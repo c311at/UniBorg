@@ -1,6 +1,5 @@
 from database.mongo import cli
 
-
 cli = cli["Userbot"]["Snips"]
 
 

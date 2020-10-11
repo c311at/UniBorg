@@ -7,12 +7,12 @@ By:- JaskaranSM ( @Zero_cool7870 )
 """
 
 import logging
-from uniborg.util import admin_cmd
 
 from pymongo import MongoClient
-from sample_config import Config
 from telethon import events
 
+from sample_config import Config
+from uniborg.util import admin_cmd
 
 logging.basicConfig(level=logging.INFO)
 

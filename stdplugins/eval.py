@@ -9,10 +9,11 @@ import inspect
 import io
 import sys
 import traceback
-from uniborg.util import admin_cmd
+
+from telethon import errors, events, functions, types
 
 from sample_config import Config
-from telethon import errors, events, functions, types
+from uniborg.util import admin_cmd
 
 
 @borg.on(admin_cmd(pattern="eval"))

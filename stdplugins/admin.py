@@ -30,7 +30,6 @@ import asyncio
 from asyncio import sleep
 from os import remove
 
-from sample_config import Config
 from telethon import events
 from telethon.errors import (BadRequestError, ChatAdminRequiredError,
                              ImageProcessFailedError, PhotoCropSizeSmallError,
@@ -45,6 +44,8 @@ from telethon.tl.types import (ChannelParticipantsAdmins,
                                ChannelParticipantsBots, ChatAdminRights,
                                ChatBannedRights, MessageEntityMentionName,
                                MessageMediaPhoto, PeerChat)
+
+from sample_config import Config
 from uniborg.util import admin_cmd
 
 LOGGING_CHATID = Config.PRIVATE_GROUP_BOT_API_ID

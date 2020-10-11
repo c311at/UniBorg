@@ -10,11 +10,11 @@ import os
 import time
 from datetime import datetime
 
-from sample_config import Config
-from telethon import events
-from uniborg.util import admin_cmd
-
 import youtube_dl
+from telethon import events
+
+from sample_config import Config
+from uniborg.util import admin_cmd
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

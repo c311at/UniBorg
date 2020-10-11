@@ -7,17 +7,18 @@ import asyncio
 import datetime
 import math
 import os
-from uniborg.util import admin_cmd
 import zipfile
 from collections import defaultdict
 from io import BytesIO
 
-from sample_config import Config
 from telethon.errors import MessageNotModifiedError
 from telethon.errors.rpcerrorlist import StickersetInvalidError
 from telethon.tl.functions.messages import GetStickerSetRequest
 from telethon.tl.types import (DocumentAttributeSticker, InputStickerSetID,
                                InputStickerSetShortName, MessageMediaPhoto)
+
+from sample_config import Config
+from uniborg.util import admin_cmd
 
 
 @borg.on(admin_cmd(pattern="kangsticker ?(.*)"))

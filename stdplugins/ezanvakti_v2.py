@@ -2,12 +2,13 @@ import datetime
 import json
 import logging
 from datetime import datetime
-from uniborg.util import admin_cmd
 
 import pytz
 
 # from bin.namaz_vakti import namazvakti
 from bin.namaz_vakti.namazvakti import namazvakti
+from uniborg.util import admin_cmd
+
 # from ..bin.namaz_vakti import namazvakti
 
 

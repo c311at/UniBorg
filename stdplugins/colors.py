@@ -2,9 +2,10 @@
 Syntax: .color <color_code>"""
 import logging
 import os
-from uniborg.util import admin_cmd
 
 from PIL import Image, ImageColor
+
+from uniborg.util import admin_cmd
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

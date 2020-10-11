@@ -6,6 +6,7 @@ from random import choice, randint
 import requests
 from bs4 import BeautifulSoup as soup
 from PIL import Image
+
 from sample_config import Config
 from uniborg.util import admin_cmd
 

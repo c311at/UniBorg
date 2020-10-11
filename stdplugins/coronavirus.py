@@ -1,7 +1,8 @@
 """CoronaVirus LookUp
 Syntax: .coronavirus <country>"""
-from uniborg.util import admin_cmd
 from covid import Covid
+
+from uniborg.util import admin_cmd
 
 
 @borg.on(admin_cmd(pattern="corona (.*)"))

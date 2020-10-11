@@ -11,10 +11,11 @@ import asyncio
 import logging
 import re
 
-from sql_helpers.filters_sql import (add_filter, get_all_filters, get_filter,
-                                     remove_all_filters, remove_filter)
 from telethon import events
 from telethon.tl import types
+
+from sql_helpers.filters_sql import (add_filter, get_all_filters, get_filter,
+                                     remove_all_filters, remove_filter)
 from uniborg.util import admin_cmd
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',

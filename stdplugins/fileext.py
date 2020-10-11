@@ -1,10 +1,11 @@
 """Get info about a File Extension
 Syntax: .filext EXTENSION"""
 import logging
-from uniborg.util import admin_cmd
 
 import requests
 from bs4 import BeautifulSoup
+
+from uniborg.util import admin_cmd
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

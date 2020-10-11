@@ -5,9 +5,9 @@ import logging
 import os
 import time
 from datetime import datetime
-from uniborg.util import admin_cmd, progress, run_command
 
 from sample_config import Config
+from uniborg.util import admin_cmd, progress, run_command
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

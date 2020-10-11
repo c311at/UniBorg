@@ -1,8 +1,8 @@
 
 from asyncio import sleep
-from uniborg.util import admin_cmd
 
 from sample_config import Config
+from uniborg.util import admin_cmd
 
 
 @borg.on(admin_cmd(pattern="unmutechat"))

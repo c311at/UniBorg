@@ -5,9 +5,9 @@ Available Commands:
 .ungban REASON"""
 import asyncio
 import logging
-from uniborg.util import admin_cmd
 
 from sample_config import Config
+from uniborg.util import admin_cmd
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

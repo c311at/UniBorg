@@ -5,8 +5,9 @@ Nobody is reponsible for your account,
 Your account might get banned for offensive use of this script,
 The below script is only intended for "fun" and "entertainment"
 and please read https://t.me/UniBorg/39 before proceeding to run this!"""
-from uniborg.util import admin_cmd
 from telethon.tl.types import InputMediaDice
+
+from uniborg.util import admin_cmd
 
 # EMOJI CONSTANTS
 DART_E_MOJI = "🎯"

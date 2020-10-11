@@ -3,17 +3,16 @@ Commands:
 .clearwelcome
 .savewelcome <Welcome Message>"""
 
-from uniborg.util import admin_cmd
-from sql_helpers.welcome_sql import get_current_welcome_settings, \
-    add_welcome_setting, rm_welcome_setting, update_previous_welcome
+import logging
+
+from telethon import events
+
+from sample_config import Config
 from sql_helpers.welcome_sql import (add_welcome_setting,
                                      get_current_welcome_settings,
                                      rm_welcome_setting,
                                      update_previous_welcome)
-from sample_config import Config
-from telethon import events
-import logging
-
+from uniborg.util import admin_cmd
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)

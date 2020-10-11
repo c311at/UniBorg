@@ -1,8 +1,9 @@
 
-from uniborg.util import admin_cmd
 import requests
 import urllib3
 from bs4 import BeautifulSoup
+
+from uniborg.util import admin_cmd
 
 
 def searchTureng(word):

@@ -1,11 +1,12 @@
 import asyncio
 import html
-from uniborg.util import admin_cmd, is_admin
 
-import sql_helpers.warns_sql as sql
 from telethon import events
 from telethon.tl.functions.channels import EditBannedRequest
 from telethon.tl.types import ChatBannedRights
+
+import sql_helpers.warns_sql as sql
+from uniborg.util import admin_cmd, is_admin
 
 banned_rights = ChatBannedRights(
     until_date=None,

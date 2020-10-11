@@ -19,16 +19,16 @@ import logging
 import os
 import time
 from mimetypes import guess_type
-from uniborg.util import admin_cmd, progress
 
 import aiofiles
 import aiohttp
 from apiclient.discovery import build
 from httplib2 import Http
 from oauth2client import client, file
-from sample_config import Config
 from telethon import events
 
+from sample_config import Config
+from uniborg.util import admin_cmd, progress
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
