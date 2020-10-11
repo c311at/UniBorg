@@ -24,6 +24,7 @@ logger = logging.getLogger(__name__)
 async def ff_mpeg_trim_cmd(event):
     if event.fwd_from:
         return
+    message = await event.edit("`Progressing...`")
     if not os.path.exists(FF_MPEG_DOWN_LOAD_MEDIA_PATH):
         if not os.path.isdir(Config.TMP_DOWNLOAD_DIRECTORY):
             os.makedirs(Config.TMP_DOWNLOAD_DIRECTORY)
@@ -48,13 +49,14 @@ async def ff_mpeg_trim_cmd(event):
         else:
             await event.edit("Reply to a Telegram media file")
     else:
-        await event.edit("a media file already exists in path. Please remove the media and try again!")
+        await message.edit("a media file already exists in path. Please remove the media and try again!")
 
 
 @borg.on(admin_cmd(pattern="ffmpegtrim"))
 async def ff_mpeg_trim_cmd(event):
     if event.fwd_from:
         return
+    message = await event.edit("`Progressing...`")
     if not os.path.exists(FF_MPEG_DOWN_LOAD_MEDIA_PATH):
         await event.edit(f"a media file needs to be downloaded, and saved to the following path: `{FF_MPEG_DOWN_LOAD_MEDIA_PATH}`")
         return
@@ -120,7 +122,7 @@ async def ff_mpeg_trim_cmd(event):
         return
     end = datetime.now()
     ms = (end - start).seconds
-    await event.edit(f"Completed Process in {ms} seconds")
+    await message.edit(f"Completed Process in {ms} seconds")
 
 
 async def take_screen_shot(video_file, output_directory, ttl):
