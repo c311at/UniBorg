@@ -4,7 +4,6 @@ from asyncio.exceptions import TimeoutError
 
 from telethon import events
 from telethon.errors.rpcerrorlist import YouBlockedUserError
-
 from uniborg.util import admin_cmd, humanbytes
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
@@ -161,13 +160,13 @@ async def _(event):
                             if first.media:
                                 msj = f"[{first.media.document.attributes[1].file_name}](https://t.me/joinchat/AAAAAE8NqbV48l7ls-pFtQ)\n`{humanbytes(first.media.document.size)}`"
                                 await event.client.send_file(event.chat_id, first, caption=msj)
+                                await msg.delete()
                             resp = await conv.get_response()
                             if resp.media:
                                 msj = f"[{resp.media.document.attributes[1].file_name}](https://t.me/joinchat/AAAAAE8NqbV48l7ls-pFtQ)\n`{humanbytes(resp.media.document.size)}`"
                                 await event.client.send_file(event.chat_id, resp, caption=msj)
+                                await msg.delete()
             except YouBlockedUserError:
                 await event.edit("**Error:** `unblock` @DeezLoadBot `and retry!`")
             except TimeoutError:
                 return
-
-        await msg.delete()
