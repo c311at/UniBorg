@@ -61,6 +61,7 @@ async def ff_mpeg_save_cmd(event):
 async def ff_mpeg_trim_cmd(event):
     if event.fwd_from:
         return
+    await event.delete()
     if not os.path.exists(FF_MPEG_DOWN_LOAD_MEDIA_PATH):
         k = await event.client.send_message(event.chat_id, f"a media file needs to be downloaded, and saved to the following path: `{FF_MPEG_DOWN_LOAD_MEDIA_PATH}`")
         await asyncio.sleep(4)
