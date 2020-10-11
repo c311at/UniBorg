@@ -37,7 +37,7 @@ def get_download_url(link):
 # Function to download video
 def download_video(url):
     video_to_download = request.urlopen(url).read()
-    with open('pinterest_video.mp4', 'wb') as video_stream:
+    with open(Config.TMP_DOWNLOAD_DIRECTORY + 'pinterest_video.mp4', 'wb') as video_stream:
         video_stream.write(video_to_download)
 
 
@@ -45,7 +45,8 @@ def download_video(url):
 async def pinterst_vid_img(event):
     url = event.pattern_match.group(1)
     get_url = get_download_url(url)
-    j = wget.download(get_url, Config.TMP_DOWNLOAD_DIRECTORY+"video.mp4")
+    # j = wget.download(get_url, Config.TMP_DOWNLOAD_DIRECTORY+"video.mp4")
+    j = download_video(get_url)
     thumb_image_path = Config.TMP_DOWNLOAD_DIRECTORY + "thumb_image.jpg"
     if not os.path.isdir(Config.TMP_DOWNLOAD_DIRECTORY):
         os.makedirs(Config.TMP_DOWNLOAD_DIRECTORY)
