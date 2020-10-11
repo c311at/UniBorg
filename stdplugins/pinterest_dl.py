@@ -3,7 +3,6 @@
 import asyncio
 import logging
 import os
-import shutil
 import time
 from urllib import request
 
