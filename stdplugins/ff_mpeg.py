@@ -9,7 +9,6 @@ from datetime import datetime
 
 from hachoir.metadata import extractMetadata
 from hachoir.parser import createParser
-
 from sample_config import Config
 from uniborg.util import admin_cmd, progress
 
@@ -53,8 +52,8 @@ async def ff_mpeg_save_cmd(event):
             await asyncio.sleep(4)
             await f.delete()
     else:
-        g = await event.client.send_message(event.chat_id, "a media file already exists in path. Please remove the media and try again!")
-        await asyncio.sleep(4)
+        g = await event.client.send_message(event.chat_id, "a media file already exists in path. Please remove the media and try again! use `.exec rm -rf uniborg.media.ffmpeg`")
+        await asyncio.sleep(8)
         await g.delete()
 
 
