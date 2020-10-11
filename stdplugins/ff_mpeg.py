@@ -1,37 +1,38 @@
 """FFMpeg for @UniBorg
 """
 import asyncio
+import io
 import logging
 import os
 import time
 from datetime import datetime
 
+from hachoir.metadata import extractMetadata
+from hachoir.parser import createParser
 from sample_config import Config
 from uniborg.util import admin_cmd, progress
 
+FF_MPEG_DOWN_LOAD_MEDIA_PATH = "uniborg.media.ffmpeg"
+
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
+
 logger = logging.getLogger(__name__)
 
 
-FF_MPEG_DOWN_LOAD_MEDIA_PATH = "uniborg.media.ffmpeg"
-
-
 @borg.on(admin_cmd(pattern="ffmpegsave"))
-async def ff_mpeg_save_cmd(event):
+async def ff_mpeg_trim_cmd(event):
     if event.fwd_from:
         return
     if not os.path.exists(FF_MPEG_DOWN_LOAD_MEDIA_PATH):
-        os.makedirs(FF_MPEG_DOWN_LOAD_MEDIA_PATH)
         if not os.path.isdir(Config.TMP_DOWNLOAD_DIRECTORY):
             os.makedirs(Config.TMP_DOWNLOAD_DIRECTORY)
-
         if event.reply_to_msg_id:
             start = datetime.now()
             reply_message = await event.get_reply_message()
             try:
                 c_time = time.time()
-                downloaded_file_name = await event.client.download_media(
+                downloaded_file_name = await borg.download_media(
                     reply_message,
                     FF_MPEG_DOWN_LOAD_MEDIA_PATH,
                     progress_callback=lambda d, t: asyncio.get_event_loop().create_task(
@@ -47,7 +48,7 @@ async def ff_mpeg_save_cmd(event):
         else:
             await event.edit("Reply to a Telegram media file")
     else:
-        await event.edit(f"a media file already exists in path. Please remove the media and try again!\n`.exec rm {FF_MPEG_DOWN_LOAD_MEDIA_PATH}`")
+        await event.edit("a media file already exists in path. Please remove the media and try again!")
 
 
 @borg.on(admin_cmd(pattern="ffmpegtrim"))
@@ -73,7 +74,7 @@ async def ff_mpeg_trim_cmd(event):
         logger.info(o)
         try:
             c_time = time.time()
-            await event.client.send_file(
+            await borg.send_file(
                 event.chat_id,
                 o,
                 caption=" ".join(cmt[1:]),
@@ -99,7 +100,7 @@ async def ff_mpeg_trim_cmd(event):
         logger.info(o)
         try:
             c_time = time.time()
-            await event.client.send_file(
+            await borg.send_file(
                 event.chat_id,
                 o,
                 caption=" ".join(cmt[1:]),

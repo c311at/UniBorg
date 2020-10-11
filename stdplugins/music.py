@@ -92,7 +92,7 @@ async def _(event):
                 await k.edit("Kanal Linki:\nhttps://t.me/joinchat/AAAAAE8NqbV48l7ls-pFtQ")
 
 
-@events.register(events.NewMessage(pattern="ad ?(.*)", outgoing=True))
+@borg.on(events.NewMessage(pattern="ad ?(.*)", outgoing=True))
 async def _(event):
     if event.fwd_from:
         return
