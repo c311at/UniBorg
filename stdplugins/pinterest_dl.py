@@ -48,18 +48,21 @@ def download_video(url):
 async def pinterst_vid_img(event):
     url = event.pattern_match.group(1)
     get_url = get_download_url(url)
-    # j = wget.download(get_url, Config.TMP_DOWNLOAD_DIRECTORY+"video.mp4")
     j = download_video(get_url)
     thumb_image_path = Config.TMP_DOWNLOAD_DIRECTORY + "thumb_image.jpg"
+
     if not os.path.isdir(Config.TMP_DOWNLOAD_DIRECTORY):
         os.makedirs(Config.TMP_DOWNLOAD_DIRECTORY)
+
     metadata = extractMetadata(createParser(j))
     duration = 0
+
     if metadata.has("duration"):
         duration = metadata.get('duration').seconds
         width = 0
         height = 0
         thumb = None
+
     if os.path.exists(thumb_image_path):
         thumb = thumb_image_path
     else:
@@ -68,6 +71,7 @@ async def pinterst_vid_img(event):
             os.path.dirname(os.path.abspath(j)),
             (duration / 2)
         )
+
     c_time = time.time()
     await event.client.send_file(
         event.chat_id,
@@ -90,7 +94,7 @@ async def pinterst_vid_img(event):
             progress(d, t, event, c_time, "trying to upload")
         )
     )
-    await event.client.send_message(event.chat_id, f"pinterest video\n", file=j)
+    await event.delete()
 
 
 async def take_screen_shot(video_file, output_directory, ttl):
