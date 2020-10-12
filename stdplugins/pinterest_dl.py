@@ -107,6 +107,7 @@ async def pinterst_vid_img(event):
     await event.delete()
     await x.delete()
     os.remove(Config.TMP_DOWNLOAD_DIRECTORY + 'pinterest_video.mp4')
+    os.remove(thumb_image_path)
 
 
 @borg.on(admin_cmd(pattern="pimg ?(.*)"))
