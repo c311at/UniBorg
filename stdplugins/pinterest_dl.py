@@ -7,13 +7,12 @@ import time
 from urllib import request
 
 import requests
-import wget
 from hachoir.metadata import extractMetadata
 from hachoir.parser import createParser
 from pyquery import PyQuery as pq
 from sample_config import Config
 from telethon.tl.types import DocumentAttributeVideo
-from uniborg.util import admin_cmd, humanbytes, progress, run_command
+from uniborg.util import admin_cmd, progress, run_command
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
@@ -44,8 +43,19 @@ def download_video(url):
     return Config.TMP_DOWNLOAD_DIRECTORY + 'pinterest_video.mp4'
 
 
+# Function to download image
+def download_image(url):
+    if not os.path.isdir(Config.TMP_DOWNLOAD_DIRECTORY):
+        os.makedirs(Config.TMP_DOWNLOAD_DIRECTORY)
+    image_to_download = request.urlopen(url).read()
+    with open(Config.TMP_DOWNLOAD_DIRECTORY + 'pinterest_iamge.jpg', 'wb') as photo_stream:
+        photo_stream.write(image_to_download)
+    return Config.TMP_DOWNLOAD_DIRECTORY + 'pinterest_iamge.jpg'
+
+
 @borg.on(admin_cmd(pattern="pvid ?(.*)"))
 async def pinterst_vid_img(event):
+    x = await event.edit("`Progressing...`")
     url = event.pattern_match.group(1)
     get_url = get_download_url(url)
     j = download_video(get_url)
@@ -77,7 +87,7 @@ async def pinterst_vid_img(event):
         event.chat_id,
         j,
         thumb=thumb,
-        caption="video",
+        caption="`pinterest video uploaded by` @By_Azade",
         force_document=False,
         allow_cache=False,
         reply_to=event.message.id,
@@ -95,6 +105,34 @@ async def pinterst_vid_img(event):
         )
     )
     await event.delete()
+    await x.delete()
+    os.remove(Config.TMP_DOWNLOAD_DIRECTORY + 'pinterest_video.mp4')
+
+
+@borg.on(admin_cmd(pattern="pimg ?(.*)"))
+async def pinterst_img_vid(event):
+    x = await event.edit("`Progressing...`")
+    url = event.pattern_match.group(1)
+    get_url = get_download_url(url)
+    j = download_image(get_url)
+
+    if not os.path.isdir(Config.TMP_DOWNLOAD_DIRECTORY):
+        os.makedirs(Config.TMP_DOWNLOAD_DIRECTORY)
+    c_time = time.time()
+    await event.client.send_file(
+        event.chat_id,
+        j,
+        caption="`pinterest image uploaded by` @By_Azade",
+        force_document=False,
+        allow_cache=False,
+        reply_to=event.message.id,
+        progress_callback=lambda d, t: asyncio.get_event_loop().create_task(
+            progress(d, t, event, c_time, "trying to upload")
+        )
+    )
+    await event.delete()
+    await x.delete()
+    os.remove(Config.TMP_DOWNLOAD_DIRECTORY + 'pinterest_iamge.jpg')
 
 
 async def take_screen_shot(video_file, output_directory, ttl):
