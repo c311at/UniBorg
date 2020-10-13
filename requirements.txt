@@ -41,15 +41,15 @@ qrcode
 regex
 remotezip
 requests
-schedule
-selenium
+# schedule
+# selenium
 setuptools
 spamwatch
 speedtest-cli
 spotify_token
 sqlalchemy
 telegraph
-textblob
+# textblob
 tgcrypto
 typing
 unicode_tr
