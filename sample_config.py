@@ -92,10 +92,10 @@ class Config:
     VERY_STREAM_LOGIN = os.environ.get("VERY_STREAM_LOGIN", None)
     VERY_STREAM_KEY = os.environ.get("VERY_STREAM_KEY", None)
     # Google Drive ()
+    IS_TEAM_DRIVE = os.environ.get("IS_TEAM_DRIVE", False)
     G_DRIVE_CLIENT_ID = os.environ.get("G_DRIVE_CLIENT_ID", None)
     G_DRIVE_CLIENT_SECRET = os.environ.get("G_DRIVE_CLIENT_SECRET", None)
-    G_DRIVE_AUTH_TOKEN_DATA = os.environ.get("G_DRIVE_AUTH_TOKEN_DATA", None)
-    G_DRIVE_F_PARENT_ID = os.environ.get("G_DRIVE_F_PARENT_ID", None)
+    GDRIVE_FOLDER_ID = os.environ.get("GDRIVE_FOLDER_ID", "root")
     #
     TELE_GRAM_2FA_CODE = os.environ.get("TELE_GRAM_2FA_CODE", None)
     #
@@ -115,7 +115,6 @@ class Config:
     SPOTIFY_KEY = os.environ.get("SPOTIFY_KEY", None)
     SPOTIFY_DC = os.environ.get("SPOTIFY_DC", None)
 
-    GDRIVE_FOLDER_ID = os.environ.get("GDRIVE_FOLDER_ID", None)
     LYDIA_API = os.environ.get("LYDIA_API", None)
     DEFAULT_NAME = os.environ.get("DEFAULT_NAME", None)
     VIRUSTOTAL_API_KEY = os.environ.get("VIRUSTOTAL_API_KEY", None)

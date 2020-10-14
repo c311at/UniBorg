@@ -1,59 +1,672 @@
-"""Upload local Files to gDrive
-Syntax:
-.ugdrive"""
+"""
+GDrive Client Module for Userbot
 
-# The entire code given below is verbatim copied from
-# https://github.com/cyberboysumanjay/Gdrivedownloader/blob/master/gdrive_upload.py
-# there might be some changes made to suit the needs for this repository
-# Licensed under MIT License
+Usage:- .drivesearch search_query
+        .drivedl drive_link
+        .gdrive filePath/replyToMessage
+        .drivemeta drive_link
+
+Author:- Git: github.com/jaskaranSM | Tg:  https://t.me/Zero_cool7870
+"""
+
 
 import asyncio
-import json
-import logging
 import math
+import mimetypes
 import os
+import pickle
+import re
 import time
+import urllib.parse as urlparse
 from datetime import datetime
-#
-from mimetypes import guess_type
+from urllib.parse import parse_qs
 
-import httplib2
-from apiclient.discovery import build
-from apiclient.http import MediaFileUpload
+import aiofiles
+import aiohttp
+from database.mongo import cli
+from gaggle import Client
+from googleapiclient.http import MediaFileUpload
 from oauth2client.client import OAuth2WebServerFlow
-from oauth2client.file import Storage
-from telethon import events
-
 from sample_config import Config
-from uniborg.util import admin_cmd, progress
+from telethon import events
+from telethon.errors.rpcerrorlist import MessageNotModifiedError
+from uniborg.util import admin_cmd, humanbytes, progress, time_formatter
 
-# Path to token json file, it should be in same directory as script
-G_DRIVE_TOKEN_FILE = os.path.join(
-    Config.TMP_DOWNLOAD_DIRECTORY, "auth_token.txt")
-# Copy your credentials from the APIs Console
-CLIENT_ID = Config.G_DRIVE_CLIENT_ID
-CLIENT_SECRET = Config.G_DRIVE_CLIENT_SECRET
-# Check https://developers.google.com/drive/scopes for all available scopes
-OAUTH_SCOPE = "https://www.googleapis.com/auth/drive.file"
-# Redirect URI for installed apps, can be left as is
-REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob"
-# global variable to set Folder ID to upload to
-G_DRIVE_F_PARENT_ID = Config.G_DRIVE_F_PARENT_ID
-# global variable to indicate mimeType of directories in gDrive
+from google.auth.transport.requests import Request
+
+space = '    '
+branch = '│   '
+tee = '├── '
+last = '└── '
+
+
+db = cli["Userbot"]
+G_DRIVE_TOKEN_FILE = "token.pickle"
+driveDB = db.GDRIVE
+SLEEP_TIME = 5
 G_DRIVE_DIR_MIME_TYPE = "application/vnd.google-apps.folder"
 
 
-@borg.on(admin_cmd(pattern="ugdrive ?(.*)", allow_sudo=True))
-async def _(event):
+def getAccessTokenDB():
+    cursor = driveDB.find()
+    for c in cursor:
+        return c.get("access_token")
+    return b""
+
+
+def saveAccessTokenDB(token):  # bytes
+    print("Updating Access Token in Database")
+    previousToken = getAccessTokenDB()
+    cur_filter = {"access_token": previousToken}
+    driveDB.update_one(
+        cur_filter, {'$set': {"access_token": token}}, upsert=True)
+
+
+def InitGDrive():
+    if not os.path.exists(G_DRIVE_TOKEN_FILE):
+        print("Fetching Access Token from Database")
+        token = getAccessTokenDB()
+        if len(token) == 0:
+            return
+        with open(G_DRIVE_TOKEN_FILE, "wb") as f:
+            f.write(token)
+
+
+InitGDrive()
+
+
+def getProgressBarString(percentage):
+    progress_bar_str = "[{0}{1}]\n".format(
+        ''.join(["▰" for i in range(math.floor(percentage / 5))]),
+        ''.join(["▱" for i in range(18 - math.floor(percentage / 5))]))
+    return progress_bar_str
+
+
+async def progressSpinner(drive_obj, banner, event):
+    while not drive_obj.isComplete():
+        text = f"__{banner}__\n"
+        try:
+            text += getProgressString(drive_obj)
+        except Exception as e:
+            text += str(e)
+        try:
+            if text != drive_obj.previous_msg_text:
+                await event.edit(text)
+                drive_obj.previous_msg_text = text
+        except MessageNotModifiedError:
+            pass
+        await asyncio.sleep(SLEEP_TIME)
+
+
+def getProgressString(drive_obj):
+    progressStr = f"**Transferred:** `{humanbytes(drive_obj.transferredBytes())}`\n"
+    progressStr += f"`{getProgressBarString(drive_obj.percent())}`"
+    progressStr += f"**Percent:** `{drive_obj.percent()}%\n`"
+    progressStr += f"**Speed:** `{humanbytes(drive_obj.speed())}ps`\n"
+    progressStr += f"**ETA:** `{time_formatter(drive_obj.eta())}`\n"
+    progressStr += f"**Total:** `{humanbytes(drive_obj.totalBytes())}`\n"
+    return progressStr
+
+
+async def postTextToDogBin(text):
+    async with aiohttp.ClientSession() as session:
+        async with session.post('https://nekobin.com/api/documents', json={"content": text}) as response:
+            respJson = await response.json()
+            return f"https://nekobin.com/{respJson.get('result').get('key')}.py"
+
+
+class Folder:
+    def __init__(self, obj):
+        self.name = obj.get('name')
+        self.size = 0
+        self.mimeType = obj.get('mimeType')
+        self.id = obj.get('id')
+        self.children = []
+
+    def calculateSize(self, children):
+        for file in children:
+            if file.mimeType == G_DRIVE_DIR_MIME_TYPE:
+                file.size = 0
+                file.calculateSize(file.children)
+                self.calculateSize(file.children)
+            else:
+                self.size += int(file.size)
+
+    def addChild(self, child):
+        self.children.append(child)
+
+    def addChildByFolderId(self, node, folder_id, child):
+        if folder_id == node.id:
+            return node.addChild(child)
+        for child_node in node.children:
+            if child_node.mimeType == G_DRIVE_DIR_MIME_TYPE:
+                self.addChildByFolderId(child_node, folder_id, child)
+
+
+class File:
+    def __init__(self, obj):
+        self.name = obj.get('name')
+        self.size = int(obj.get('size') if obj.get('size') else 0)
+        self.mimeType = obj.get('mimeType')
+        self.id = obj.get('id')
+        self.obj = obj
+
+
+class GDriveHelper:
+    def __init__(self):
+        self.service = None
+        self.session = aiohttp.ClientSession()
+        self.SCOPES = ['https://www.googleapis.com/auth/drive']
+        self.G_DRIVE_DIR_MIME_TYPE = "application/vnd.google-apps.folder"
+        self.__REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob"
+        self.__G_DRIVE_BASE_DOWNLOAD_URL = "https://drive.google.com/uc?id={}&export=download"
+        self.__G_DRIVE_DIR_BASE_DOWNLOAD_URL = "https://drive.google.com/drive/folders/{}"
+        self.chunksize = 50*1024*1024
+        self.file_count = 0
+        self.is_complete = False
+        self.previous_msg_text = ""
+        self.size = 0
+        self.transferred_bytes = 0
+        self._eta = 0
+        self.total_bytes = 0
+        self.transfer_speed = 0
+        self.start_time = time.time()
+        self.root_node = None
+        self.SLEEP_TIME = 1
+        self.sem = asyncio.Semaphore(5)
+
+    def getRootNode(self):
+        return self.root_node
+
+    def setRootNode(self, node):
+        self.root_node = node
+
+    def speed(self):
+        return self.transfer_speed
+
+    def percent(self):
+        try:
+            return round(self.transferredBytes() * 100 / self.totalBytes(), 2)
+        except ZeroDivisionError:
+            return 0.0
+
+    def eta(self):
+        return self._eta
+
+    def totalBytes(self):
+        return self.total_bytes
+
+    def transferredBytes(self):
+        return self.transferred_bytes
+
+    def isComplete(self):
+        return self.is_complete
+
+    def getSizeLocal(self, path):
+        if os.path.isfile(path):
+            return os.path.getsize(path)
+        total_size = 0
+        for root, dirs, files in os.walk(path):
+            for f in files:
+                abs_path = os.path.join(root, f)
+                total_size += os.path.getsize(abs_path)
+        return total_size
+
+    async def getSizeDriveFolder(self, folder_id):
+        files = await self.getFilesByParentId(folder_id)
+        for file in files:
+            if file.get("mimeType") == self.G_DRIVE_DIR_MIME_TYPE:
+                await self.getSizeDriveFolder(file.get('id'))
+            else:
+                self.file_count += 1
+                self.size += int(file.get('size') if file.get('size') else 0)
+
+    async def getSizeDrive(self, file_id):
+        self.size = 0
+        meta = await self.getMetadata(file_id)
+        if meta.get("mimeType") == self.G_DRIVE_DIR_MIME_TYPE:
+            await self.getSizeDriveFolder(meta.get('id'))
+            return self.size
+        else:
+            self.file_count += 1
+            return int(meta.get("size") if meta.get('size') else 0)
+
+    def onTransferComplete(self):
+        print("onTransferComplete...")
+        self.is_complete = True
+
+    def onProgressUpdate(self, chunkSize):
+        self.transferred_bytes += chunkSize
+        diff = time.time() - self.start_time
+        self.transfer_speed = self.transferredBytes() / diff
+        try:
+            self._eta = round(
+                (self.totalBytes() - self.transferredBytes()) / self.speed()) * 1000
+        except ZeroDivisionError:
+            self._eta = 0
+
+    async def getCreds(self, event=None):
+        credentials = None
+        if os.path.exists(G_DRIVE_TOKEN_FILE):
+            with open(G_DRIVE_TOKEN_FILE, 'rb') as f:
+                credentials = pickle.load(f)
+        if credentials is None or not credentials.valid:
+            if credentials and credentials.expired and credentials.refresh_token:
+                credentials.refresh(Request())
+                with open(G_DRIVE_TOKEN_FILE, "rb") as token:
+                    saveAccessTokenDB(token.read())
+                with open(G_DRIVE_TOKEN_FILE, "wb") as token:
+                    pickle.dump(credentials, token)
+            else:
+                flow = OAuth2WebServerFlow(
+                    Config.G_DRIVE_CLIENT_ID,
+                    Config.G_DRIVE_CLIENT_SECRET,
+                    self.SCOPES,
+                    redirect_uri=self.__REDIRECT_URI
+                )
+                authorize_url = flow.step1_get_authorize_url()
+                code = ""
+                print(authorize_url)
+                if event:
+                    async with event.client.conversation(Config.PRIVATE_GROUP_BOT_API_ID) as conv:
+                        await conv.send_message(f"Go to the following link in your browser: {authorize_url} and reply the code")
+                        response = conv.wait_event(events.NewMessage(
+                            outgoing=True,
+                            chats=Config.PRIVATE_GROUP_BOT_API_ID
+                        ))
+                        response = await response
+                        code = response.message.message.strip()
+                else:
+                    code = input("Enter CODE: ")
+                creds = flow.step2_exchange(code)
+                credentials = Client._make_credentials(token=creds.access_token, refresh_token=creds.refresh_token, id_token=creds.id_token,
+                                                       token_uri=creds.token_uri, client_id=creds.client_id, client_secret=creds.client_secret)
+                with open(G_DRIVE_TOKEN_FILE, 'wb') as token:
+                    pickle.dump(credentials, token)
+                with open(G_DRIVE_TOKEN_FILE, "rb") as token:
+                    saveAccessTokenDB(token.read())
+        return credentials
+
+    async def authorize(self, event=None):
+        creds = await self.getCreds(event)
+        self.service = Client(session=self.session,
+                              credentials=creds).drive("v3")
+
+    def getFileOps(self, file_path):
+        mime_type = mimetypes.guess_type(file_path)[0]
+        mime_type = mime_type if mime_type else "text/plain"
+        file_name = file_path.rsplit("/", 1)[-1]
+        return file_name, mime_type
+
+    async def setPermissions(self, file_id):
+        permissions = {
+            'role': 'reader',
+            'type': 'anyone',
+            'value': None,
+            'withLink': True
+        }
+        return await self.service.permissions.create(supportsTeamDrives=True, fileId=file_id, body=permissions)
+
+    async def fileSender(self, file_name=None):
+        async with aiofiles.open(file_name, 'rb') as f:
+            chunk = await f.read(self.chunksize)
+            while chunk:
+                self.onProgressUpdate(len(chunk))
+                yield chunk
+                chunk = await f.read(self.chunksize)
+
+    async def uploadFile(self, file_path, parent_id=None):
+        file_name, mime_type = self.getFileOps(file_path)
+        file_metadata = {
+            'name': file_name,
+            'description': 'userbot',
+            'mimeType': mime_type,
+        }
+        if parent_id is not None:
+            file_metadata['parents'] = [parent_id]
+
+        media_body = MediaFileUpload(file_path,
+                                     mimetype=mime_type,
+                                     resumable=True,
+                                     chunksize=self.chunksize)
+        response = await self.service.files.create(supportsTeamDrives=True,
+                                                   body=file_metadata, media_body=media_body)
+
+        uploadLocation = response.headers.get("location")
+        file_id = ""
+        async with self.session.put(uploadLocation, data=self.fileSender(file_path), timeout=None) as resp:
+            resJson = await resp.json()
+        file_id = resJson.get("id")
+        if not Config.IS_TEAM_DRIVE:
+            await self.setPermissions(file_id)
+        return file_id
+
+    async def createDirectory(self, directory_name, parent_id=None):
+        file_metadata = {
+            "name": directory_name,
+            "mimeType": self.G_DRIVE_DIR_MIME_TYPE
+        }
+        if parent_id is not None:
+            file_metadata["parents"] = [parent_id]
+        response = await self.service.files.create(supportsTeamDrives=True,
+                                                   body=file_metadata)
+
+        resJson = await response.json()
+        if not Config.IS_TEAM_DRIVE:
+            await self.setPermissions(resJson.get('id'))
+        return resJson.get("id")
+
+    async def uploadFolder(self, input_directory, folder_id=None):
+        files = os.listdir(input_directory)
+        if len(files) == 0:
+            return None
+        for file in files:
+            absPath = os.path.join(input_directory, file)
+            if os.path.isdir(absPath):
+                newDir = await self.createDirectory(file, folder_id)
+                await self.uploadFolder(absPath, newDir)
+            else:
+                await self.uploadFile(absPath, folder_id)
+
+    async def upload(self, file_path, event):
+        await event.edit("Calculating Size please wait!")
+        size = self.getSizeLocal(file_path)
+        self.total_bytes = size
+        link = ""
+        if os.path.isdir(file_path):
+            dir_id = await self.createDirectory(self.getFileName(file_path), Config.GDRIVE_FOLDER_ID)
+            await self.uploadFolder(file_path, dir_id)
+            link = self.formatLink(dir_id)
+        else:
+            file_id = await self.uploadFile(file_path, Config.GDRIVE_FOLDER_ID)
+            link = self.formatLink(file_id, folder=False)
+        self.onTransferComplete()
+        return link
+
+    def formatLink(self, id, folder=True):
+        if folder:
+            return self.__G_DRIVE_DIR_BASE_DOWNLOAD_URL.format(id)
+        return self.__G_DRIVE_BASE_DOWNLOAD_URL.format(id)
+
+    def parseLink(self, link):
+        if "folders" in link or "file" in link:
+            regex = r"https://drive\.google\.com/(drive)?/?u?/?\d?/?(mobile)?/?(file)?(folders)?/?d?/([-\w]+)[?+]?/?(w+)?"
+            res = re.search(regex, link)
+            if res is None:
+                raise IndexError("GDrive ID not found.")
+            return res.group(5)
+        parsed = urlparse.urlparse(link)
+        return parse_qs(parsed.query)['id'][0]
+
+    async def downloadFolder(self, folder_id, local_path):
+        files = await self.getFilesByParentId(folder_id)
+        for file in files:
+            newPath = os.path.join(local_path, file.get("name"))
+            if file.get("mimeType") == self.G_DRIVE_DIR_MIME_TYPE:
+                os.makedirs(newPath, exist_ok=True)
+                await self.downloadFolder(file.get("id"), newPath)
+            else:
+                await self.downloadFile(file.get("id"), newPath)
+
+    async def download(self, file_id, event):
+        await event.edit("Calculating Size please wait!")
+        size = await self.getSizeDrive(file_id)
+        self.total_bytes = size
+        meta = await self.getMetadata(file_id)
+        if meta.get('mimeType') == self.G_DRIVE_DIR_MIME_TYPE:
+            os.makedirs(meta.get('name'), exist_ok=True)
+            await self.downloadFolder(meta.get('id'), meta.get('name'))
+        else:
+            await self.downloadFile(meta.get('id'), meta.get('name'))
+        self.onTransferComplete()
+        return meta.get('name')
+
+    async def getAccessToken(self):
+        return (await self.getCreds()).token
+
+    def getFileName(self, file_path):
+        return file_path.rsplit("/", 1)[-1]
+
+    async def getMetadata(self, file_id):
+        file_metadata = await self.service.files.get(supportsAllDrives=True, fileId=file_id, fields="*")
+        return await file_metadata.json()
+
+    async def downloadFile(self, file_id, file_path):
+        uri = f"https://www.googleapis.com/drive/v3/files/{file_id}"
+        creds = await self.getCreds()
+        creds.refresh(Request())
+        access_token = creds.token
+        queryString = {
+            "includeItemsFromAllDrives": "true",
+            "supportsAllDrives": "true",
+            "alt": 'media',
+            "includeTeamDriveItems": "true"
+        }
+        headers = {"accept-encoding": 'gzip;q=0,deflate,sdch',
+                   'authorization': f'Bearer {access_token}'}
+        response = await self.session.get(uri, params=queryString, headers=headers, timeout=None)
+        with open(file_path, "wb") as file_writer:
+            async for chunk, _ in response.content.iter_chunks():
+                file_writer.write(chunk)
+                file_writer.flush()
+                self.onProgressUpdate(len(chunk))
+
+    async def traverseFolder(self, folder_id):
+        reqs = []
+        files = await self.getFilesByParentId(folder_id)
+        async with self.sem:
+            for file in files:
+                if file.get('mimeType') == self.G_DRIVE_DIR_MIME_TYPE:
+                    folder = Folder(file)
+                    self.root_node.addChildByFolderId(
+                        self.getRootNode(), folder_id, folder)
+                    reqs.append(self.traverseFolder(file.get('id')))
+                else:
+                    f = File(file)
+                    self.root_node.addChildByFolderId(
+                        self.getRootNode(), folder_id, f)
+                    self.size += int(file.get('size')
+                                     if file.get('size') else 0)
+                    self.file_count += 1
+            if len(reqs) != 0:
+                await asyncio.wait(reqs)
+
+    async def copyFile(self, file_id, dest_id):
+        body = {
+            'parents': [dest_id]
+        }
+        res = await self.service.files.copy(supportsAllDrives=True, fileId=file_id, body=body)
+        resJson = await res.json()
+        file_id = resJson.get('id')
+        if not Config.IS_TEAM_DRIVE:
+            await self.setPermissions(file_id)
+        return file_id
+
+    async def copy(self, meta):
+        self.setRootNode(Folder(meta))
+        await self.traverseFolder(meta.get('id'))
+        self.total_bytes = self.size
+        newDir = await self.createDirectory(meta.get('name'), Config.GDRIVE_FOLDER_ID)
+        await self.copyFolderFromStorage(self.getRootNode().children, newDir)
+        self.onTransferComplete()
+        return newDir
+
+    async def copyFolderFromStorage(self, storage, parent_id):
+        for item in storage:
+            if item.mimeType == G_DRIVE_DIR_MIME_TYPE:
+                newDir = await self.createDirectory(item.name, parent_id)
+                await self.copyFolderFromStorage(item.children, newDir)
+            else:
+                await self.copyFile(item.id, parent_id)
+                self.onProgressUpdate(item.size)
+
+    def traverseStorage(self, storage):
+        for item in storage:
+            if item.mimeType == G_DRIVE_DIR_MIME_TYPE:
+                item.calculateSize(item.children)
+                self.traverseStorage(item.children)
+
+    def generateTree(self, storage, prefix=""):
+        pointers = [tee] * (len(storage) - 1) + [last]
+        for pointer, path in zip(pointers, storage):
+            yield f"{prefix}{pointer}{path.name} ({humanbytes(path.size)})"
+            if path.mimeType == self.G_DRIVE_DIR_MIME_TYPE:
+                extension = branch if pointer == tee else space
+                yield from self.generateTree(path.children, prefix=prefix+extension)
+
+    async def retry(self, coro):
+        logger.info(f"Sleeping for {self.SLEEP_TIME} and retrying")
+        await asyncio.sleep(self.SLEEP_TIME)
+        return await coro
+
+    async def getFilesByParentId(self, folder_id, name=None, limit=None):
+        files = []
+        page_token = None
+        if name:
+            query = f"'{folder_id}' in parents and (name contains '{name}')"
+        else:
+            query = f"'{folder_id}' in parents"
+        while True:
+            resp = await self.service.files.list(supportsAllDrives=True,
+                                                 includeTeamDriveItems=True,
+                                                 q=query,
+                                                 fields='nextPageToken, files(id, name, mimeType, size, iconLink)',
+                                                 pageToken=page_token,
+                                                 pageSize=500,
+                                                 orderBy='folder,name,modifiedTime desc')
+            response = await resp.json()
+            err = response.get("error", None)
+            if err != None:
+                if "rate" in err.get("message").lower() or resp.status >= 500:
+                    return await self.retry(self.getFilesByParentId(folder_id, name, limit))
+            for file in response.get('files', []):
+                if limit and len(files) == limit:
+                    return files
+                files.append(file)
+            page_token = response.get('nextPageToken', None)
+            if page_token is None:
+                break
+        return files
+
+
+@borg.on(admin_cmd(pattern="drivesearch ?(.*)", allow_sudo=True))
+async def drivesch(event):
+    if event.fwd_from:
+        return
+    input_str = event.pattern_match.group(1).strip()
+    drive = GDriveHelper()
+    await drive.authorize(event)
+    files = await drive.getFilesByParentId(Config.GDRIVE_FOLDER_ID, input_str, 20)
+    msg = f"**G-Drive Search Query**\n`{input_str}`\n**Results**\n"
+    for file in files:
+        if file.get("mimeType") == drive.G_DRIVE_DIR_MIME_TYPE:
+            msg += "⁍ [{}]({}) (folder)".format(file.get('name'),
+                                                drive.formatLink(file.get('id')))+"\n"
+        else:
+            msg += "⁍ [{}]({}) ({})".format(file.get('name'), drive.formatLink(
+                file.get('id'), folder=False), humanbytes(int(file.get('size'))))+"\n"
+    await event.edit(msg)
+
+
+@borg.on(admin_cmd(pattern="gcopy ?(.*)", allow_sudo=True))
+async def driveclone(event):
+    if event.fwd_from:
+        return
+    input_str = event.pattern_match.group(1).strip()
+    mone = await event.reply('Processing..')
+    drive = GDriveHelper()
+    await drive.authorize(event)
+    try:
+        fileId = drive.parseLink(input_str)
+        meta = await drive.getMetadata(fileId)
+    except Exception as e:
+        await mone.edit(f"BadLink: {e}")
+        return
+    link = ""
+    if meta.get('mimeType') == G_DRIVE_DIR_MIME_TYPE:
+        task1 = drive.copy(meta)
+        task2 = progressSpinner(drive, "COPY PROGRESS", mone)
+        res = await asyncio.gather(*[task1, task2])
+        fileCount = drive.file_count
+        size = drive.size
+        file_id = res[0]
+        link = drive.formatLink(file_id)
+    else:
+        file_id = await drive.copyFile(meta.get('id'), Config.GDRIVE_FOLDER_ID)
+        link = drive.formatLink(file_id, folder=False)
+        size = int(meta.get('size') if meta.get('size') else 0)
+        fileCount = 1
+    await mone.edit(f"__GDrive Copy:__\n[{meta.get('name')}]({link})\n**Size:** `{humanbytes(size)}`\n**FileCount:** `{fileCount}`")
+
+
+@borg.on(admin_cmd(pattern="drivedl ?(.*)", allow_sudo=True))
+async def gdrivedownload(event):
+    if event.fwd_from:
+        return
+    input_link = event.pattern_match.group(1)
+    if not input_link:
+        await event.edit("Provide Link kek.")
+        return
+    mone = await event.reply("Processing...")
+    drive = GDriveHelper()
+    await drive.authorize(event)
+    file_id = drive.parseLink(input_link)
+    task = drive.download(file_id, mone)
+    task2 = progressSpinner(drive, "DOWNLOAD PROGRESS", mone)
+    result = await asyncio.gather(*[task, task2])
+    name = result[0]
+    await mone.edit(f"Downloaded: `{name}`")
+
+
+@borg.on(admin_cmd(pattern="drivemeta ?(.*)", allow_sudo=True))
+async def gdrivemeta(event):
+    if event.fwd_from:
+        return
+    input_link = event.pattern_match.group(1)
+    if not input_link:
+        await event.edit("Provide Link kek.")
+        return
+    mone = await event.reply("Processing...")
+    drive = GDriveHelper()
+    await drive.authorize(event)
+    try:
+        file_id = drive.parseLink(input_link)
+    except Exception as e:
+        await mone.edit(f"Bad Link: {e}")
+    msg = ""
+    meta = await drive.getMetadata(file_id)
+    tree = ""
+    await mone.edit("Calculating Size please wait!")
+    if meta.get('mimeType') == G_DRIVE_DIR_MIME_TYPE:
+        drive.setRootNode(Folder(meta))
+        await drive.traverseFolder(file_id)
+        drive.getRootNode().calculateSize(drive.getRootNode().children)
+        for line in drive.generateTree(drive.getRootNode().children):
+            tree += line + "\n"
+        size = drive.size
+    else:
+        size = await drive.getSizeDrive(file_id)
+    msg += f"**Name:** `{meta.get('name')}`\n"
+    msg += f"**Size:** `{humanbytes(size)}`\n"
+    msg += f"**FileCount:** `{drive.file_count}`\n"
+    msg += f"**MimeType:** `{meta.get('mimeType')}`\n"
+    msg += f"**Trashed:** `{meta.get('trashed')}`\n"
+    msg += f"**Description:** `{meta.get('description')}`\n"
+    msg += f"**CreatedTime:** `{meta.get('createdTime')}`\n"
+    msg += f"**ModifiedTime:** `{meta.get('modifiedTime')}\n`"
+    if tree != "":
+        msg += f"**Tree:** [here]({await postTextToDogBin(tree)})"
+    await mone.edit(msg)
+
+
+@borg.on(admin_cmd(pattern="gdrive ?(.*)", allow_sudo=True))
+async def gdriveupload(event):
     if event.fwd_from:
         return
     mone = await event.reply("Processing ...")
-    if CLIENT_ID is None or CLIENT_SECRET is None:
+    if Config.G_DRIVE_CLIENT_ID is None or Config.G_DRIVE_CLIENT_SECRET is None:
         await mone.edit("This module requires credentials from https://da.gd/so63O. Aborting!")
-        return
-    if Config.PRIVATE_GROUP_BOT_API_ID is None:
-        await event.edit("Please set the required environment variable `PRIVATE_GROUP_BOT_API_ID` for this plugin to work")
-        return
+        return False
     input_str = event.pattern_match.group(1)
     if not os.path.isdir(Config.TMP_DOWNLOAD_DIRECTORY):
         os.makedirs(Config.TMP_DOWNLOAD_DIRECTORY)
@@ -84,357 +697,18 @@ async def _(event):
             end = datetime.now()
             ms = (end - start).seconds
             required_file_name = input_str
-            await mone.edit("Found `{}` in {} seconds.".format(required_file_name, ms))
+            await mone.edit("Found `{}` in {} seconds.".format(input_str, ms))
         else:
             await mone.edit("File Not found in local server. Give me a file path :((")
             return False
-    # logger.info(required_file_name)
     if required_file_name:
-        #
-        if Config.G_DRIVE_AUTH_TOKEN_DATA is not None:
-            with open(G_DRIVE_TOKEN_FILE, "w") as t_file:
-                t_file.write(Config.G_DRIVE_AUTH_TOKEN_DATA)
-        # Check if token file exists, if not create it by requesting authorization code
-        storage = None
-        if not os.path.isfile(G_DRIVE_TOKEN_FILE):
-            storage = await create_token_file(G_DRIVE_TOKEN_FILE, event)
-        http = authorize(G_DRIVE_TOKEN_FILE, storage)
-        # Authorize, get file parameters, upload file and print out result URL for download
-        # http = authorize(G_DRIVE_TOKEN_FILE, None)
-        file_name, mime_type = file_ops(required_file_name)
-        # required_file_name will have the full path
-        # Sometimes API fails to retrieve starting URI, we wrap it.
-        try:
-            g_drive_link = await upload_file(http, required_file_name, file_name, mime_type, mone, G_DRIVE_F_PARENT_ID)
-            await mone.edit(f"Here is your Google Drive link: {g_drive_link}")
-        except Exception as e:
-            await mone.edit(f"Exception occurred while uploading to gDrive {e}")
+        link = ""
+        drive = GDriveHelper()
+        await drive.authorize(event)
+        task = drive.upload(required_file_name, mone)
+        task2 = progressSpinner(drive, "UPLOAD PROGRESS", mone)
+        result = await asyncio.gather(*[task, task2])
+        link = result[0]
+        await mone.edit(f"Uploaded To GDrive: [{required_file_name}]({link})")
     else:
         await mone.edit("File Not found in local server. Give me a file path :((")
-
-
-@borg.on(admin_cmd(pattern="gdrivesp https?://drive\.google\.com/drive/u/\d/folders/([-\w]{25,})", allow_sudo=True))
-async def _(event):
-    if event.fwd_from:
-        return
-    mone = await event.reply("Processing ...")
-    input_str = event.pattern_match.group(1)
-    if input_str:
-        G_DRIVE_F_PARENT_ID = input_str
-        await mone.edit(f"Custom Folder ID set successfully. The next uploads will upload to {G_DRIVE_F_PARENT_ID} till `.gdriveclear`")
-        await event.delete()
-    else:
-        await mone.edit("Send `.gdrivesp https://drive.google.com/drive/u/X/folders/Y` to set the folder to upload new files to")
-
-
-@borg.on(admin_cmd(pattern="gdriveclear", allow_sudo=True))
-async def _(event):
-    if event.fwd_from:
-        return
-    mone = await event.reply("Processing ...")
-    G_DRIVE_F_PARENT_ID = None
-    await mone.edit("Custom Folder ID cleared successfully.")
-    await event.delete()
-
-
-@borg.on(admin_cmd(pattern="gdrivedir ?(.*)", allow_sudo=True))
-async def _(event):
-    if event.fwd_from:
-        return
-    mone = await event.reply("Processing ...")
-    if CLIENT_ID is None or CLIENT_SECRET is None:
-        await mone.edit("This module requires credentials from https://da.gd/so63O. Aborting!")
-        return
-    if Config.PRIVATE_GROUP_BOT_API_ID is None:
-        await event.edit("Please set the required environment variable `PRIVATE_GROUP_BOT_API_ID` for this plugin to work")
-        return
-    input_str = event.pattern_match.group(1)
-    if os.path.isdir(input_str):
-        # TODO: remove redundant code
-        #
-        if Config.G_DRIVE_AUTH_TOKEN_DATA is not None:
-            with open(G_DRIVE_TOKEN_FILE, "w") as t_file:
-                t_file.write(Config.G_DRIVE_AUTH_TOKEN_DATA)
-        # Check if token file exists, if not create it by requesting authorization code
-        storage = None
-        if not os.path.isfile(G_DRIVE_TOKEN_FILE):
-            storage = await create_token_file(G_DRIVE_TOKEN_FILE, event)
-        http = authorize(G_DRIVE_TOKEN_FILE, storage)
-        # Authorize, get file parameters, upload file and print out result URL for download
-        # first, create a sub-directory
-        dir_id = await create_directory(http, os.path.basename(os.path.abspath(input_str)), G_DRIVE_F_PARENT_ID)
-        await DoTeskWithDir(http, input_str, mone, dir_id)
-        dir_link = "https://drive.google.com/folderview?id={}".format(dir_id)
-        await mone.edit(f"[Here is your Google Drive link]({dir_link})")
-    else:
-        await mone.edit(f"directory {input_str} does not seem to exist")
-
-
-@borg.on(admin_cmd(pattern="drive (delete|get) ?(.*)", allow_sudo=True))
-async def _(event):
-    if event.fwd_from:
-        return
-    mone = await event.reply("Processing ...")
-    if CLIENT_ID is None or CLIENT_SECRET is None:
-        await mone.edit("This module requires credentials from https://da.gd/so63O. Aborting!")
-        return
-    if Config.PRIVATE_GROUP_BOT_API_ID is None:
-        await event.edit("Please set the required environment variable `PRIVATE_GROUP_BOT_API_ID` for this plugin to work")
-        return
-    t_reqd_comd = event.pattern_match.group(1)
-    input_str = event.pattern_match.group(2).strip()
-    # TODO: remove redundant code
-    #
-    if Config.G_DRIVE_AUTH_TOKEN_DATA is not None:
-        with open(G_DRIVE_TOKEN_FILE, "w") as t_file:
-            t_file.write(Config.G_DRIVE_AUTH_TOKEN_DATA)
-    # Check if token file exists, if not create it by requesting authorization code
-    storage = None
-    if not os.path.isfile(G_DRIVE_TOKEN_FILE):
-        storage = await create_token_file(G_DRIVE_TOKEN_FILE, event)
-    http = authorize(G_DRIVE_TOKEN_FILE, storage)
-    # Authorize, get file parameters, upload file and print out result URL for download
-    drive_service = build("drive", "v2", http=http, cache_discovery=False)
-    if t_reqd_comd == "delete":
-        response_from_svc = await gdrive_delete(drive_service, input_str)
-    elif t_reqd_comd == "get":
-        response_from_svc = await gdrive_list_file_md(drive_service, input_str)
-    await mone.edit(response_from_svc)
-
-
-@borg.on(admin_cmd(pattern="drive search ?(.*)", allow_sudo=True))
-async def _(event):
-    if event.fwd_from:
-        return
-    mone = await event.reply("Processing ...")
-    if CLIENT_ID is None or CLIENT_SECRET is None:
-        await mone.edit("This module requires credentials from https://da.gd/so63O. Aborting!")
-        return
-    if Config.PRIVATE_GROUP_BOT_API_ID is None:
-        await event.edit("Please set the required environment variable `PRIVATE_GROUP_BOT_API_ID` for this plugin to work")
-        return
-    input_str = event.pattern_match.group(1).strip()
-    # TODO: remove redundant code
-    #
-    if Config.G_DRIVE_AUTH_TOKEN_DATA is not None:
-        with open(G_DRIVE_TOKEN_FILE, "w") as t_file:
-            t_file.write(Config.G_DRIVE_AUTH_TOKEN_DATA)
-    # Check if token file exists, if not create it by requesting authorization code
-    storage = None
-    if not os.path.isfile(G_DRIVE_TOKEN_FILE):
-        storage = await create_token_file(G_DRIVE_TOKEN_FILE, event)
-    http = authorize(G_DRIVE_TOKEN_FILE, storage)
-    # Authorize, get file parameters, upload file and print out result URL for download
-    await mone.edit(f"searching for {input_str} in your gDrive ...")
-    gsearch_results = await gdrive_search(http, input_str)
-    await mone.edit(gsearch_results, link_preview=False, parse_mode="html")
-
-
-# Get mime type and name of given file
-def file_ops(file_path):
-    mime_type = guess_type(file_path)[0]
-    mime_type = mime_type or "text/plain"
-    file_name = file_path.split("/")[-1]
-    return file_name, mime_type
-
-
-async def create_token_file(token_file, event):
-    # Run through the OAuth flow and retrieve credentials
-    flow = OAuth2WebServerFlow(
-        CLIENT_ID,
-        CLIENT_SECRET,
-        OAUTH_SCOPE,
-        redirect_uri=REDIRECT_URI
-    )
-    authorize_url = flow.step1_get_authorize_url()
-    async with event.client.conversation(Config.PRIVATE_GROUP_BOT_API_ID) as conv:
-        await conv.send_message(f"Go to the following link in your browser: {authorize_url} and reply the code")
-        response = conv.wait_event(events.NewMessage(
-            outgoing=True,
-            chats=Config.PRIVATE_GROUP_BOT_API_ID
-        ))
-        response = await response
-        code = response.message.message.strip()
-        credentials = flow.step2_exchange(code)
-        storage = Storage(token_file)
-        storage.put(credentials)
-        return storage
-
-
-def authorize(token_file, storage):
-    # Get credentials
-    if storage is None:
-        storage = Storage(token_file)
-    credentials = storage.get()
-    # Create an httplib2.Http object and authorize it with our credentials
-    http = httplib2.Http()
-    credentials.refresh(http)
-    http = credentials.authorize(http)
-    return http
-
-
-async def upload_file(http, file_path, file_name, mime_type, event, parent_id):
-    # Create Google Drive service instance
-    drive_service = build("drive", "v2", http=http, cache_discovery=False)
-    # File body description
-    media_body = MediaFileUpload(file_path, mimetype=mime_type, resumable=True)
-    body = {
-        "title": file_name,
-        "description": "Uploaded using @UniBorg gDrive v2",
-        "mimeType": mime_type,
-    }
-    if parent_id is not None:
-        body["parents"] = [{"id": parent_id}]
-    # Permissions body description: anyone who has link can upload
-    # Other permissions can be found at https://developers.google.com/drive/v2/reference/permissions
-    permissions = {
-        "role": "reader",
-        "type": "anyone",
-        "value": None,
-        "withLink": True
-    }
-    # Insert a file
-    file = drive_service.files().insert(
-        body=body, media_body=media_body, supportsTeamDrives=True)
-    response = None
-    display_message = ""
-    while response is None:
-        status, response = file.next_chunk()
-        await asyncio.sleep(1)
-        if status:
-            percentage = int(status.progress() * 100)
-            progress_str = "[{0}{1}]\nProgress: {2}%\n".format(
-                "".join(["█" for i in range(math.floor(percentage / 5))]),
-                "".join(["░" for i in range(20 - math.floor(percentage / 5))]),
-                round(percentage, 2)
-            )
-            current_message = f"uploading to gDrive\nFile Name: {file_name}\n{progress_str}"
-            if display_message != current_message:
-                try:
-                    await event.edit(current_message)
-                    display_message = current_message
-                except Exception as e:
-                    logging.info(str(e))
-    file_id = response.get("id")
-    try:
-        # Insert new permissions
-        drive_service.permissions().insert(fileId=file_id, body=permissions).execute()
-    except:
-        pass
-    # Define file instance and get url for download
-    file = drive_service.files().get(fileId=file_id, supportsTeamDrives=True).execute()
-    return file.get("webContentLink")
-
-
-async def create_directory(http, directory_name, parent_id):
-    drive_service = build("drive", "v2", http=http, cache_discovery=False)
-    permissions = {
-        "role": "reader",
-        "type": "anyone",
-        "value": None,
-        "withLink": True
-    }
-    file_metadata = {
-        "title": directory_name,
-        "mimeType": G_DRIVE_DIR_MIME_TYPE
-    }
-    if parent_id is not None:
-        file_metadata["parents"] = [{"id": parent_id}]
-    file = drive_service.files().insert(
-        body=file_metadata, supportsTeamDrives=True).execute()
-    file_id = file.get("id")
-    try:
-        drive_service.permissions().insert(fileId=file_id, body=permissions).execute()
-    except:
-        pass
-    logging.info("Created Gdrive Folder:\nName: {}\nID: {} ".format(
-        file.get("title"), file_id))
-    return file_id
-
-
-async def DoTeskWithDir(http, input_directory, event, parent_id):
-    list_dirs = os.listdir(input_directory)
-    if len(list_dirs) == 0:
-        return parent_id
-    r_p_id = None
-    for a_c_f_name in list_dirs:
-        current_file_name = os.path.join(input_directory, a_c_f_name)
-        if os.path.isdir(current_file_name):
-            current_dir_id = await create_directory(http, a_c_f_name, parent_id)
-            r_p_id = await DoTeskWithDir(http, current_file_name, event, current_dir_id)
-        else:
-            file_name, mime_type = file_ops(current_file_name)
-            # current_file_name will have the full path
-            g_drive_link = await upload_file(http, current_file_name, file_name, mime_type, event, parent_id)
-            r_p_id = parent_id
-    # TODO: there is a #bug here :(
-    return r_p_id
-
-
-async def gdrive_delete(service, file_id):
-    try:
-        service.files().delete(fileId=file_id, supportsTeamDrives=True).execute()
-        return f"successfully deleted {file_id} from my gDrive."
-    except Exception as e:
-        return str(e)
-
-
-async def gdrive_list_file_md(service, file_id):
-    try:
-        file = service.files().get(fileId=file_id, supportsTeamDrives=True).execute()
-        # logger.info(file)
-        file_meta_data = {"title": file["title"]}
-        mimeType = file["mimeType"]
-        file_meta_data["createdDate"] = file["createdDate"]
-        if mimeType == G_DRIVE_DIR_MIME_TYPE:
-            # is a dir.
-            file_meta_data["mimeType"] = "directory"
-            file_meta_data["previewURL"] = file["alternateLink"]
-        else:
-            # is a file.
-            file_meta_data["mimeType"] = file["mimeType"]
-            file_meta_data["md5Checksum"] = file["md5Checksum"]
-            file_meta_data["fileSize"] = str(
-                humanbytes(int(file["fileSize"])))
-            file_meta_data["quotaBytesUsed"] = str(
-                humanbytes(int(file["quotaBytesUsed"])))
-            file_meta_data["previewURL"] = file["downloadUrl"]
-        return json.dumps(file_meta_data, sort_keys=True, indent=4)
-    except Exception as e:
-        return str(e)
-
-
-async def gdrive_search(http, search_query):
-    if G_DRIVE_F_PARENT_ID is not None:
-        query = "'{}' in parents and (title contains '{}')".format(
-            G_DRIVE_F_PARENT_ID, search_query)
-    else:
-        query = "title contains '{}'".format(search_query)
-    drive_service = build("drive", "v2", http=http, cache_discovery=False)
-    page_token = None
-    msg = f"<b>G-Drive Search Query</b>: <code>{search_query}</code>\n\n<b>Results</b>\n"
-    while True:
-        try:
-            response = drive_service.files().list(
-                q=query,
-                supportsTeamDrives=True,
-                includeTeamDriveItems=True,
-                spaces="drive",
-                fields="nextPageToken, items(id, title, mimeType)",
-                pageToken=page_token
-            ).execute()
-            for file in response.get("items", []):
-                file_title = file.get("title")
-                file_id = file.get("id")
-                if file.get("mimeType") == G_DRIVE_DIR_MIME_TYPE:
-                    msg += f"🗃️ <a href='https://drive.google.com/drive/folders/{file_id}'>{file_title}</a>"
-                else:
-                    msg += f"👉 <a href='https://drive.google.com/uc?id={file_id}&export=download'>{file_title}</a>"
-                msg += f" <code>{file_id}</code>\n"
-            page_token = response.get("nextPageToken", None)
-            if page_token is None:
-                break
-        except Exception as e:
-            msg += str(e)
-            break
-    return msg
