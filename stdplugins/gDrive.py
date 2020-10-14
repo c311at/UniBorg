@@ -76,10 +76,9 @@ InitGDrive()
 
 
 def getProgressBarString(percentage):
-    progress_bar_str = "[{0}{1}]\n".format(
+    return "[{0}{1}]\n".format(
         ''.join(["▰" for i in range(math.floor(percentage / 5))]),
         ''.join(["▱" for i in range(18 - math.floor(percentage / 5))]))
-    return progress_bar_str
 
 
 async def progressSpinner(drive_obj, banner, event):
@@ -146,7 +145,7 @@ class Folder:
 class File:
     def __init__(self, obj):
         self.name = obj.get('name')
-        self.size = int(obj.get('size') if obj.get('size') else 0)
+        self.size = int(obj.get('size') or 0)
         self.mimeType = obj.get('mimeType')
         self.id = obj.get('id')
         self.obj = obj
@@ -219,7 +218,7 @@ class GDriveHelper:
                 await self.getSizeDriveFolder(file.get('id'))
             else:
                 self.file_count += 1
-                self.size += int(file.get('size') if file.get('size') else 0)
+                self.size += int(file.get('size') or 0)
 
     async def getSizeDrive(self, file_id):
         self.size = 0
@@ -229,7 +228,7 @@ class GDriveHelper:
             return self.size
         else:
             self.file_count += 1
-            return int(meta.get("size") if meta.get('size') else 0)
+            return int(meta.get("size") or 0)
 
     def onTransferComplete(self):
         print("onTransferComplete...")
@@ -294,7 +293,7 @@ class GDriveHelper:
 
     def getFileOps(self, file_path):
         mime_type = mimetypes.guess_type(file_path)[0]
-        mime_type = mime_type if mime_type else "text/plain"
+        mime_type = mime_type or "text/plain"
         file_name = file_path.rsplit("/", 1)[-1]
         return file_name, mime_type
 
@@ -452,9 +451,9 @@ class GDriveHelper:
                 self.onProgressUpdate(len(chunk))
 
     async def traverseFolder(self, folder_id):
-        reqs = []
         files = await self.getFilesByParentId(folder_id)
         async with self.sem:
+            reqs = []
             for file in files:
                 if file.get('mimeType') == self.G_DRIVE_DIR_MIME_TYPE:
                     folder = Folder(file)
@@ -465,8 +464,7 @@ class GDriveHelper:
                     f = File(file)
                     self.root_node.addChildByFolderId(
                         self.getRootNode(), folder_id, f)
-                    self.size += int(file.get('size')
-                                     if file.get('size') else 0)
+                    self.size += int(file.get('size') or 0)
                     self.file_count += 1
             if len(reqs) != 0:
                 await asyncio.wait(reqs)
@@ -536,9 +534,10 @@ class GDriveHelper:
                                                  orderBy='folder,name,modifiedTime desc')
             response = await resp.json()
             err = response.get("error", None)
-            if err != None:
-                if "rate" in err.get("message").lower() or resp.status >= 500:
-                    return await self.retry(self.getFilesByParentId(folder_id, name, limit))
+            if err != None and (
+                "rate" in err.get("message").lower() or resp.status >= 500
+            ):
+                return await self.retry(self.getFilesByParentId(folder_id, name, limit))
             for file in response.get('files', []):
                 if limit and len(files) == limit:
                     return files
@@ -594,7 +593,7 @@ async def driveclone(event):
     else:
         file_id = await drive.copyFile(meta.get('id'), Config.GDRIVE_FOLDER_ID)
         link = drive.formatLink(file_id, folder=False)
-        size = int(meta.get('size') if meta.get('size') else 0)
+        size = int(meta.get('size') or 0)
         fileCount = 1
     await mone.edit(f"__GDrive Copy:__\n[{meta.get('name')}]({link})\n**Size:** `{humanbytes(size)}`\n**FileCount:** `{fileCount}`")
 
@@ -697,7 +696,7 @@ async def gdriveupload(event):
             end = datetime.now()
             ms = (end - start).seconds
             required_file_name = input_str
-            await mone.edit("Found `{}` in {} seconds.".format(input_str, ms))
+            await mone.edit("Found `{}` in {} seconds.".format(required_file_name, ms))
         else:
             await mone.edit("File Not found in local server. Give me a file path :((")
             return False
