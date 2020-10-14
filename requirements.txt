@@ -20,6 +20,7 @@ google-api-python-client
 google_images_download
 googletrans
 gtts
+gaggle
 hachoir
 httplib2==0.15.0
 humanize
