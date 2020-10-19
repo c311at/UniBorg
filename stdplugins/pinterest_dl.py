@@ -10,8 +10,9 @@ import requests
 from hachoir.metadata import extractMetadata
 from hachoir.parser import createParser
 from pyquery import PyQuery as pq
-from sample_config import Config
 from telethon.tl.types import DocumentAttributeVideo
+
+from sample_config import Config
 from uniborg.util import admin_cmd, progress, run_command
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
