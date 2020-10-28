@@ -6,10 +6,10 @@ import logging
 import os
 from datetime import datetime
 
-from telegraph import Telegraph, exceptions, upload_file
-
 from sample_config import Config
 from uniborg.util import admin_cmd
+
+from telegraph import Telegraph, exceptions, upload_file
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
@@ -62,7 +62,7 @@ async def _(event):
                 os.remove(downloaded_file_name)
                 await event.edit("Uploaded to https://telegra.ph{} in {} seconds.".format(media_urls[0], (ms + ms_two)), link_preview=True)
         elif input_str == "text":
-            user_object = await event.client.get_entity(r_message.from_id)
+            user_object = await event.client.get_entity(r_message.sender_id)
             title_of_page = user_object.first_name  # + " " + user_object.last_name
             # apparently, all Users do not have last_name field
             if optional_title:

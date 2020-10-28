@@ -30,6 +30,7 @@ import asyncio
 from asyncio import sleep
 from os import remove
 
+from sample_config import Config
 from telethon import events
 from telethon.errors import (BadRequestError, ChatAdminRequiredError,
                              ImageProcessFailedError, PhotoCropSizeSmallError,
@@ -44,8 +45,6 @@ from telethon.tl.types import (ChannelParticipantsAdmins,
                                ChannelParticipantsBots, ChatAdminRights,
                                ChatBannedRights, MessageEntityMentionName,
                                MessageMediaPhoto, PeerChat)
-
-from sample_config import Config
 from uniborg.util import admin_cmd
 
 LOGGING_CHATID = Config.PRIVATE_GROUP_BOT_API_ID
@@ -687,7 +686,7 @@ async def pinmessage(eventPinMessage):
         await eventPinMessage.edit("`I don't have sufficient permissions!`")
         return
     await eventPinMessage.edit("`Pinned Successfully!`")
-    user = await get_user_from_id(eventPinMessage.from_id, eventPinMessage)
+    user = await get_user_from_id(eventPinMessage.sender_id, eventPinMessage)
     if ENABLE_LOG:
         await eventPinMessage.client.send_message(
             LOGGING_CHATID,
@@ -823,7 +822,7 @@ async def _(event):
 async def get_user_from_event(event):
     if event.reply_to_msg_id:
         previous_message = await event.get_reply_message()
-        user_obj = await event.client.get_entity(previous_message.from_id)
+        user_obj = await event.client.get_entity(previous_message.sender_id)
     else:
         user = event.pattern_match.group(1)
         if user.isnumeric():

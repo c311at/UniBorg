@@ -21,7 +21,7 @@ async def _(event):
             await event.edit(
                 "Current Chat ID: `{}`\nFrom User ID: `{}`\nBot API File ID: `{}`".format(
                     str(event.chat_id),
-                    str(r_msg.from_id),
+                    str(r_msg.sender_id),
                     r_msg.file.id
                 )
             )
@@ -29,7 +29,7 @@ async def _(event):
             await event.edit(
                 "Current Chat ID: `{}`\nFrom User ID: `{}`".format(
                     str(event.chat_id),
-                    str(r_msg.from_id)
+                    str(r_msg.sender_id)
                 )
             )
     else:

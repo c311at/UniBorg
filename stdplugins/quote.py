@@ -23,7 +23,6 @@ from io import BytesIO
 import requests
 import telethon
 from PIL import Image
-
 from uniborg.util import admin_cmd
 
 logger = logging.getLogger(__name__)
@@ -76,13 +75,13 @@ if True:
             return await message.respond(strings["no_template"])
 
         username_color = username = admintitle = user_id = None
-        profile_photo_url = reply.from_id
+        profile_photo_url = reply.sender_id
 
         admintitle = ""
         if isinstance(message.to_id, telethon.tl.types.PeerChannel):
             try:
                 user = await client(telethon.tl.functions.channels.GetParticipantRequest(message.chat_id,
-                                                                                         reply.from_id))
+                                                                                         reply.sender_id))
                 if isinstance(user.participant, telethon.tl.types.ChannelParticipantCreator):
                     admintitle = user.participant.rank or strings["creator"]
                 elif isinstance(user.participant, telethon.tl.types.ChannelParticipantAdmin):
@@ -94,7 +93,7 @@ if True:
             chat = await client(telethon.tl.functions.messages.GetFullChatRequest(reply.to_id))
             participants = chat.full_chat.participants.participants
             participant = next(filter(lambda x: x.user_id ==
-                                      reply.from_id, participants), None)
+                                      reply.sender_id, participants), None)
             if isinstance(participant, telethon.tl.types.ChatParticipantCreator):
                 admintitle = strings["creator"]
             elif isinstance(participant, telethon.tl.types.ChatParticipantAdmin):
@@ -104,7 +103,7 @@ if True:
             user = await reply.get_sender()
 
         username = telethon. get_display_name(user)
-        user_id = reply.from_id
+        user_id = reply.sender_id
 
         if reply.fwd_from:
             if reply.fwd_from.saved_from_peer:

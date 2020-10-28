@@ -38,7 +38,7 @@
 #         await event.edit("Reply To A User's Message to Add him/her in Lydia Auto-Chat.")
 #         return
 #     reply_msg = await event.get_reply_message()
-#     user_id = reply_msg.from_id
+#     user_id = reply_msg.sender_id
 #     chat_id = event.chat_id
 #     await event.edit("Processing...")
 #     cursors = lydia.find({})
@@ -67,7 +67,7 @@
 #         await event.edit("Reply To A User's Message to Remove him/her from Lydia Auto-Chat.")
 #         return
 #     reply_msg = await event.get_reply_message()
-#     user_id = reply_msg.from_id
+#     user_id = reply_msg.sender_id
 #     chat_id = event.chat_id
 #     await event.edit("Processing...")
 #     cursors = lydia.find({})
@@ -103,7 +103,7 @@
 #     if event.media is not None:
 #         cursor = lydia.find({})
 #         for c in cursor:
-#             if c['user_id'] == event.from_id and c['chat_id'] == event.chat_id:
+#             if c['user_id'] == event.sender_id and c['chat_id'] == event.chat_id:
 #                 query = event.text
 #                 ses = c['session']
 
@@ -114,7 +114,7 @@
 #                     ses = {'id': session.id, 'expires': session.expires}
 #                     logging.info(ses)
 #                     lydia.update_one(
-#                         c, {'$set': {'user_id': event.from_id, 'chat_id': event.chat_id, 'session': ses}})
+#                         c, {'$set': {'user_id': event.sender_id, 'chat_id': event.chat_id, 'session': ses}})
 
 #         # Try to think a thought.
 #                 try:
@@ -131,7 +131,7 @@
 #                     ses = {'id': session.id, 'expires': session.expires}
 #                     logging.info(ses)
 #                     lydia.update_one(
-#                         c, {'$set': {'user_id': event.from_id, 'chat_id': event.chat_id, 'session': ses}})
+#                         c, {'$set': {'user_id': event.sender_id, 'chat_id': event.chat_id, 'session': ses}})
 
 #     # Reply again, if this method fails then there's a other issue.
 #                     async with borg.action(event.chat_id, "typing"):

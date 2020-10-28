@@ -9,9 +9,8 @@ By:- JaskaranSM ( @Zero_cool7870 )
 import logging
 
 from pymongo import MongoClient
-from telethon import events
-
 from sample_config import Config
+from telethon import events
 from uniborg.util import admin_cmd
 
 logging.basicConfig(level=logging.INFO)
@@ -40,7 +39,7 @@ async def gmute_user(event):
         return
     if event.reply_to_msg_id:
         msg = await event.get_reply_message()
-        user_id = msg.from_id
+        user_id = msg.sender_id
     else:
         user_id = int(input_str)
 
@@ -84,7 +83,7 @@ async def un_gmute_user(event):
         return
     if event.reply_to_msg_id:
         msg = await event.get_reply_message()
-        user_id = msg.from_id
+        user_id = msg.sender_id
     else:
         user_id = int(input_str)
     await event.edit("`Removing Duct Tape from User's Mouth.`")
@@ -127,7 +126,7 @@ async def gmute_listener(sender):
     try:
         curs = muted.find({})
         for c in curs:
-            if c['user_id'] == sender.from_id:
+            if c['user_id'] == sender.sender_id:
                 await sender.delete()
     except Exception as e:
         logging.error(str(e))

@@ -97,7 +97,7 @@ async def _(event):
     p_number = event.pattern_match.group(1)
     reply_message = await event.get_reply_message()
     if event.is_group:
-        entity = await event.client.get_entity(reply_message.from_id)
+        entity = await event.client.get_entity(reply_message.sender_id)
         try:
             a = await event.edit("`getting profile pic changed or added date`")
             photos = await event.client.get_profile_photos(entity)

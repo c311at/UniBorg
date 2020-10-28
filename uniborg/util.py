@@ -178,7 +178,7 @@ async def is_admin(client, chat_id, user_id):
 
 # Not that Great but it will fix sudo reply
 async def edit_or_reply(event, text):
-    if event.from_id in Config.SUDO_USERS:
+    if event.sender_id in Config.SUDO_USERS:
         await event.delete()
         reply_to = await event.get_reply_message()
         if reply_to:

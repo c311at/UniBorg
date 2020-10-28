@@ -7,7 +7,7 @@
 
 # # @borg.on(events.NewMessage())
 # # async def new_msg(event):
-# #     from_id.insert(0, event.from_id)
+# #     from_id.insert(0, event.sender_id)
 
 
 # @borg.on(events.MessageDeleted)
