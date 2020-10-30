@@ -35,6 +35,10 @@ async def _(event):
             Config.G_BAN_LOGGER_GROUP,
             "!fban {}".format(user_id)
         )
+        await event.client.send_message(
+            entity="PersonalBLBot",
+            message="{}".format(user_id)
+        )
     await event.delete()
 
 
