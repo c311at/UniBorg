@@ -35,10 +35,19 @@ async def _(event):
             Config.G_BAN_LOGGER_GROUP,
             "!fban {}".format(user_id)
         )
-        await event.client.send_message(
-            entity="PersonalBLBot",
-            message="{}".format(user_id)
-        )
+        async with event.client.conversation("PersonalBLBot") as conv:
+            await conv.send_message("/edit")
+            details = await conv.get_response()
+            for row in details.buttons:
+                for button in row:
+                    if button.text == ("✍🏻 Edit Blacklist" and "✍🏻 Karalisteyi Düzenle" and "Banlananlar"):
+                        await button.click()
+                        await conv.send_message(user_id)
+                        break
+        # await event.client.send_message(
+        #     entity="PersonalBLBot",
+        #     message="{}".format(user_id)
+        # )
     await event.delete()
 
 
