@@ -97,35 +97,32 @@ async def _(event):
 async def _(event):
     if event.fwd_from:
         return
-    if not event.reply_to_msg_id:
-        await event.edit("```Reply to any user message.```")
-        return
-    reply_message = await event.get_reply_message()
-    if not reply_message.media:
-        await event.edit("```reply to media message```")
-        return
-    chat = "@YtbAudioBot"
-    sender = reply_message.sender
-    if sender.bot:
-        await event.edit("```Reply to actual users message.```")
-        return
-    await event.edit("```Processing```")
-    async with event.client.conversation(chat) as conv:
-        try:
-            await conv.get_response()
-            await asyncio.sleep(0.5)
-            messg = await conv.get_response()
-            if messg.file:
-                response = await messg
-            # response = conv.wait_event(events.NewMessage(
-            #     incoming=True, from_users=507379365))
-            # await event.client.send_message(chat, reply_message)
-            # response = await response
-        except YouBlockedUserError:
-            await event.reply("```Please unblock @AudioTubeBot and try again```")
-            return
+    music_link = event.pattern_match.group(1)
+    if music_link:
+        chat = "@YTAudioBot"
+        async with event.client.conversation(chat) as conv:
+            await conv.send_message(music_link)
+            await asyncio.sleep(2)
+            response = conv.wait_event(events.NewMessage(
+                incoming=True, from_users=507379365))
+            await event.client.send_message(chat, music_link)
+            response = await response
         await event.delete()
-        await event.client.send_file(event.chat_id, response.message.media)
+        if response.message.media:
+            await event.client.send_message(event.chat_id, response)
+    else:
+        reply_message = await event.get_reply_message()
+        chat = "@YTAudioBot"
+        sender = reply_message.sender
+        await event.edit("```Processing```")
+        async with event.client.conversation(chat) as conv:
+            response = conv.wait_event(events.NewMessage(
+                incoming=True, from_users=507379365))
+            await event.client.send_message(chat, reply_message)
+            response = await response
+            await event.delete()
+            if response.message.media:
+                await event.client.send_file(event.chat_id, response.message.media)
 
 
 @borg.on(admin_cmd(pattern="fm ?(.*)"))  # pylint:disable=E0602
