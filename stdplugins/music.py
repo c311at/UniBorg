@@ -1,4 +1,5 @@
 "get music from .m <music query>  Credits https://t.me/By_Azade"
+import asyncio
 import logging
 from asyncio.exceptions import TimeoutError
 
@@ -111,10 +112,15 @@ async def _(event):
     await event.edit("```Processing```")
     async with event.client.conversation(chat) as conv:
         try:
-            response = conv.wait_event(events.NewMessage(
-                incoming=True, from_users=507379365))
-            await event.client.send_message(chat, reply_message)
-            response = await response
+            await conv.get_response()
+            await asyncio.sleep(0.5)
+            messg = await conv.get_response()
+            if messg.file:
+                response = await messg
+            # response = conv.wait_event(events.NewMessage(
+            #     incoming=True, from_users=507379365))
+            # await event.client.send_message(chat, reply_message)
+            # response = await response
         except YouBlockedUserError:
             await event.reply("```Please unblock @AudioTubeBot and try again```")
             return
