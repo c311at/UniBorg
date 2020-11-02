@@ -1,5 +1,4 @@
-# git+https://github.com/LonamiWebs/Telethon.git
-telethon
+git+https://github.com/LonamiWebs/Telethon.git
 cryptg
 alive-progress
 Pillow
