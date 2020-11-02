@@ -4,7 +4,6 @@ from asyncio.exceptions import TimeoutError
 
 from telethon import events
 from telethon.errors.rpcerrorlist import YouBlockedUserError
-
 from uniborg.util import admin_cmd, humanbytes
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
@@ -93,7 +92,7 @@ async def _(event):
                 await k.edit("Kanal Linki:\nhttps://t.me/joinchat/AAAAAE8NqbV48l7ls-pFtQ")
 
 
-@borg.on(events.NewMessage(pattern="audb ?(.*)", outgoing=True))
+@borg.on(events.NewMessage(pattern="ytb ?(.*)", outgoing=True))
 async def _(event):
     if event.fwd_from:
         return
@@ -104,7 +103,7 @@ async def _(event):
     if not reply_message.media:
         await event.edit("```reply to media message```")
         return
-    chat = "@audiotubebot"
+    chat = "@YtbAudioBot"
     sender = reply_message.sender
     if sender.bot:
         await event.edit("```Reply to actual users message.```")
@@ -128,7 +127,7 @@ async def _(event):
     msg = await event.get_reply_message()
     await event.delete()
     if msg:
-        msj = f"[{msg.file.name[0:-5]}](https://t.me/joinchat/AAAAAE8NqbV48l7ls-pFtQ)\n`{humanbytes(msg.file.size)}`"
+        msj = f"[{msg.file.name}](https://t.me/joinchat/AAAAAE8NqbV48l7ls-pFtQ)\n`{humanbytes(msg.file.size)}`"
         await event.client.send_message(
             entity=await event.client.get_entity(-1001326295477),
             file=msg.media,
