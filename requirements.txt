@@ -13,7 +13,6 @@ cfscrape
 coffeehouse
 convertdate
 covid
-cryptg
 emoji
 feedparser
 google-api-python-client
