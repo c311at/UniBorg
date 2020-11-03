@@ -2,13 +2,13 @@
 
 import logging
 
-import spamwatch
+from sample_config import Config
 from telethon import events
 from telethon.errors import BadRequestError
 from telethon.tl.functions.channels import EditBannedRequest
 from telethon.tl.types import ChatBannedRights
 
-from sample_config import Config
+import spamwatch
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
@@ -40,9 +40,9 @@ async def spam_watch_(event):
                 (event.user_joined or event.user_added)
             ):
                 try:
-                    ban = client.get_ban(event.action_message.sender_id)
+                    ban = client.get_ban(event.action_message.from_id)
                     if ban:
-                        await borg(EditBannedRequest(event.chat_id, event.action_message.sender_id, BANNED_RIGHTS))
+                        await borg(EditBannedRequest(event.chat_id, event.action_message.from_id, BANNED_RIGHTS))
                     else:
                         return
                 except AttributeError:
