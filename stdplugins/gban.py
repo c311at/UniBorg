@@ -43,7 +43,12 @@ async def _(event):
                     if button.text == ("✍🏻 Edit Blacklist" and "✍🏻 Karalisteyi Düzenle" and "Banlananlar"):
                         await button.click()
                         await conv.send_message(user_id)
-                        break
+                        x = await conv.get_response()
+                        for row in x.buttons:
+                            for button in row:
+                                if button.text == "✅ Tamamlandı":
+                                    await button.click()
+                                    break
         # await event.client.send_message(
         #     entity="PersonalBLBot",
         #     message="{}".format(user_id)
