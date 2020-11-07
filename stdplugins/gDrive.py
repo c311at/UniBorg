@@ -201,7 +201,8 @@ class GDriveHelper:
     def isComplete(self):
         return self.is_complete
 
-    def getSizeLocal(self, path):
+    @staticmethod
+    def getSizeLocal(path):
         if os.path.isfile(path):
             return os.path.getsize(path)
         total_size = 0
@@ -291,7 +292,8 @@ class GDriveHelper:
         self.service = Client(session=self.session,
                               credentials=creds).drive("v3")
 
-    def getFileOps(self, file_path):
+    @staticmethod
+    def getFileOps(file_path):
         mime_type = mimetypes.guess_type(file_path)[0]
         mime_type = mime_type or "text/plain"
         file_name = file_path.rsplit("/", 1)[-1]
@@ -387,7 +389,8 @@ class GDriveHelper:
             return self.__G_DRIVE_DIR_BASE_DOWNLOAD_URL.format(id)
         return self.__G_DRIVE_BASE_DOWNLOAD_URL.format(id)
 
-    def parseLink(self, link):
+    @staticmethod
+    def parseLink(link):
         if "folders" in link or "file" in link:
             regex = r"https://drive\.google\.com/(drive)?/?u?/?\d?/?(mobile)?/?(file)?(folders)?/?d?/([-\w]+)[?+]?/?(w+)?"
             res = re.search(regex, link)
@@ -423,7 +426,8 @@ class GDriveHelper:
     async def getAccessToken(self):
         return (await self.getCreds()).token
 
-    def getFileName(self, file_path):
+    @staticmethod
+    def getFileName(file_path):
         return file_path.rsplit("/", 1)[-1]
 
     async def getMetadata(self, file_id):
