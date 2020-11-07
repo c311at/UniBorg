@@ -49,6 +49,11 @@ async def all_messages_catcher(event):
         ],
         silent=True
     )
-    reply_msg = f"Etiketleyen: {who_m}\nGrup/Kişi:[{where_m}]({message_link})\n\nMesaj: {event.message or event.media}"
-    e = await event.client.get_entity(Config.PM_LOGGR_BOT_API_ID)
-    await event.client.forward_messages(e, reply_msg, silent=True)
+    etiket_msg = f"Etiketleyen: {who_m}\nGrup/Kişi:[{where_m}]({message_link})\n\nMesaj: {event.message or event.media}"
+    # e = await event.client.get_entity(Config.PM_LOGGR_BOT_API_ID)
+    await event.client.send_message(
+        entity=Config.PM_LOGGR_BOT_API_ID,
+        message=etiket_msg,
+        link_preview=False,
+        silent=True
+    )
