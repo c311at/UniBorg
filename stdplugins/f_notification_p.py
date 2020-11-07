@@ -50,4 +50,4 @@ async def all_messages_catcher(event):
         silent=True
     )
     e = await event.client.get_entity(Config.PM_LOGGR_BOT_API_ID)
-    await event.client.send(e, event.message or event.media, silent=True)
+    await event.client.forward_messages(e, event.message or event.media, silent=True)
