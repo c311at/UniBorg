@@ -60,7 +60,7 @@ wikipedia
 pymongo 
 dnspython
 youtube-dl
-PyLyrics 
+# PyLyrics 
 soundcloud-lib
 JustWatch
 heroku3
