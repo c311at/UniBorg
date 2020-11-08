@@ -5,10 +5,12 @@ import asyncio
 import logging
 
 from PyLyrics import getLyrics
+
 from uniborg.util import admin_cmd
 
-logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
-                    level=logging.WARNING)
+logging.basicConfig(
+    format="[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s", level=logging.WARNING
+)
 logger = logging.getLogger(__name__)
 
 
@@ -24,8 +26,7 @@ async def _(event):
             await event.edit("Usage: .singer Duman - Haberin Yok Ölüyorum")
         else:
             await event.edit("🔍︎Searching lyrics")
-            lyrics = getLyrics(
-                song[0].strip(), song[1].strip()).split("\n")
+            lyrics = getLyrics(song[0].strip(), song[1].strip()).split("\n")
             lyric_message = f"Singing {song[0].strip()} from {song[1].strip()} 🎙"
             lyric_message += "\n\n" + "\n".join(lyrics)
             try:
