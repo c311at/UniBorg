@@ -15,7 +15,7 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
 logger = logging.getLogger(__name__)
 
 ENABLE_LOG = True
-LOGGING_CHATID = Config.SPAM_WATCH_LOG_CHANNEL
+# LOGGING_CHATID = Config.SPAM_WATCH_LOG_CHANNEL
 BANNED_RIGHTS = ChatBannedRights(
     until_date=None,
     view_messages=True,
@@ -53,7 +53,7 @@ async def spam_watch_(event):
                     return
                 if ENABLE_LOG:
                     await event.client.send_message(
-                        LOGGING_CHATID,
+                        Config.SPAM_WATCH_LOG_CHANNEL,
                         "#SPAMWATCH_BAN\n"
                         f"USER: [{user.first_name}](tg://user?id={user.id})\n"
                         f"CHAT: {event.chat.title}(`{event.chat_id}`)"
