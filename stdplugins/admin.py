@@ -418,28 +418,26 @@ async def unmute(eventUnMute):
         return
     if unmute(eventUnMute.chat_id, user.id) is False:
         return await eventUnMute.edit("`Error! User probably already unmuted.`")
-    else:
-
-        try:
-            await eventUnMute.client(
-                EditBannedRequest(
-                    eventUnMute.chat_id,
-                    user.id,
-                    UNBAN_RIGHTS
-                )
+    try:
+        await eventUnMute.client(
+            EditBannedRequest(
+                eventUnMute.chat_id,
+                user.id,
+                UNBAN_RIGHTS
             )
-            await eventUnMute.edit("```Unmuted Successfully```")
-        except UserIdInvalidError:
-            await eventUnMute.edit("`Uh oh my unmute logic broke!`")
-            return
+        )
+        await eventUnMute.edit("```Unmuted Successfully```")
+    except UserIdInvalidError:
+        await eventUnMute.edit("`Uh oh my unmute logic broke!`")
+        return
 
-        if ENABLE_LOG:
-            await eventUnMute.client.send_message(
-                LOGGING_CHATID,
-                "#UNMUTE\n"
-                f"USER: [{user.first_name}](tg://user?id={user.id})\n"
-                f"CHAT: {eventUnMute.chat.title}(`{eventUnMute.chat_id}`)"
-            )
+    if ENABLE_LOG:
+        await eventUnMute.client.send_message(
+            LOGGING_CHATID,
+            "#UNMUTE\n"
+            f"USER: [{user.first_name}](tg://user?id={user.id})\n"
+            f"CHAT: {eventUnMute.chat.title}(`{eventUnMute.chat_id}`)"
+        )
 
 
 @borg.on(events.NewMessage(incoming=True))

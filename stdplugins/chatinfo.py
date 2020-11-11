@@ -11,7 +11,6 @@ from telethon.tl.functions.messages import (GetFullChatRequest,
 from telethon.tl.types import (ChannelParticipantsAdmins,
                                MessageActionChannelMigrateFrom)
 from telethon.utils import get_input_location
-
 from uniborg.util import admin_cmd
 
 
