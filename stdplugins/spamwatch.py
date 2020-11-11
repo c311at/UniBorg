@@ -2,13 +2,13 @@
 
 import logging
 
-from sample_config import Config
+import spamwatch
 from telethon import events
 from telethon.errors import BadRequestError
 from telethon.tl.functions.channels import EditBannedRequest
 from telethon.tl.types import ChatBannedRights
 
-import spamwatch
+from sample_config import Config
 
 logging.basicConfig(
     format="[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s", level=logging.WARNING
