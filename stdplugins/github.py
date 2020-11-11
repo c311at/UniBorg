@@ -3,7 +3,6 @@ Syntax: .github USERNAME"""
 import logging
 
 import requests
-
 from uniborg.util import admin_cmd
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
