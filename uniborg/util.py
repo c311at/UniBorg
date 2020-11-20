@@ -21,8 +21,9 @@ from telethon.tl.types import (ChannelParticipantAdmin,
                                DocumentAttributeFilename, MessageEntityPre)
 from telethon.utils import add_surrogate
 
-logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
-                    level=logging.WARNING)
+logging.basicConfig(
+    format="[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s", level=logging.WARNING
+)
 logger = logging.getLogger(__name__)
 # from alive_progress import alive_bar
 
@@ -102,19 +103,15 @@ async def progress(current, total, event, start, type_of_ps):
         time_to_completion = round((total - current) / speed)
         estimated_total_time = elapsed_time + time_to_completion
         progress_str = "[{0}{1}]\nPercent: {2}%\n".format(
-            ''.join(["█" for _ in range(math.floor(percentage / 5))]),
-            ''.join(["░" for _ in range(20 - math.floor(percentage / 5))]),
-            round(percentage, 2))
-        tmp = progress_str + \
-            "{0} of {1}\nETA: {2}".format(
-                humanbytes(current),
-                humanbytes(total),
-                time_formatter(estimated_total_time)
-            )
-        await event.edit("{}\n {}".format(
-            type_of_ps,
-            tmp
-        ))
+            "".join(["█" for _ in range(math.floor(percentage / 5))]),
+            "".join(["░" for _ in range(20 - math.floor(percentage / 5))]),
+            round(percentage, 2),
+        )
+        tmp = progress_str + "{0} of {1}\nETA: {2}".format(
+            humanbytes(current), humanbytes(
+                total), time_formatter(estimated_total_time)
+        )
+        await event.edit("{}\n {}".format(type_of_ps, tmp))
 
 
 def humanbytes(size):
@@ -126,13 +123,7 @@ def humanbytes(size):
     # 2 ** 10 = 1024
     power = 2 ** 10
     raised_to_pow = 0
-    dict_power_n = {
-        0: "",
-        1: "Ki",
-        2: "Mi",
-        3: "Gi",
-        4: "Ti"
-    }
+    dict_power_n = {0: "", 1: "Ki", 2: "Mi", 3: "Gi", 4: "Ti"}
     while size > power:
         size /= power
         raised_to_pow += 1
@@ -145,12 +136,8 @@ def time_formatter(seconds: int) -> str:
     result = ""
     v_m = 0
     remainder = seconds
-    r_ange_s = {
-        "days": (24 * 60 * 60),
-        "hours": (60 * 60),
-        "minutes": 60,
-        "seconds": 1
-    }
+    r_ange_s = {"days": (24 * 60 * 60), "hours": (60 * 60),
+                "minutes": 60, "seconds": 1}
     for age, divisor in r_ange_s.items():
         v_m, remainder = divmod(remainder, divisor)
         v_m = int(v_m)
@@ -163,12 +150,12 @@ async def is_admin(client, chat_id, user_id):
     if not str(chat_id).startswith("-100"):
         return False
     try:
-        req_jo = await client(GetParticipantRequest(
-            channel=chat_id,
-            user_id=user_id
-        ))
+        req_jo = await client(GetParticipantRequest(channel=chat_id, user_id=user_id))
         chat_participant = req_jo.participant
-        if isinstance(chat_participant, (ChannelParticipantCreator, ChannelParticipantAdmin)):
+        if isinstance(
+            chat_participant, (ChannelParticipantCreator,
+                               ChannelParticipantAdmin)
+        ):
             return True
     except Exception:
         return False
@@ -205,8 +192,7 @@ async def run_command(command: List[str]) -> (str, str):
 
 async def take_screen_shot(video_file, output_directory, ttl):
     # https://stackoverflow.com/a/13891070/4723940
-    out_put_file_name = output_directory + \
-        "/" + str(time.time()) + ".jpg"
+    out_put_file_name = output_directory + "/" + str(time.time()) + ".jpg"
     file_genertor_command = [
         "ffmpeg",
         "-ss",
@@ -215,7 +201,7 @@ async def take_screen_shot(video_file, output_directory, ttl):
         video_file,
         "-vframes",
         "1",
-        out_put_file_name
+        out_put_file_name,
     ]
     # width = "90"
     t_response, e_response = await run_command(file_genertor_command)
@@ -224,6 +210,7 @@ async def take_screen_shot(video_file, output_directory, ttl):
     logger.info(e_response)
     logger.info(t_response)
     return None
+
 
 # https://github.com/Nekmo/telegram-upload/blob/master/telegram_upload/video.py#L26
 
@@ -244,7 +231,7 @@ async def cult_small_video(video_file, output_directory, start_time, end_time):
         "1",
         "-strict",
         "-2",
-        out_put_file_name
+        out_put_file_name,
     ]
     t_response, e_response = await run_command(file_genertor_command)
     if os.path.lexists(out_put_file_name):
@@ -252,6 +239,7 @@ async def cult_small_video(video_file, output_directory, start_time, end_time):
     logger.info(e_response)
     logger.info(t_response)
     return None
+
 
 # these two functions are stolen from
 # https://github.com/udf/uniborg/blob/kate/stdplugins/info.py
@@ -262,7 +250,7 @@ def parse_pre(text):
     return (
         text,
         [MessageEntityPre(offset=0, length=len(
-            add_surrogate(text)), language='')]
+            add_surrogate(text)), language="")],
     )
 
 
@@ -277,26 +265,26 @@ def yaml_format(obj, indent=0, max_str_len=256, max_byte_len=64):
 
     if isinstance(obj, dict):
         if not obj:
-            return 'dict:'
+            return "dict:"
         items = obj.items()
         has_items = len(items) > 1
         has_multiple_items = len(items) > 2
-        result.append(obj.get('_', 'dict') + (':' if has_items else ''))
+        result.append(obj.get("_", "dict") + (":" if has_items else ""))
         if has_multiple_items:
-            result.append('\n')
+            result.append("\n")
             indent += 2
         for k, v in items:
-            if k == '_' or v is None:
+            if k == "_" or v is None:
                 continue
             formatted = yaml_format(v, indent)
             if not formatted.strip():
                 continue
-            result.append(' ' * (indent if has_multiple_items else 1))
-            result.append(f'{k}:')
+            result.append(" " * (indent if has_multiple_items else 1))
+            result.append(f"{k}:")
             if not formatted[0].isspace():
-                result.append(' ')
-            result.append(f'{formatted}')
-            result.append('\n')
+                result.append(" ")
+            result.append(f"{formatted}")
+            result.append("\n")
         if has_items:
             result.pop()
         if has_multiple_items:
@@ -305,28 +293,30 @@ def yaml_format(obj, indent=0, max_str_len=256, max_byte_len=64):
         # truncate long strings and display elipsis
         result = repr(obj[:max_str_len])
         if len(obj) > max_str_len:
-            result += '…'
+            result += "…"
         return result
     elif isinstance(obj, bytes):
         # repr() bytes if it's printable, hex like "FF EE BB" otherwise
-        if all(0x20 <= c < 0x7f for c in obj):
+        if all(0x20 <= c < 0x7F for c in obj):
             return repr(obj)
         else:
-            return ('<…>' if len(obj) > max_byte_len else
-                    ' '.join(f'{b:02X}' for b in obj))
+            return (
+                "<…>" if len(obj) > max_byte_len else " ".join(
+                    f"{b:02X}" for b in obj)
+            )
     elif isinstance(obj, datetime.datetime):
         # ISO-8601 without timezone offset (telethon dates are always UTC)
-        return obj.strftime('%Y-%m-%d %H:%M:%S')
-    elif hasattr(obj, '__iter__'):
+        return obj.strftime("%Y-%m-%d %H:%M:%S")
+    elif hasattr(obj, "__iter__"):
         # display iterables one after another at the base indentation level
-        result.append('\n')
+        result.append("\n")
         indent += 2
         for x in obj:
             result.append(f"{' ' * indent}- {yaml_format(x, indent + 2)}")
-            result.append('\n')
+            result.append("\n")
         result.pop()
         indent -= 2
     else:
         return repr(obj)
 
-    return ''.join(result)
+    return "".join(result)
