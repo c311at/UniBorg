@@ -3,10 +3,12 @@ import logging
 from telethon.tl import types
 from telethon.tl.functions.messages import EditChatDefaultBannedRightsRequest
 from telethon.tl.types import ChatBannedRights
+
 from uniborg.util import admin_cmd
 
-logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
-                    level=logging.WARNING)
+logging.basicConfig(
+    format="[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s", level=logging.WARNING
+)
 logger = logging.getLogger(__name__)
 
 
@@ -87,8 +89,9 @@ async def locks(event):
     )
     try:
         await event.client(
-            EditChatDefaultBannedRightsRequest(peer=peer_id,
-                                               banned_rights=lock_rights))
+            EditChatDefaultBannedRightsRequest(
+                peer=peer_id, banned_rights=lock_rights)
+        )
         await event.edit(f"Locked: {what}")
     except BaseException as e:
         await event.edit(f"`Invalid type: {str(e)}`")
@@ -172,8 +175,10 @@ async def rem_locks(event):
     )
     try:
         await event.client(
-            EditChatDefaultBannedRightsRequest(peer=peer_id,
-                                               banned_rights=unlock_rights))
+            EditChatDefaultBannedRightsRequest(
+                peer=peer_id, banned_rights=unlock_rights
+            )
+        )
         await event.edit(f"`Unlocked: {what}`")
     except BaseException as e:
         await event.edit(f"`Invalid type: {str(e)}`")
