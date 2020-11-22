@@ -117,12 +117,9 @@ class Config:
 
     LYDIA_API = os.environ.get("LYDIA_API", None)
     DEFAULT_NAME = os.environ.get("DEFAULT_NAME", None)
-    VIRUSTOTAL_API_KEY = os.environ.get("VIRUSTOTAL_API_KEY", None)
     #
     # define "spam" in PMs
     MAX_FLOOD_IN_P_M_s = int(os.environ.get("MAX_FLOOD_IN_P_M_s", 3))
-    # JustWatch Country
-    WATCH_COUNTRY = os.environ.get("WATCH_COUNTRY", "IN")
     # leave this blank, should be automatically filled for Heroku.com users
     PM_LOGGR_BOT_API_ID = os.environ.get("PM_LOGGR_BOT_API_ID", None)
     if PM_LOGGR_BOT_API_ID:

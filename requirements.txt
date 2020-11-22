@@ -41,15 +41,12 @@ qrcode
 regex
 remotezip
 requests
-# schedule
-# selenium
 setuptools
 spamwatch
 speedtest-cli
 spotify_token
 sqlalchemy
 telegraph
-# textblob
 tgcrypto
 typing
 unicode_tr
@@ -60,12 +57,12 @@ wikipedia
 pymongo 
 dnspython
 youtube-dl
-# PyLyrics 
 soundcloud-lib
 JustWatch
 heroku3
 pyquery
-
-
-
+# schedule
+# selenium
+# PyLyrics 
+# textblob
 
