@@ -39,7 +39,8 @@ class Config:
     IBM_WATSON_CRED_USERNAME = os.environ.get("IBM_WATSON_CRED_USERNAME", None)
     # This is required for the hash to torrent file functionality to work.
     HASH_TO_TORRENT_API = os.environ.get(
-        "HASH_TO_TORRENT_API", "https://example.com/torrent/{}")
+        "HASH_TO_TORRENT_API", "https://example.com/torrent/{}"
+    )
     # This is required for the @telegraph functionality.
     TELEGRAPH_SHORT_NAME = os.environ.get("TELEGRAPH_SHORT_NAME", "UniBorg")
     # Get a Free API Key from OCR.Space
@@ -60,17 +61,14 @@ class Config:
     # TG API limit. A message can have maximum 4096 characters!
     MAX_MESSAGE_SIZE_LIMIT = 4095
     # set blacklist_chats where you do not want userbot's features
-    UB_BLACK_LIST_CHAT = {int(x) for x in os.environ.get(
-        "UB_BLACK_LIST_CHAT", "").split()}
+    UB_BLACK_LIST_CHAT = {
+        int(x) for x in os.environ.get("UB_BLACK_LIST_CHAT", "").split()
+    }
     # specify LOAD and NO_LOAD
     LOAD = []
     # folowing plugins won't work on Heroku,
     # because of their ephemeral file system
-    NO_LOAD = [
-        "rss",
-        "unbanmute",
-        "antispam"
-    ]
+    NO_LOAD = ["rss", "unbanmute", "antispam"]
     # Get your own API key from https://www.remove.bg/ or
     # feel free to use http://telegram.dog/Remove_BGBot
     REM_BG_API_KEY = os.environ.get("REM_BG_API_KEY", None)
@@ -80,7 +78,8 @@ class Config:
     DB_URI = os.environ.get("DATABASE_URL", None)
     # number of rows of buttons to be displayed in .helpme command
     NO_OF_BUTTONS_DISPLAYED_IN_H_ME_CMD = int(
-        os.environ.get("NO_OF_BUTTONS_DISPLAYED_IN_H_ME_CMD", 5))
+        os.environ.get("NO_OF_BUTTONS_DISPLAYED_IN_H_ME_CMD", 5)
+    )
     # specify command handler that should be used for the plugins
     # this should be a valid "regex" pattern
     COMMAND_HAND_LER = os.environ.get("COMMAND_HAND_LER", "\.")
@@ -100,7 +99,8 @@ class Config:
     TELE_GRAM_2FA_CODE = os.environ.get("TELE_GRAM_2FA_CODE", None)
     #
     GROUP_REG_SED_EX_BOT_S = os.environ.get(
-        "GROUP_REG_SED_EX_BOT_S", r"(regex|moku|BananaButler_|rgx|l4mR)bot")
+        "GROUP_REG_SED_EX_BOT_S", r"(regex|moku|BananaButler_|rgx|l4mR)bot"
+    )
     # rapidleech plugins
     OPEN_LOAD_LOGIN = os.environ.get("OPEN_LOAD_LOGIN", "0")
     OPEN_LOAD_KEY = os.environ.get("OPEN_LOAD_KEY", "0")
