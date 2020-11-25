@@ -136,17 +136,20 @@ def parse(message, old_entities=None):
 @borg.on(events.MessageEdited(outgoing=True))
 @borg.on(events.NewMessage(outgoing=True))
 async def reparse(event):
-    old_entities = event.message.entities or []
-    parser = partial(parse, old_entities=old_entities)
-    message, msg_entities = await borg._parse_message_text(event.raw_text, parser)
-    if len(old_entities) >= len(msg_entities) and event.raw_text == message:
-        return
+    try:
+        old_entities = event.message.entities or []
+        parser = partial(parse, old_entities=old_entities)
+        message, msg_entities = await borg._parse_message_text(event.raw_text, parser)
+        if len(old_entities) >= len(msg_entities) and event.raw_text == message:
+            return
 
-    await borg(EditMessageRequest(
-        peer=await event.get_input_chat(),
-        id=event.message.id,
-        message=message,
-        no_webpage=not bool(event.message.media),
-        entities=msg_entities
-    ))
-    raise events.StopPropagation
+        await borg(EditMessageRequest(
+            peer=await event.get_input_chat(),
+            id=event.message.id,
+            message=message,
+            no_webpage=not bool(event.message.media),
+            entities=msg_entities
+        ))
+        raise events.StopPropagation
+    except:
+        ""
