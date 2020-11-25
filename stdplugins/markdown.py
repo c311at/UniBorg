@@ -15,9 +15,7 @@ from telethon.utils import add_surrogate, del_surrogate
 
 def parse_url_match(m):
     entity = MessageEntityTextUrl(
-        offset=m.start(),
-        length=len(m.group(1)),
-        url=del_surrogate(m.group(2))
+        offset=m.start(), length=len(m.group(1)), url=del_surrogate(m.group(2))
     )
     return m.group(1), entity
 
@@ -26,11 +24,12 @@ def get_tag_parser(tag, entity):
     # TODO unescape escaped tags?
     def tag_parser(m):
         return m.group(1), entity(offset=m.start(), length=len(m.group(1)))
+
     tag = re.escape(tag)
-    return re.compile(tag + r'(.+?)' + tag, re.DOTALL), tag_parser
+    return re.compile(tag + r"(.+?)" + tag, re.DOTALL), tag_parser
 
 
-PRINTABLE_ASCII = range(0x21, 0x7f)
+PRINTABLE_ASCII = range(0x21, 0x7F)
 
 
 def parse_aesthetics(m):
@@ -42,15 +41,14 @@ def parse_aesthetics(m):
             elif c == ord(" "):
                 c = 0x3000
             yield chr(c)
+
     return "".join(aesthetify(m[1])), None
 
 
 def parse_subreddit(m):
-    text = '/' + m.group(3)
+    text = "/" + m.group(3)
     entity = MessageEntityTextUrl(
-        offset=m.start(2),
-        length=len(text),
-        url=f'reddit.com{text}'
+        offset=m.start(2), length=len(text), url=f"reddit.com{text}"
     )
     return m.group(1) + text, entity
 
@@ -62,21 +60,24 @@ def parse_strikethrough(m):
 
 
 PARSED_ENTITIES = (
-    MessageEntityBold, MessageEntityItalic, MessageEntityCode,
-    MessageEntityPre, MessageEntityTextUrl
+    MessageEntityBold,
+    MessageEntityItalic,
+    MessageEntityCode,
+    MessageEntityPre,
+    MessageEntityTextUrl,
 )
 # A matcher is a tuple of (regex pattern, parse function)
 # where the parse function takes the match and returns (text, entity)
 MATCHERS = [
     (DEFAULT_URL_RE, parse_url_match),
-    (get_tag_parser('**', MessageEntityBold)),
-    (get_tag_parser('__', MessageEntityItalic)),
-    (get_tag_parser('```', partial(MessageEntityPre, language=''))),
-    (get_tag_parser('`', MessageEntityCode)),
-    (re.compile(r'\+\+(.+?)\+\+'), parse_aesthetics),
-    (re.compile(r'([^/\w]|^)(/?(r/\w+))'), parse_subreddit),
+    (get_tag_parser("**", MessageEntityBold)),
+    (get_tag_parser("__", MessageEntityItalic)),
+    (get_tag_parser("```", partial(MessageEntityPre, language=""))),
+    (get_tag_parser("`", MessageEntityCode)),
+    (re.compile(r"\+\+(.+?)\+\+"), parse_aesthetics),
+    (re.compile(r"([^/\w]|^)(/?(r/\w+))"), parse_subreddit),
     (re.compile(r"(?<!\w)(~{2})(?!~~)(.+?)(?<!~)\1(?!\w)"),
-     parse_strikethrough)
+     parse_strikethrough),
 ]
 
 
@@ -115,11 +116,8 @@ def parse(message, old_entities=None):
                     e.offset += shift
 
             # Replace whole match with text from parser
-            message = ''.join((
-                message[:match.start()],
-                text,
-                message[match.end():]
-            ))
+            message = "".join(
+                (message[: match.start()], text, message[match.end():]))
 
             # Append entity if we got one
             if entity:
@@ -143,13 +141,15 @@ async def reparse(event):
         if len(old_entities) >= len(msg_entities) and event.raw_text == message:
             return
 
-        await borg(EditMessageRequest(
-            peer=await event.get_input_chat(),
-            id=event.message.id,
-            message=message,
-            no_webpage=not bool(event.message.media),
-            entities=msg_entities
-        ))
+        await borg(
+            EditMessageRequest(
+                peer=await event.get_input_chat(),
+                id=event.message.id,
+                message=message,
+                no_webpage=not bool(event.message.media),
+                entities=msg_entities,
+            )
+        )
         raise events.StopPropagation
     except:
         ""
