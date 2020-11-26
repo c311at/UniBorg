@@ -10,9 +10,8 @@ import requests
 from hachoir.metadata import extractMetadata
 from hachoir.parser import createParser
 from pyquery import PyQuery as pq
-from telethon.tl.types import DocumentAttributeVideo
-
 from sample_config import Config
+from telethon.tl.types import DocumentAttributeVideo
 from uniborg.util import admin_cmd, progress, run_command
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
@@ -155,7 +154,6 @@ async def take_screen_shot(video_file, output_directory, ttl):
     t_response, e_response = await run_command(file_genertor_command)
     if os.path.lexists(out_put_file_name):
         return out_put_file_name
-    else:
-        logger.info(e_response)
-        logger.info(t_response)
-        return None
+    logger.info(e_response)
+    logger.info(t_response)
+    return None
