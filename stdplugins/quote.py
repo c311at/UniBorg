@@ -23,6 +23,7 @@ from io import BytesIO
 import requests
 import telethon
 from PIL import Image
+from telethon import utils
 from uniborg.util import admin_cmd
 
 logger = logging.getLogger(__name__)
@@ -57,8 +58,8 @@ if True:
               "default_username_color": "#b48bf2"}
     client = borg
 
-    @borg.on(admin_cmd(pattern="quote(.*)"))
-    async def quotecmd(message):  # noqa: C901
+    @borg.on(admin_cmd(pattern="etik ?(.*)"))
+    async def quotecmd(message):    # noqa: C901
         """Quote a message.
         Usage: .quote [template]
         If template is missing, possible templates are fetched."""
@@ -102,21 +103,21 @@ if True:
         else:
             user = await reply.get_sender()
 
-        username = telethon. get_display_name(user)
+        username = utils.get_display_name(user)
         user_id = reply.sender_id
 
         if reply.fwd_from:
             if reply.fwd_from.saved_from_peer:
-                username = telethon. get_display_name(reply.forward.chat)
+                username = utils.get_display_name(reply.forward.chat)
                 profile_photo_url = reply.forward.chat
                 admintitle = strings["channel"]
             elif reply.fwd_from.from_name:
                 username = reply.fwd_from.from_name
             elif reply.forward.sender:
-                username = telethon. get_display_name(
+                username = utils.get_display_name(
                     reply.forward.sender)
             elif reply.forward.chat:
-                username = telethon. get_display_name(reply.forward.chat)
+                username = utils.get_display_name(reply.forward.chat)
 
         pfp = await client.download_profile_photo(profile_photo_url, bytes)
         if pfp is not None:
@@ -156,23 +157,22 @@ if True:
             else:
                 raise ValueError("Invalid response from server", resp)
         elif resp["status"] == 404:
-            if resp["message"] == "ERROR_TEMPLATE_NOT_FOUND":
-                newreq = requests.post(config["api_url"] + "/api/v1/getalltemplates", data={
-                    "token": config["api_token"]
-                })
-                newreq = newreq.json()
-
-                if newreq["status"] == "NOT_ENOUGH_PERMISSIONS":
-                    return await message.respond(strings["not_enough_permissions"])
-                elif newreq["status"] == "SUCCESS":
-                    templates = strings["delimiter"].join(newreq["message"])
-                    return await message.respond(strings["templates"].format(templates))
-                elif newreq["status"] == "INVALID_TOKEN":
-                    return await message.respond(strings["invalid_token"])
-                else:
-                    raise ValueError("Invalid response from server", newreq)
-            else:
+            if resp["message"] != "ERROR_TEMPLATE_NOT_FOUND":
                 raise ValueError("Invalid response from server", resp)
+            newreq = requests.post(config["api_url"] + "/api/v1/getalltemplates", data={
+                "token": config["api_token"]
+            })
+            newreq = newreq.json()
+
+            if newreq["status"] == "NOT_ENOUGH_PERMISSIONS":
+                return await message.respond(strings["not_enough_permissions"])
+            elif newreq["status"] == "SUCCESS":
+                templates = strings["delimiter"].join(newreq["message"])
+                return await message.respond(strings["templates"].format(templates))
+            elif newreq["status"] == "INVALID_TOKEN":
+                return await message.respond(strings["invalid_token"])
+            else:
+                raise ValueError("Invalid response from server", newreq)
         elif resp["status"] != 200:
             raise ValueError("Invalid response from server", resp)
 
