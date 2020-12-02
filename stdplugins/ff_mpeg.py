@@ -9,13 +9,15 @@ from datetime import datetime
 
 from hachoir.metadata import extractMetadata
 from hachoir.parser import createParser
+
 from sample_config import Config
 from uniborg.util import admin_cmd, progress
 
 FF_MPEG_DOWN_LOAD_MEDIA_PATH = "uniborg.media.ffmpeg"
 
-logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
-                    level=logging.WARNING)
+logging.basicConfig(
+    format="[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s", level=logging.WARNING
+)
 
 logger = logging.getLogger(__name__)
 
@@ -37,22 +39,32 @@ async def ff_mpeg_save_cmd(event):
                     FF_MPEG_DOWN_LOAD_MEDIA_PATH,
                     progress_callback=lambda d, t: asyncio.get_event_loop().create_task(
                         progress(d, t, event, c_time, "trying to download")
-                    )
+                    ),
                 )
             except Exception as e:  # pylint:disable=C0103,W0703
                 event.client.send_message(event.chat_id, str(e))
             else:
                 end = datetime.now()
                 ms = (end - start).seconds
-                h = await event.client.send_message(event.chat_id, "Downloaded to `{}` in {} seconds.".format(downloaded_file_name, ms))
+                h = await event.client.send_message(
+                    event.chat_id,
+                    "Downloaded to `{}` in {} seconds.".format(
+                        downloaded_file_name, ms
+                    ),
+                )
                 await asyncio.sleep(4)
                 await h.delete()
         else:
-            f = await event.client.send_message(event.chat_id, "Reply to a Telegram media file")
+            f = await event.client.send_message(
+                event.chat_id, "Reply to a Telegram media file"
+            )
             await asyncio.sleep(4)
             await f.delete()
     else:
-        g = await event.client.send_message(event.chat_id, "a media file already exists in path. Please remove the media and try again! use `.exec rm -rf uniborg.media.ffmpeg`")
+        g = await event.client.send_message(
+            event.chat_id,
+            "a media file already exists in path. Please remove the media and try again! use `.exec rm -rf uniborg.media.ffmpeg`",
+        )
         await asyncio.sleep(8)
         await g.delete()
 
@@ -63,7 +75,10 @@ async def ff_mpeg_trim_cmd(event):
         return
     await event.delete()
     if not os.path.exists(FF_MPEG_DOWN_LOAD_MEDIA_PATH):
-        k = await event.client.send_message(event.chat_id, f"a media file needs to be downloaded, and saved to the following path: `{FF_MPEG_DOWN_LOAD_MEDIA_PATH}`")
+        k = await event.client.send_message(
+            event.chat_id,
+            f"a media file needs to be downloaded, and saved to the following path: `{FF_MPEG_DOWN_LOAD_MEDIA_PATH}`",
+        )
         await asyncio.sleep(4)
         await k.delete()
         return
@@ -78,7 +93,7 @@ async def ff_mpeg_trim_cmd(event):
             FF_MPEG_DOWN_LOAD_MEDIA_PATH,
             Config.TMP_DOWNLOAD_DIRECTORY,
             start_time,
-            end_time
+            end_time,
         )
         logger.info(o)
         try:
@@ -93,7 +108,7 @@ async def ff_mpeg_trim_cmd(event):
                 # reply_to=event.message.id,
                 progress_callback=lambda d, t: asyncio.get_event_loop().create_task(
                     progress(d, t, event, c_time, "trying to upload")
-                )
+                ),
             )
             os.remove(o)
         except Exception as e:
@@ -102,9 +117,7 @@ async def ff_mpeg_trim_cmd(event):
         # output should be image
         cmd, start_time = cmt
         o = await take_screen_shot(
-            FF_MPEG_DOWN_LOAD_MEDIA_PATH,
-            Config.TMP_DOWNLOAD_DIRECTORY,
-            start_time
+            FF_MPEG_DOWN_LOAD_MEDIA_PATH, Config.TMP_DOWNLOAD_DIRECTORY, start_time
         )
         logger.info(o)
         try:
@@ -119,7 +132,7 @@ async def ff_mpeg_trim_cmd(event):
                 # reply_to=event.message.id,
                 progress_callback=lambda d, t: asyncio.get_event_loop().create_task(
                     progress(d, t, event, c_time, "trying to upload")
-                )
+                ),
             )
             os.remove(o)
         except Exception as e:
@@ -131,15 +144,16 @@ async def ff_mpeg_trim_cmd(event):
         return
     end = datetime.now()
     ms = (end - start).seconds
-    j = await event.client.send_message(event.chat_id, f"Completed Process in {ms} seconds")
+    j = await event.client.send_message(
+        event.chat_id, f"Completed Process in {ms} seconds"
+    )
     await asyncio.sleep(4)
     await j.delete()
 
 
 async def take_screen_shot(video_file, output_directory, ttl):
     # https://stackoverflow.com/a/13891070/4723940
-    out_put_file_name = output_directory + \
-        "/" + str(time.time()) + ".jpg"
+    out_put_file_name = output_directory + "/" + str(time.time()) + ".jpg"
     file_genertor_command = [
         "ffmpeg",
         "-ss",
@@ -148,7 +162,7 @@ async def take_screen_shot(video_file, output_directory, ttl):
         video_file,
         "-vframes",
         "1",
-        out_put_file_name
+        out_put_file_name,
     ]
     # width = "90"
     process = await asyncio.create_subprocess_exec(
@@ -166,6 +180,7 @@ async def take_screen_shot(video_file, output_directory, ttl):
     logger.info(e_response)
     logger.info(t_response)
     return None
+
 
 # https://github.com/Nekmo/telegram-upload/blob/master/telegram_upload/video.py#L26
 
@@ -186,7 +201,7 @@ async def cult_small_video(video_file, output_directory, start_time, end_time):
         "1",
         "-strict",
         "-2",
-        out_put_file_name
+        out_put_file_name,
     ]
     process = await asyncio.create_subprocess_exec(
         *file_genertor_command,
