@@ -2,7 +2,8 @@
 Available Commands:
 .tr LanguageCode as reply to a message
 .tr LangaugeCode | text to translate"""
-from googletrans import LANGUAGES, Translator
+from google_trans_new import google_translator
+# from googletrans import LANGUAGES, Translator
 from uniborg.util import admin_cmd
 
 
@@ -25,7 +26,7 @@ async def _(event):
         return
     text = text.strip()
     lan = lan.strip()
-    translator = Translator(service_urls=['translate.google.com'])
+    translator = google_translator()
     try:
         translated = translator.translate(text, dest=lan)
         after_tr_text = translated.text
