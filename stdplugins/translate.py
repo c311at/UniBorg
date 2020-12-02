@@ -6,7 +6,7 @@ from googletrans import LANGUAGES, Translator
 from uniborg.util import admin_cmd
 
 
-@borg.on(admin_cmd(pattern="çevir ?(.*)"))
+@borg.on(admin_cmd(pattern="tr ?(.*)"))
 async def _(event):
     if event.fwd_from:
         return
@@ -25,7 +25,7 @@ async def _(event):
         return
     text = text.strip()
     lan = lan.strip()
-    translator = Translator()
+    translator = Translator(service_urls=['translate.googleapis.com'])
     try:
         translated = translator.translate(text, dest=lan)
         after_tr_text = translated.text
