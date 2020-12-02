@@ -14,7 +14,7 @@ async def _(event):
         # https://t.me/c/1220993104/192075
         return
     input_str = event.pattern_match.group(1)
-    if event.reply_to.reply_to_msg_id:
+    if event.reply_to:
         previous_message = await event.get_reply_message()
         text = previous_message.message
         lan = input_str or "en"
@@ -31,7 +31,7 @@ async def _(event):
         after_tr_text = translated.text
         source_lan = LANGUAGES[f'{translated.src.lower()}']
         transl_lan = LANGUAGES[f'{translated.dest.lower()}']
-        output_str = """Detected Language: **{}**\nTRANSLATED To: **{}**\n\n{}""".format(
+        output_str = "Detected Language: **{}**\nTRANSLATED To: **{}**\n\n{}".format(
             # previous_message.message,
             source_lan.title(),
             transl_lan.title(),
