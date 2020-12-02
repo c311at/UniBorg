@@ -25,7 +25,7 @@ async def _(event):
         return
     text = text.strip()
     lan = lan.strip()
-    translator = Translator(service_urls=['translate.googleapis.com'])
+    translator = Translator(service_urls=['translate.google.com'])
     try:
         translated = translator.translate(text, dest=lan)
         after_tr_text = translated.text
