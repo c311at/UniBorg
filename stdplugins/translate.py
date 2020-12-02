@@ -10,6 +10,9 @@ from uniborg.util import admin_cmd
 async def _(event):
     if event.fwd_from:
         return
+    if "trim" in event.raw_text:
+        # https://t.me/c/1220993104/192075
+        return
     input_str = event.pattern_match.group(1)
     if event.reply_to.reply_to_msg_id:
         previous_message = await event.get_reply_message()
@@ -26,8 +29,6 @@ async def _(event):
     try:
         translated = translator.translate(text, dest=lan)
         after_tr_text = translated.text
-        # TODO: emojify the :
-        # either here, or before translation
         source_lan = LANGUAGES[f'{translated.src.lower()}']
         transl_lan = LANGUAGES[f'{translated.dest.lower()}']
         output_str = """Detected Language: **{}**\nTRANSLATED To: **{}**\n\n{}""".format(
