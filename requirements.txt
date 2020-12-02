@@ -17,7 +17,8 @@ emoji
 feedparser
 google-api-python-client
 google_images_download
-googletrans
+# googletrans
+googletrans==3.1.0a0
 gtts
 gaggle
 hachoir
