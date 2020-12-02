@@ -3,6 +3,7 @@ Available Commands:
 .tr LanguageCode as reply to a message
 .tr LangaugeCode | text to translate"""
 from google_trans_new import google_translator
+
 # from googletrans import LANGUAGES, Translator
 from uniborg.util import admin_cmd
 
@@ -30,13 +31,13 @@ async def _(event):
     try:
         translated = translator.translate(text, dest=lan)
         after_tr_text = translated.text
-        source_lan = LANGUAGES[f'{translated.src.lower()}']
-        transl_lan = LANGUAGES[f'{translated.dest.lower()}']
+        source_lan = LANGUAGES[f"{translated.src.lower()}"]
+        transl_lan = LANGUAGES[f"{translated.dest.lower()}"]
         output_str = "Detected Language: **{}**\nTRANSLATED To: **{}**\n\n{}".format(
             # previous_message.message,
             source_lan.title(),
             transl_lan.title(),
-            after_tr_text
+            after_tr_text,
         )
         await event.edit(output_str)
     except Exception as exc:
