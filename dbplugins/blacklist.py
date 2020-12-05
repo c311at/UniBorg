@@ -55,9 +55,10 @@ async def on_add_black_list(event):
 @borg.on(admin_cmd(pattern="listblacklist"))
 async def on_view_blacklist(event):
     all_blacklisted = await num_blacklist_filters(event.chat_id)
+    black_lists = await get_chat_blacklist(event.chat_id)
     OUT_STR = "Blacklists in the Current Chat:\n"
     if all_blacklisted > 0:
-        for trigger in all_blacklisted:
+        for trigger in black_lists:
             OUT_STR += f"👉 {trigger} \n"
     else:
         OUT_STR = "No BlackLists. Start Saving using `.addblacklist`"
