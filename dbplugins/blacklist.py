@@ -82,14 +82,5 @@ async def on_view_blacklist(event):
 @borg.on(admin_cmd(pattern="rmblacklist ((.|\n)*)"))
 async def on_delete_blacklist(event):
     text = event.pattern_match.group(1)
-    to_unblacklist = list(
-        {trigger.strip() for trigger in text.split("\n") if trigger.strip()}
-    )
-    # successful = sum(
-    #     1
-    #     for trigger in to_unblacklist
-    #     if await rm_from_blacklist(event.chat_id, trigger.lower())
-    # )
-    for trigger in to_unblacklist:
-        if await rm_from_blacklist(event.chat_id, trigger):
-            await event.edit(f"Removed {text} / {len(to_unblacklist)} from the blacklist")
+    if await rm_from_blacklist(event.chat_id, text):
+        await event.edit(f"Removed {text}  from the blacklist")
