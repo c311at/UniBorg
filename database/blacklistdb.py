@@ -44,6 +44,6 @@ async def get_chat_blacklist(chat_id):
 async def num_blacklist_filters(chat_id):
     check = await get_chat_blacklist(chat_id)
     if check:
-        return len(check)
+        return check.count()
     else:
         False
