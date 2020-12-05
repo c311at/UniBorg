@@ -10,15 +10,12 @@ import asyncio
 import io
 import re
 
-import sql_helpers.blacklist_sql as sql
-from sample_config import Config
+from database.blacklistdb import (add_to_blacklist, get_chat_blacklist,
+                                  rm_from_blacklist)
 from telethon import events
 from telethon.tl import functions, types
-from uniborg.util import admin_cmd, is_admin
-
-# import sql_helpers.blacklist_sql as sql
-#
-# from sample_config import Config
+from userbot import Config, borg
+from userbot.utils import admin_cmd, is_admin
 
 
 @borg.on(admin_cmd(incoming=True))
@@ -28,7 +25,7 @@ async def on_new_message(event):
     if borg.me.id == event.sender_id:
         return
     name = event.raw_text
-    snips = sql.get_chat_blacklist(event.chat_id)
+    snips = get_chat_blacklist(event.chat_id)
     for snip in snips:
         pattern = r"( |^|[^\w])" + re.escape(snip) + r"( |$|[^\w])"
         if re.search(pattern, name, flags=re.IGNORECASE):
@@ -36,7 +33,7 @@ async def on_new_message(event):
                 await event.delete()
             except Exception as e:
                 await event.reply("I do not have DELETE permission in this chat")
-                sql.rm_from_blacklist(event.chat_id, snip.lower())
+                rm_from_blacklist(event.chat_id, snip.lower())
             break
 
 
@@ -47,13 +44,13 @@ async def on_add_black_list(event):
         {trigger.strip() for trigger in text.split("\n") if trigger.strip()}
     )
     for trigger in to_blacklist:
-        sql.add_to_blacklist(event.chat_id, trigger.lower())
+        add_to_blacklist(event.chat_id, trigger.lower())
     await event.edit("Added {} triggers to the blacklist in the current chat".format(len(to_blacklist)))
 
 
 @borg.on(admin_cmd(pattern="listblacklist"))
 async def on_view_blacklist(event):
-    all_blacklisted = sql.get_chat_blacklist(event.chat_id)
+    all_blacklisted = get_chat_blacklist(event.chat_id)
     OUT_STR = "Blacklists in the Current Chat:\n"
     if len(all_blacklisted) > 0:
         for trigger in all_blacklisted:
@@ -85,7 +82,7 @@ async def on_delete_blacklist(event):
     successful = sum(
         1
         for trigger in to_unblacklist
-        if sql.rm_from_blacklist(event.chat_id, trigger.lower())
+        if rm_from_blacklist(event.chat_id, trigger.lower())
     )
 
     await event.edit(f"Removed {successful} / {len(to_unblacklist)} from the blacklist")
