@@ -12,10 +12,10 @@ import re
 
 from database.blacklistdb import (add_to_blacklist, get_chat_blacklist,
                                   rm_from_blacklist)
+from sample_config import Config
 from telethon import events
 from telethon.tl import functions, types
-from userbot import Config, borg
-from userbot.utils import admin_cmd, is_admin
+from uniborg.util import admin_cmd, is_admin
 
 
 @borg.on(admin_cmd(incoming=True))
