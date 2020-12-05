@@ -1,11 +1,12 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
-"""Filters
+"""blacklist mongodb support coded by @By_Azade
 Available Commands:
 .addblacklist
 .listblacklist
 .rmblacklist"""
+
 import asyncio
 import io
 import re
@@ -28,7 +29,7 @@ async def on_new_message(event):
         return
     name = event.raw_text
     snips = await get_chat_blacklist(event.chat_id)
-    for snip in snips:
+    for snip in snips['trigger']:
         pattern = r"( |^|[^\w])" + re.escape(snip) + r"( |$|[^\w])"
         if re.search(pattern, name, flags=re.IGNORECASE):
             try:
