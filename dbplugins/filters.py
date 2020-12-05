@@ -39,7 +39,10 @@ async def on_snip(event):
         # avoid userbot spam
         # "I demand rights for us bots, we are equal to you humans." -Henri Koivuneva (t.me/UserbotTesting/2698)
         return False
+
     snips = await get_all_filters(event.chat_id)
+    if f".savefilter {snips['keyword']}" in event.raw_text:
+        return
     if snips:
         for snip in snips:
             pattern = r"( |^|[^\w])" + \
