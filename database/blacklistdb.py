@@ -41,7 +41,6 @@ async def rm_from_blacklist(chat_id, trigger):
         return False
     else:
         cli.delete_one({
-            '_id': to_check["_id"],
             'chat_id': to_check["chat_id"],
             'trigger': to_check["trigger"]
         })
