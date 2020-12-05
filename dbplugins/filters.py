@@ -8,14 +8,17 @@ Available Commands:
 .clearf
 .clearaf"""
 import asyncio
+import io
 import logging
 import re
 
+# from sql_helpers.filters_sql import (add_filter, get_all_filters, get_filter,
+#                                      remove_all_filters, remove_filter)
+from database.filtersdb import (add_filter, delete_all_filters, delete_filter,
+                                get_all_filters, get_filter)
+from sample_config import Config
 from telethon import events
 from telethon.tl import types
-
-from sql_helpers.filters_sql import (add_filter, get_all_filters, get_filter,
-                                     remove_all_filters, remove_filter)
 from uniborg.util import admin_cmd
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
@@ -36,7 +39,7 @@ async def on_snip(event):
         # avoid userbot spam
         # "I demand rights for us bots, we are equal to you humans." -Henri Koivuneva (t.me/UserbotTesting/2698)
         return False
-    snips = get_all_filters(event.chat_id)
+    snips = await get_all_filters(event.chat_id)
     if snips:
         for snip in snips:
             pattern = r"( |^|[^\w])" + \
