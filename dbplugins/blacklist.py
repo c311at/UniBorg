@@ -25,15 +25,15 @@ async def on_new_message(event):
     if borg.me.id == event.sender_id:
         return
     name = event.raw_text
-    snips = get_chat_blacklist(event.chat_id)
+    snips = await get_chat_blacklist(event.chat_id)
     for snip in snips:
         pattern = r"( |^|[^\w])" + re.escape(snip) + r"( |$|[^\w])"
         if re.search(pattern, name, flags=re.IGNORECASE):
             try:
                 await event.delete()
-            except Exception as e:
+            except Exception:
                 await event.reply("I do not have DELETE permission in this chat")
-                rm_from_blacklist(event.chat_id, snip.lower())
+                await rm_from_blacklist(event.chat_id, snip.lower())
             break
 
 
@@ -44,13 +44,13 @@ async def on_add_black_list(event):
         {trigger.strip() for trigger in text.split("\n") if trigger.strip()}
     )
     for trigger in to_blacklist:
-        add_to_blacklist(event.chat_id, trigger.lower())
+        await add_to_blacklist(event.chat_id, trigger.lower())
     await event.edit("Added {} triggers to the blacklist in the current chat".format(len(to_blacklist)))
 
 
 @borg.on(admin_cmd(pattern="listblacklist"))
 async def on_view_blacklist(event):
-    all_blacklisted = get_chat_blacklist(event.chat_id)
+    all_blacklisted = await get_chat_blacklist(event.chat_id)
     OUT_STR = "Blacklists in the Current Chat:\n"
     if len(all_blacklisted) > 0:
         for trigger in all_blacklisted:
@@ -82,7 +82,7 @@ async def on_delete_blacklist(event):
     successful = sum(
         1
         for trigger in to_unblacklist
-        if rm_from_blacklist(event.chat_id, trigger.lower())
+        if await rm_from_blacklist(event.chat_id, trigger.lower())
     )
 
     await event.edit(f"Removed {successful} / {len(to_unblacklist)} from the blacklist")
