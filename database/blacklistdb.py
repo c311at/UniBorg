@@ -4,6 +4,16 @@ from database.mongo import cli
 cli = cli["Userbot"]["Blacklist"]
 
 
+async def add_blacklist(chat_id, trigger):
+    return cli.insert_one(
+        {"chat_id": chat_id, "trigger": trigger})
+
+
+async def blacklist_check_one(trigger):
+    return (False if not cli.find_one({"trigger": trigger})
+            else cli.find_one({"trigger": trigger}))
+
+
 async def check_blacklist(chat_id, trigger):
     return cli.find({'chat_id': chat_id, 'trigger': trigger})
 

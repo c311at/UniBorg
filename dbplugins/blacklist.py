@@ -10,7 +10,8 @@ import asyncio
 import io
 import re
 
-from database.blacklistdb import (add_to_blacklist, check_blacklist,
+from database.blacklistdb import (add_blacklist, add_to_blacklist,
+                                  blacklist_check_one, check_blacklist,
                                   get_chat_blacklist, num_blacklist_filters,
                                   rm_from_blacklist)
 from sample_config import Config
@@ -46,8 +47,8 @@ async def on_add_black_list(event):
     )
 
     for trigger in to_blacklist:
-        if not await check_blacklist(event.chat_id, trigger):
-            await add_to_blacklist(event.chat_id, trigger.lower())
+        if not await blacklist_check_one(trigger):
+            await add_blacklist(event.chat_id, trigger.lower())
         # await add_to_blacklist(event.chat_id, trigger.lower())
     await event.edit("Added {} triggers to the blacklist in the current chat".format(len(to_blacklist)))
 
