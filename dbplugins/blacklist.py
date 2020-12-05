@@ -10,8 +10,9 @@ import asyncio
 import io
 import re
 
-from database.blacklistdb import (add_to_blacklist, get_chat_blacklist,
-                                  num_blacklist_filters, rm_from_blacklist)
+from database.blacklistdb import (add_to_blacklist, check_blacklist,
+                                  get_chat_blacklist, num_blacklist_filters,
+                                  rm_from_blacklist)
 from sample_config import Config
 from telethon import events
 from telethon.tl import functions, types
@@ -43,8 +44,11 @@ async def on_add_black_list(event):
     to_blacklist = list(
         {trigger.strip() for trigger in text.split("\n") if trigger.strip()}
     )
+
     for trigger in to_blacklist:
-        await add_to_blacklist(event.chat_id, trigger.lower())
+        if not await check_blacklist(event.chat_id, trigger):
+            await add_to_blacklist(event.chat_id, trigger.lower())
+        # await add_to_blacklist(event.chat_id, trigger.lower())
     await event.edit("Added {} triggers to the blacklist in the current chat".format(len(to_blacklist)))
 
 
