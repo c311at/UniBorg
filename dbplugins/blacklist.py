@@ -11,7 +11,7 @@ import io
 import re
 
 from database.blacklistdb import (add_to_blacklist, get_chat_blacklist,
-                                  rm_from_blacklist)
+                                  num_blacklist_filters, rm_from_blacklist)
 from sample_config import Config
 from telethon import events
 from telethon.tl import functions, types
@@ -50,9 +50,9 @@ async def on_add_black_list(event):
 
 @borg.on(admin_cmd(pattern="listblacklist"))
 async def on_view_blacklist(event):
-    all_blacklisted = await get_chat_blacklist(event.chat_id)
+    all_blacklisted = await num_blacklist_filters(event.chat_id)
     OUT_STR = "Blacklists in the Current Chat:\n"
-    if len(all_blacklisted) > 0:
+    if all_blacklisted > 0:
         for trigger in all_blacklisted:
             OUT_STR += f"👉 {trigger} \n"
     else:
