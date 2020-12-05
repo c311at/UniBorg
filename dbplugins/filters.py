@@ -12,17 +12,19 @@ import io
 import logging
 import re
 
+from telethon import events
+from telethon.tl import types
+
 # from sql_helpers.filters_sql import (add_filter, get_all_filters, get_filter,
 #                                      remove_all_filters, remove_filter)
 from database.filtersdb import (add_filter, delete_all_filters, delete_filter,
                                 get_all_filters, get_filter)
 from sample_config import Config
-from telethon import events
-from telethon.tl import types
 from uniborg.util import admin_cmd
 
-logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
-                    level=logging.WARNING)
+logging.basicConfig(
+    format="[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s", level=logging.WARNING
+)
 logger = logging.getLogger(__name__)
 
 DELETE_TIMEOUT = 300
@@ -45,13 +47,13 @@ async def on_snip(event):
     if snips:
         for snip in snips:
             pattern = r"( |^|[^\w])" + \
-                re.escape(snip['keyword']) + r"( |$|[^\w])"
+                re.escape(snip["keyword"]) + r"( |$|[^\w])"
             if f".savefilter {snip['keyword']}" in event.raw_text:
                 return
             if re.search(pattern, name, flags=re.IGNORECASE):
                 msg_o = await event.client.get_messages(
-                    entity=Config.PRIVATE_CHANNEL_BOT_API_ID,
-                    ids=int(snip['msg'])
+                    entity=Config.PRIVATE_CHANNEL_BOT_API_ID, ids=int(
+                        snip["msg"])
                 )
                 message_id = event.message.id
                 if event.reply_to_msg_id:
@@ -61,14 +63,14 @@ async def on_snip(event):
                         event.chat_id,
                         msg_o.message,
                         reply_to=message_id,
-                        file=msg_o.media
+                        file=msg_o.media,
                     )
                 else:
                     await event.client.send_message(
                         event.chat_id,
                         msg_o.message,
                         reply_to=message_id,
-                        link_preview=False
+                        link_preview=False,
                     )
                 if event.chat_id not in last_triggered_filters:
                     last_triggered_filters[event.chat_id] = []
@@ -86,12 +88,14 @@ async def on_snip_save(event):
             entity=Config.PRIVATE_CHANNEL_BOT_API_ID,
             messages=msg,
             from_peer=event.chat_id,
-            silent=True
+            silent=True,
         )
         await add_filter(event.chat_id, name, msg_o.id)
         await event.edit(f"Filter `{name}` saved successfully. Get it with `{name}`")
     else:
-        await event.edit("Reply to a message with `savefilter keyword` to save the filter")
+        await event.edit(
+            "Reply to a message with `savefilter keyword` to save the filter"
+        )
 
 
 @borg.on(admin_cmd(pattern="listfilters"))
@@ -112,7 +116,7 @@ async def on_snip_list(event):
                 force_document=True,
                 allow_cache=False,
                 caption="Available Filters in the Current Chat",
-                reply_to=event
+                reply_to=event,
             )
             await event.delete()
     else:
