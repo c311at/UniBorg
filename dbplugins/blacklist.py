@@ -59,7 +59,7 @@ async def on_view_blacklist(event):
     black_lists = await get_chat_blacklist(event.chat_id)
     OUT_STR = "Blacklists in the Current Chat:\n"
     if all_blacklisted > 0:
-        for trigger in black_lists:
+        for trigger in black_lists['trigger']:
             OUT_STR += f"👉 {trigger} \n"
     else:
         OUT_STR = "No BlackLists. Start Saving using `.addblacklist`"
