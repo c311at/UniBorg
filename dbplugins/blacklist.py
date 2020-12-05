@@ -10,13 +10,14 @@ import asyncio
 import io
 import re
 
+from telethon import events
+from telethon.tl import functions, types
+
 from database.blacklistdb import (add_blacklist, add_to_blacklist,
                                   blacklist_check_one, check_blacklist,
                                   get_chat_blacklist, num_blacklist_filters,
                                   rm_from_blacklist)
 from sample_config import Config
-from telethon import events
-from telethon.tl import functions, types
 from uniborg.util import admin_cmd, is_admin
 
 
@@ -50,7 +51,11 @@ async def on_add_black_list(event):
         if not await blacklist_check_one(trigger):
             await add_blacklist(event.chat_id, trigger.lower())
         # await add_to_blacklist(event.chat_id, trigger.lower())
-    await event.edit("Added {} triggers to the blacklist in the current chat".format(len(to_blacklist)))
+    await event.edit(
+        "Added {} triggers to the blacklist in the current chat".format(
+            len(to_blacklist)
+        )
+    )
 
 
 @borg.on(admin_cmd(pattern="listblacklist"))
@@ -59,7 +64,7 @@ async def on_view_blacklist(event):
     black_lists = await get_chat_blacklist(event.chat_id)
     OUT_STR = "Blacklists in the Current Chat:\n"
     if all_blacklisted > 0:
-        for trigger in black_lists['trigger']:
+        for trigger in black_lists["trigger"]:
             OUT_STR += f"👉 {trigger} \n"
     else:
         OUT_STR = "No BlackLists. Start Saving using `.addblacklist`"
@@ -72,7 +77,7 @@ async def on_view_blacklist(event):
                 force_document=True,
                 allow_cache=False,
                 caption="BlackLists in the Current Chat",
-                reply_to=event
+                reply_to=event,
             )
             await event.delete()
     else:
