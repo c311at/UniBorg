@@ -12,8 +12,8 @@ import re
 
 from database.blacklistdb import (add_blacklist, add_to_blacklist,
                                   blacklist_check_one, check_blacklist,
-                                  get_chat_blacklist, num_blacklist_filters,
-                                  rm_from_blacklist)
+                                  delete_one_blacklist, get_chat_blacklist,
+                                  num_blacklist_filters, rm_from_blacklist)
 from sample_config import Config
 from telethon import events
 from telethon.tl import functions, types
@@ -82,5 +82,5 @@ async def on_view_blacklist(event):
 @borg.on(admin_cmd(pattern="rmblacklist ((.|\n)*)"))
 async def on_delete_blacklist(event):
     text = event.pattern_match.group(1)
-    if await rm_from_blacklist(event.chat_id, text):
+    if await delete_one_blacklist(event.chat_id, text):
         await event.edit(f"Removed {text}  from the blacklist")

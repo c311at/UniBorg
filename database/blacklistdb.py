@@ -35,6 +35,10 @@ async def add_to_blacklist(chat_id, trigger):
         return False
 
 
+async def delete_one_blacklist(chat_id, trigger):
+    return cli.delete_one({"chat_id": chat_id, 'trigger': trigger})
+
+
 async def rm_from_blacklist(chat_id, trigger):
     to_check = await check_blacklist(chat_id, trigger)
     if not to_check:
