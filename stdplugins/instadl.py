@@ -25,26 +25,34 @@ from instaloader import (BadCredentialsException, ConnectionException,
                          TwoFactorAuthRequiredException)
 from natsort import natsorted
 from PIL import Image
-from sample_config import Config
 from telethon import errors, events
 from telethon.tl.types import (DocumentAttributeVideo, InputMediaDocument,
                                InputMediaPhoto, InputPeerSelf)
+
+from sample_config import Config
 from uniborg.util import admin_cmd
 
-logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
-                    level=logging.WARNING)
+logging.basicConfig(
+    format="[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s", level=logging.WARNING
+)
 logger = logging.getLogger(__name__)
 
 thumb_path_ = Config.TMP_DOWNLOAD_DIRECTORY + "/thumb_image.jpg"
 
 
-async def take_screen_shot(video_file: str, duration: int, path: str = '') -> Optional[str]:
+async def take_screen_shot(
+    video_file: str, duration: int, path: str = ""
+) -> Optional[str]:
     """ take a screenshot """
     logger.info(
-        '[[[Extracting a frame from %s ||| Video duration => %s]]]', video_file, duration)
+        "[[[Extracting a frame from %s ||| Video duration => %s]]]",
+        video_file,
+        duration,
+    )
     ttl = duration // 2
     thumb_image_path = path or os.path.join(
-        Config.TMP_DOWNLOAD_DIRECTORY, f"{basename(video_file)}.jpg")
+        Config.TMP_DOWNLOAD_DIRECTORY, f"{basename(video_file)}.jpg"
+    )
     command = f'''ffmpeg -ss {ttl} -i "{video_file}" -vframes 1 "{thumb_image_path}"'''
     err = (await runcmd(command))[1]
     if err:
@@ -55,17 +63,19 @@ async def take_screen_shot(video_file: str, duration: int, path: str = '') -> Op
 async def runcmd(cmd: str) -> Tuple[str, str, int, int]:
     """ run command in terminal """
     args = shlex.split(cmd)
-    process = await asyncio.create_subprocess_exec(*args,
-                                                   stdout=asyncio.subprocess.PIPE,
-                                                   stderr=asyncio.subprocess.PIPE)
+    process = await asyncio.create_subprocess_exec(
+        *args, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
+    )
     stdout, stderr = await process.communicate()
-    return (stdout.decode('utf-8', 'replace').strip(),
-            stderr.decode('utf-8', 'replace').strip(),
-            process.returncode,
-            process.pid)
+    return (
+        stdout.decode("utf-8", "replace").strip(),
+        stderr.decode("utf-8", "replace").strip(),
+        process.returncode,
+        process.pid,
+    )
 
 
-async def get_thumb(path: str = ''):
+async def get_thumb(path: str = ""):
     if os.path.exists(thumb_path_):
         return thumb_path_
     if path:
@@ -79,14 +89,13 @@ async def get_thumb(path: str = ''):
                 if type_ != ".jpg":
                     new_thumb_path = f"{file_name}.jpg"
                     Image.open(thumb_path).convert(
-                        'RGB').save(new_thumb_path, "JPEG")
+                        "RGB").save(new_thumb_path, "JPEG")
                     os.remove(thumb_path)
                     thumb_path = new_thumb_path
                 return thumb_path
         metadata = extractMetadata(createParser(path))
         if metadata and metadata.has("duration"):
-            return await take_screen_shot(
-                path, metadata.get("duration").seconds)
+            return await take_screen_shot(path, metadata.get("duration").seconds)
     # if os.path.exists(LOGO_PATH):
     #     return LOGO_PATH
     return None
@@ -102,27 +111,29 @@ def get_caption(post: Post) -> str:
     caption = post.caption
     replace = '<a href="https://instagram.com/{}/">{}</a>'
     for mention in post.caption_mentions:
-        men = '@' + mention
+        men = "@" + mention
         val = replace.format(mention, men)
         caption = caption.replace(men, val)
-    header = f'♥️`{post.likes}`  💬`{post.comments}`'
+    header = f"♥️`{post.likes}`  💬`{post.comments}`"
     if post.is_video:
-        header += f'  👀`{post.video_view_count}`'
-    caption = header + '\n\n' + (caption or '')
+        header += f"  👀`{post.video_view_count}`"
+    caption = header + "\n\n" + (caption or "")
     return caption
 
 
-async def upload_to_tg(event, dirname: str, post: Post) -> None:  # pylint: disable=R0912
+async def upload_to_tg(
+    event, dirname: str, post: Post
+) -> None:  # pylint: disable=R0912
     """ uploads downloaded post from local to telegram servers """
     pto = (".jpg", ".jpeg", ".png", ".bmp")
     vdo = (".mkv", ".mp4", ".webm")
     paths = []
-    if post.typename == 'GraphSidecar':
+    if post.typename == "GraphSidecar":
         # upload media group
         captioned = False
         media = []
         for path in natsorted(os.listdir(dirname)):
-            ab_path = dirname + '/' + path
+            ab_path = dirname + "/" + path
             paths.append(ab_path)
             if str(path).endswith(pto):
                 if captioned:
@@ -140,26 +151,26 @@ async def upload_to_tg(event, dirname: str, post: Post) -> None:  # pylint: disa
             await event.client.send_file(event.chat_id, media)
             await event.client.send_file(Config.PRIVATE_GROUP_BOT_API_ID, media)
 
-    if post.typename == 'GraphImage':
+    if post.typename == "GraphImage":
         # upload a photo
         for path in natsorted(os.listdir(dirname)):
             if str(path).endswith(pto):
-                ab_path = dirname + '/' + path
+                ab_path = dirname + "/" + path
                 paths.append(ab_path)
                 await event.client.send_fie(
-                    event.chat_id,
-                    ab_path,
-                    caption=get_caption(post)[:1023])
+                    event.chat_id, ab_path, caption=get_caption(post)[:1023]
+                )
                 await event.client.send_fie(
                     Config.PRIVATE_GROUP_BOT_API_ID,
                     ab_path,
-                    caption=get_caption(post)[:1023])
+                    caption=get_caption(post)[:1023],
+                )
 
-    if post.typename == 'GraphVideo':
+    if post.typename == "GraphVideo":
         # upload a video
         for path in natsorted(os.listdir(dirname)):
             if str(path).endswith(vdo):
-                ab_path = dirname + '/' + path
+                ab_path = dirname + "/" + path
                 paths.append(ab_path)
                 thumb = await get_thumb(ab_path)
                 duration = 0
@@ -180,10 +191,12 @@ async def upload_to_tg(event, dirname: str, post: Post) -> None:  # pylint: disa
                             w=width,
                             h=height,
                             round_message=False,
-                            supports_streaming=True)
+                            supports_streaming=True,
+                        )
                     ],
                     thumb=thumb,
-                    caption=get_caption(post)[:1023])
+                    caption=get_caption(post)[:1023],
+                )
                 await event.client.send_file(
                     entiy=Config.PRIVATE_GROUP_BOT_API_ID,
                     file=ab_path,
@@ -193,10 +206,12 @@ async def upload_to_tg(event, dirname: str, post: Post) -> None:  # pylint: disa
                             w=width,
                             h=height,
                             round_message=False,
-                            supports_streaming=True)
+                            supports_streaming=True,
+                        )
                     ],
                     thumb=thumb,
-                    caption=get_caption(post)[:1023])
+                    caption=get_caption(post)[:1023],
+                )
                 await remove_thumb(thumb)
     for del_p in paths:
         if os.path.lexists(del_p):
@@ -204,6 +219,7 @@ async def upload_to_tg(event, dirname: str, post: Post) -> None:  # pylint: disa
 
 
 # run some process in threads?
+
 
 def download_post(client: Instaloader, post: Post) -> bool:
     """ Downloads content and returns True """
@@ -226,12 +242,12 @@ def get_profile_posts(profile: Profile) -> NodeIterator[Post]:
     return profile.get_posts()
 
 
-@ borg.on(admin_cmd(pattern="postdl ?(.*)"))
+@borg.on(admin_cmd(pattern="postdl ?(.*)"))
 async def _insta_post_downloader(event):
     """ download instagram post """
-    await event.edit('`Setting up Configs. Please don\'t flood.`')
-    dirname = 'instadl_{target}'
-    filename = '{target}\'s_post'
+    await event.edit("`Setting up Configs. Please don't flood.`")
+    dirname = "instadl_{target}"
+    filename = "{target}'s_post"
     insta = Instaloader(
         dirname_pattern=dirname,
         filename_pattern=filename,
@@ -239,43 +255,51 @@ async def _insta_post_downloader(event):
         download_geotags=False,
         download_comments=False,
         save_metadata=False,
-        compress_json=False
+        compress_json=False,
     )
     if Config.INSTA_ID and Config.INSTA_PASS:
         # try login
         try:
             insta.load_session_from_file(Config.INSTA_ID)
-            await event.edit('`Logged in with current Session`')
+            await event.edit("`Logged in with current Session`")
         except FileNotFoundError:
-            await event.edit('`Login required. Trying to login`')
+            await event.edit("`Login required. Trying to login`")
             try:
                 insta.login(Config.INSTA_ID, Config.INSTA_PASS)
             except InvalidArgumentException:
-                logger.error('Provided `INSTA_ID` is incorrect')
+                logger.error("Provided `INSTA_ID` is incorrect")
                 return
             except BadCredentialsException:
-                logger.error('Provided `INSTA_PASS` is incorrect')
+                logger.error("Provided `INSTA_PASS` is incorrect")
                 return
             except ConnectionException:
-                logger.error('Instagram refused to connect. Try again later or never'
-                             ' (your choice)😒')
+                logger.error(
+                    "Instagram refused to connect. Try again later or never"
+                    " (your choice)😒"
+                )
                 return
             # This is a nightmare.
             except TwoFactorAuthRequiredException:
                 # Send a promt for 2FA code in saved messages
-                chat_type = 'Saved Messages'
-                text = ('[**2 Factor Authentication Detected**]\n'
-                        f'I have sent a message to {chat_type}. '
-                        'Please continue there and send your 2FA code.')
+                chat_type = "Saved Messages"
+                text = (
+                    "[**2 Factor Authentication Detected**]\n"
+                    f"I have sent a message to {chat_type}. "
+                    "Please continue there and send your 2FA code."
+                )
                 await event.edit(text)
                 for _ in range(4):
                     # initial convo with the user who sent message in pm.
                     # if user is_self convo in saved messages
                     # else in pm of sudo user
                     async with event.client.conversation(event.chat_id) as asker:
-                        asked = await asker.send_message('Please reply me with your 2FA code `int`')
-                        response = await asker.wait_event(events.NewMessage(
-                            incoming=True, from_users=event.chat_id))
+                        asked = await asker.send_message(
+                            "Please reply me with your 2FA code `int`"
+                        )
+                        response = await asker.wait_event(
+                            events.NewMessage(
+                                incoming=True, from_users=event.chat_id)
+                        )
                         if not response.text:
                             # I said reply me.
                             continue
@@ -290,34 +314,33 @@ async def _insta_post_downloader(event):
                         except BadCredentialsException as b_c_e:
                             await asker.edit(b_c_e)
                         except InvalidArgumentException:
-                            await asked.edit('`No pending Login Found`')
+                            await asked.edit("`No pending Login Found`")
                             return
             else:
                 try:
                     insta.save_session_to_file()
                 except LoginRequiredException:
                     logger.error(
-                        'Failed to save session file, probably due to invalid login.')
+                        "Failed to save session file, probably due to invalid login."
+                    )
                     await asyncio.sleep(5)
     else:
-        await event.edit('Login Credentials not found.\n`[NOTE]`: '
-                         '**You may not be able to download private contents or so**')
+        await event.edit(
+            "Login Credentials not found.\n`[NOTE]`: "
+            "**You may not be able to download private contents or so**"
+        )
         await asyncio.sleep(2)
 
-    p = r'^(?:https?:\/\/)?(?:www\.)?(?:instagram\.com.*\/(p|tv|reel)\/)([\d\w\-_]+)(?:\/)?(\?.*)?$'
+    p = r"^(?:https?:\/\/)?(?:www\.)?(?:instagram\.com.*\/(p|tv|reel)\/)([\d\w\-_]+)(?:\/)?(\?.*)?$"
     match = re.search(p, event.pattern_match.group(1))
     print(match)
     if match:
-        dtypes = {
-            'p': 'POST',
-            'tv': 'IGTV',
-            'reel': 'REELS'
-        }
+        dtypes = {"p": "POST", "tv": "IGTV", "reel": "REELS"}
         d_t = dtypes.get(match.group(1))
         if not d_t:
-            logger.error('Unsupported Format')
+            logger.error("Unsupported Format")
             return
-        sent = await event.edit(f'`Fetching {d_t} Content.`')
+        sent = await event.edit(f"`Fetching {d_t} Content.`")
         shortcode = match.group(2)
         post = get_post(insta, shortcode)
         try:
@@ -330,8 +353,9 @@ async def _insta_post_downloader(event):
             await asyncio.sleep(f_w.x + 5)
             await upload_to_tg(event, dirname.format(target=post.owner_username), post)
         finally:
-            shutil.rmtree(dirname.format(
-                target=post.owner_username), ignore_errors=True)
+            shutil.rmtree(
+                dirname.format(target=post.owner_username), ignore_errors=True
+            )
         await sent.delete()
     else:
-        logger.error('`Invalid Input`')
+        logger.error("`Invalid Input`")
