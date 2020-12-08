@@ -138,7 +138,7 @@ async def upload_to_tg(event, dirname: str, post: Post) -> None:  # pylint: disa
                     captioned = True
         if media:
             await event.client.send_file(event.chat_id, media)
-            await event.client.send_file(Config.PRIVATE_GROUP_BOT_API_ID, media)
+            # await event.client.send_file(Config.PRIVATE_GROUP_BOT_API_ID, media)
 
     if post.typename == 'GraphImage':
         # upload a photo
@@ -150,10 +150,10 @@ async def upload_to_tg(event, dirname: str, post: Post) -> None:  # pylint: disa
                     event.chat_id,
                     ab_path,
                     caption=get_caption(post)[:1023])
-                await event.client.send_fie(
-                    Config.PRIVATE_GROUP_BOT_API_ID,
-                    ab_path,
-                    caption=get_caption(post)[:1023])
+                # await event.client.send_fie(
+                #     Config.PRIVATE_GROUP_BOT_API_ID,
+                #     ab_path,
+                #     caption=get_caption(post)[:1023])
 
     if post.typename == 'GraphVideo':
         # upload a video
@@ -184,19 +184,19 @@ async def upload_to_tg(event, dirname: str, post: Post) -> None:  # pylint: disa
                     ],
                     thumb=thumb,
                     caption=get_caption(post)[:1023])
-                await event.client.send_file(
-                    entiy=Config.PRIVATE_GROUP_BOT_API_ID,
-                    file=ab_path,
-                    attributes=[
-                        DocumentAttributeVideo(
-                            duration=duration,
-                            w=width,
-                            h=height,
-                            round_message=False,
-                            supports_streaming=True)
-                    ],
-                    thumb=thumb,
-                    caption=get_caption(post)[:1023])
+                # await event.client.send_file(
+                #     entiy=Config.PRIVATE_GROUP_BOT_API_ID,
+                #     file=ab_path,
+                #     attributes=[
+                #         DocumentAttributeVideo(
+                #             duration=duration,
+                #             w=width,
+                #             h=height,
+                #             round_message=False,
+                #             supports_streaming=True)
+                #     ],
+                #     thumb=thumb,
+                #     caption=get_caption(post)[:1023])
                 await remove_thumb(thumb)
     for del_p in paths:
         if os.path.lexists(del_p):
@@ -326,8 +326,8 @@ async def _insta_post_downloader(event):
         except (KeyError, LoginRequiredException):
             await logger.error("Post is private. Login and try again")
             return
-        except errors.FloodWaitError as f_w:
-            await asyncio.sleep(f_w.x + 5)
+        except errors.FloodWaitError:
+            await asyncio.sleep(15)
             await upload_to_tg(event, dirname.format(target=post.owner_username), post)
         finally:
             shutil.rmtree(dirname.format(
