@@ -7,6 +7,7 @@ import asyncio
 
 # from googletrans import LANGUAGES, Translator
 from gpytranslate import Translator
+
 from uniborg.util import admin_cmd
 
 
@@ -32,12 +33,10 @@ async def _(event):
         translated = await translator(text, targetlang=lan)
 
         after_tr_text = translated.text
-        source_lan = await translator.detect(f'{translated.orig}')
-        transl_lan = await translator.detect(f'{translated.text}')
+        source_lan = await translator.detect(f"{translated.orig}")
+        transl_lan = await translator.detect(f"{translated.text}")
         output_str = "Detected Language: **{}**\nTRANSLATED To: **{}**\n\n{}".format(
-            source_lan,
-            transl_lan,
-            after_tr_text
+            source_lan, transl_lan, after_tr_text
         )
         await event.edit(output_str)
     except Exception as exc:
