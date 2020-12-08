@@ -138,7 +138,7 @@ async def upload_to_tg(event, dirname: str, post: Post) -> None:  # pylint: disa
                     captioned = True
         if media:
             await event.client.send_file(event.chat_id, media)
-            await event.client.send_file(Config.LOG_CHANNEL_ID, media)
+            await event.client.send_file(Config.PRIVATE_GROUP_BOT_API_ID, media)
 
     if post.typename == 'GraphImage':
         # upload a photo
@@ -151,7 +151,7 @@ async def upload_to_tg(event, dirname: str, post: Post) -> None:  # pylint: disa
                     ab_path,
                     caption=get_caption(post)[:1023])
                 await event.client.send_fie(
-                    Config.LOG_CHANNEL_ID,
+                    Config.PRIVATE_GROUP_BOT_API_ID,
                     ab_path,
                     caption=get_caption(post)[:1023])
 
@@ -185,7 +185,7 @@ async def upload_to_tg(event, dirname: str, post: Post) -> None:  # pylint: disa
                     thumb=thumb,
                     caption=get_caption(post)[:1023])
                 await event.client.file(
-                    entiy=Config.LOG_CHANNEL_ID,
+                    entiy=Config.PRIVATE_GROUP_BOT_API_ID,
                     file=ab_path,
                     attributes=[
                         DocumentAttributeVideo(
@@ -272,7 +272,7 @@ async def _insta_post_downloader(event):
                     # initial convo with the user who sent message in pm.
                     # if user is_self convo in saved messages
                     # else in pm of sudo user
-                    async with borg.conversation(event.chat_id) as asker:
+                    async with event.client.conversation(event.chat_id) as asker:
                         asked = await asker.send_message('Please reply me with your 2FA code `int`')
                         response = await asker.wait_event(events.NewMessage(
                             incoming=True, from_users=event.chat_id))
