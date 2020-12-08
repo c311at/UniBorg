@@ -272,10 +272,10 @@ async def _insta_post_downloader(event):
                     # initial convo with the user who sent message in pm.
                     # if user is_self convo in saved messages
                     # else in pm of sudo user
-                    async with borg.conversation(InputPeerSelf()) as asker:
+                    async with borg.conversation(await event.client.get_input_entity(184752635)) as asker:
                         asked = await asker.send_message('Please reply me with your 2FA code `int`')
                         response = await asker.wait_event(events.NewMessage(
-                            incoming=True, from_users=InputPeerSelf()))
+                            incoming=True, from_users=await event.client.get_input_entity(184752635)))
                         if not response.text:
                             # I said reply me.
                             continue
