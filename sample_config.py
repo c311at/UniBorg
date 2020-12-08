@@ -163,6 +163,8 @@ class Config:
     # for video trimming and screenshot plugins
     FF_MPEG_DOWN_LOAD_MEDIA_PATH = os.environ.get(
         "FF_MPEG_DOWN_LOAD_MEDIA_PATH", None)
+    INSTA_ID = os.environ.get("INSTA_ID", None)
+    INSTA_PASS = os.environ.get("INSTA_PASS", None)
 
 
 class Production(Config):

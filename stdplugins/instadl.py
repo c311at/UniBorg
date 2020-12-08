@@ -216,10 +216,6 @@ def get_profile_posts(profile: Profile) -> NodeIterator[Post]:
     return profile.get_posts()
 
 
-Config.INSTA_ID = "telegramsorucozum"
-Config.INSTA_PASS = "Furkan153624"
-
-
 @ borg.on(admin_cmd(pattern="postdl ?(.*)"))
 async def _insta_post_downloader(event):
     """ download instagram post """
