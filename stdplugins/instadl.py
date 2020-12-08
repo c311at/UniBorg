@@ -184,7 +184,7 @@ async def upload_to_tg(event, dirname: str, post: Post) -> None:  # pylint: disa
                     ],
                     thumb=thumb,
                     caption=get_caption(post)[:1023])
-                await event.client.send_video(
+                await event.client.file(
                     entiy=Config.LOG_CHANNEL_ID,
                     file=ab_path,
                     attributes=[
