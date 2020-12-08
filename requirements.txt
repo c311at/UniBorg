@@ -65,6 +65,7 @@ heroku3
 pyquery
 natsort #instadl
 instaloader #instadl
+gpytranslate #translate
 # schedule
 # selenium
 # PyLyrics 

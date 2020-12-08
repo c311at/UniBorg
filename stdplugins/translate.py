@@ -2,7 +2,11 @@
 Available Commands:
 .tr LanguageCode as reply to a message
 .tr LangaugeCode | text to translate"""
-from googletrans import LANGUAGES, Translator
+
+import asyncio
+
+# from googletrans import LANGUAGES, Translator
+from gpytranslate import Translator
 from uniborg.util import admin_cmd
 
 
@@ -10,11 +14,8 @@ from uniborg.util import admin_cmd
 async def _(event):
     if event.fwd_from:
         return
-    if "trim" in event.raw_text:
-        # https://t.me/c/1220993104/192075
-        return
     input_str = event.pattern_match.group(1)
-    if event.reply_to:
+    if event.reply_to_msg_id:
         previous_message = await event.get_reply_message()
         text = previous_message.message
         lan = input_str or "en"
@@ -23,18 +24,19 @@ async def _(event):
     else:
         await event.edit("`.tr LanguageCode` as reply to a message")
         return
-    text = text.strip()
+    # text = emoji.demojize(text.strip()) # No need this.
     lan = lan.strip()
+    print(lan, text)
     translator = Translator()
     try:
-        translated = translator.translate(text, dest=lan)
+        translated = await translator(text, targetlang=lan)
+
         after_tr_text = translated.text
-        source_lan = LANGUAGES[f'{translated.src.lower()}']
-        transl_lan = LANGUAGES[f'{translated.dest.lower()}']
+        source_lan = await translator.detect(f'{translated.orig}')
+        transl_lan = await translator.detect(f'{translated.text}')
         output_str = "Detected Language: **{}**\nTRANSLATED To: **{}**\n\n{}".format(
-            # previous_message.message,
-            source_lan.title(),
-            transl_lan.title(),
+            source_lan,
+            transl_lan,
             after_tr_text
         )
         await event.edit(output_str)
