@@ -264,7 +264,7 @@ async def _insta_post_downloader(event):
             except TwoFactorAuthRequiredException:
                 # Send a promt for 2FA code in saved messages
                 chat_type = 'Saved Messages'
-                text = ('[<b>2 Factor Authentication Detected</b>]\n'
+                text = ('[**2 Factor Authentication Detected**]\n'
                         f'I have sent a message to {chat_type}. '
                         'Please continue there and send your 2FA code.')
                 await event.edit(text)
@@ -272,10 +272,10 @@ async def _insta_post_downloader(event):
                     # initial convo with the user who sent message in pm.
                     # if user is_self convo in saved messages
                     # else in pm of sudo user
-                    async with borg.conversation(event.from_id.user_id) as asker:
+                    async with borg.conversation("me") as asker:
                         asked = await asker.send_message('Please reply me with your 2FA code `int`')
                         response = await asker.wait_event(events.NewMessage(
-                            incoming=True, from_users=event.from_id.user_id))
+                            incoming=True, from_users="me"))
                         if not response.text:
                             # I said reply me.
                             continue
