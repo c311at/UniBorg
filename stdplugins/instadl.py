@@ -28,7 +28,7 @@ from PIL import Image
 from sample_config import Config
 from telethon import errors, events
 from telethon.tl.types import (DocumentAttributeVideo, InputMediaDocument,
-                               InputMediaPhoto)
+                               InputMediaPhoto, InputPeerSelf)
 from uniborg.util import admin_cmd
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
@@ -272,10 +272,10 @@ async def _insta_post_downloader(event):
                     # initial convo with the user who sent message in pm.
                     # if user is_self convo in saved messages
                     # else in pm of sudo user
-                    async with borg.conversation(184752635) as asker:
+                    async with borg.conversation(InputPeerSelf()) as asker:
                         asked = await asker.send_message('Please reply me with your 2FA code `int`')
                         response = await asker.wait_event(events.NewMessage(
-                            incoming=True, from_users=184752635))
+                            incoming=True, from_users=InputPeerSelf()))
                         if not response.text:
                             # I said reply me.
                             continue
