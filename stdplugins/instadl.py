@@ -164,6 +164,10 @@ async def upload_to_tg(event, dirname: str, post: Post) -> None:  # pylint: disa
                 thumb = await get_thumb(ab_path)
                 duration = 0
                 metadata = extractMetadata(createParser(ab_path))
+                if metadata.has("width"):
+                    width = metadata.get("width")
+                if metadata.has("height"):
+                    height = metadata.get("height")
                 if metadata and metadata.has("duration"):
                     duration = metadata.get("duration").seconds
 
@@ -173,6 +177,9 @@ async def upload_to_tg(event, dirname: str, post: Post) -> None:  # pylint: disa
                     attributes=[
                         DocumentAttributeVideo(
                             duration=duration,
+                            w=width,
+                            h=height,
+                            round_message=False,
                             supports_streaming=True)
                     ],
                     thumb=thumb,
@@ -183,6 +190,9 @@ async def upload_to_tg(event, dirname: str, post: Post) -> None:  # pylint: disa
                     attributes=[
                         DocumentAttributeVideo(
                             duration=duration,
+                            w=width,
+                            h=height,
+                            round_message=False,
                             supports_streaming=True)
                     ],
                     thumb=thumb,
