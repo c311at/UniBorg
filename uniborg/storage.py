@@ -5,7 +5,7 @@ from pathlib import Path
 
 import jsonpickle
 
-FILE_NAME = 'data.json'
+FILE_NAME = "data.json"
 
 
 class Storage:
@@ -37,12 +37,12 @@ class Storage:
         return self._guard
 
     def __getattr__(self, name):
-        if name.startswith('_'):
-            raise ValueError('You can only access existing private members')
+        if name.startswith("_"):
+            raise ValueError("You can only access existing private members")
         return self._data.get(name, None)
 
     def __setattr__(self, name, value):
-        if name.startswith('_'):
+        if name.startswith("_"):
             self.__dict__[name] = value
         else:
             self._data[name] = value
@@ -52,5 +52,5 @@ class Storage:
     def _save(self):
         if not self._root.is_dir():
             self._root.mkdir(parents=True, exist_ok=True)
-        with open(self._root / FILE_NAME, 'w') as fp:
+        with open(self._root / FILE_NAME, "w") as fp:
             fp.write(jsonpickle.encode(self._data))

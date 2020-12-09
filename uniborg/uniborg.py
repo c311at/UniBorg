@@ -16,8 +16,16 @@ from .storage import Storage
 
 class Uniborg(TelegramClient):
     def __init__(
-            self, session, *, n_plugin_path="plugins", db_plugin_path="plugins",
-            bot_token=None, api_config=None, storage=None, **kwargs):
+        self,
+        session,
+        *,
+        n_plugin_path="plugins",
+        db_plugin_path="plugins",
+        bot_token=None,
+        api_config=None,
+        storage=None,
+        **kwargs,
+    ):
         self._name = "LoggedIn"
         self._logger = logging.getLogger("UniBorg")
         self._plugins = {}
@@ -32,16 +40,14 @@ class Uniborg(TelegramClient):
             "device_model": "GNU/Linux nonUI",
             "app_version": "@UniBorg 2.0",
             "lang_code": "tr",
-            **kwargs
+            **kwargs,
         }
 
         self.tgbot = None
         if api_config.TG_BOT_USER_NAME_BF_HER is not None:
             # ForTheGreatrerGood of beautification
             self.tgbot = TelegramClient(
-                "TG_BOT_TOKEN",
-                api_id=api_config.APP_ID,
-                api_hash=api_config.API_HASH
+                "TG_BOT_TOKEN", api_id=api_config.APP_ID, api_hash=api_config.API_HASH
             ).start(bot_token=api_config.TG_BOT_TOKEN_BF_HER)
 
         super().__init__(session, **kwargs)
