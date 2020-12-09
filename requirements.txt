@@ -66,6 +66,7 @@ pyquery
 natsort #instadl
 instaloader #instadl
 gpytranslate #translate
+jsonpickle #storage
 # schedule
 # selenium
 # PyLyrics 

@@ -11,18 +11,20 @@ import telethon.utils
 from telethon import TelegramClient
 
 from . import hacks
+from .storage import Storage
 
 
 class Uniborg(TelegramClient):
     def __init__(
             self, session, *, n_plugin_path="plugins", db_plugin_path="plugins",
-            bot_token=None, api_config=None, **kwargs):
+            bot_token=None, api_config=None, storage=None, **kwargs):
         self._name = "LoggedIn"
         self._logger = logging.getLogger("UniBorg")
         self._plugins = {}
         self.n_plugin_path = n_plugin_path
         self.db_plugin_path = db_plugin_path
         self.config = api_config
+        self.storage = storage or (lambda n: Storage(Path("data") / n))
 
         kwargs = {
             "api_id": 6,
@@ -97,6 +99,7 @@ class Uniborg(TelegramClient):
 
         mod.borg = self
         mod.logger = logging.getLogger(shortname)
+        mod.storage = self.storage(f"{self._name}/{shortname}")
         # declare Config and tgbot to be accessible by all modules
         mod.Config = self.config
         if self.config.TG_BOT_USER_NAME_BF_HER is not None:

@@ -1,10 +1,11 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
-import json
 from pathlib import Path
 
-FILE_NAME = "data.json"
+import jsonpickle
+
+FILE_NAME = 'data.json'
 
 
 class Storage:
@@ -23,11 +24,14 @@ class Storage:
         self._root = Path(root)
         self._autosave = True
         self._guard = self._Guard(self)
+        self._data = {}
+        self.reload()
+
+    def reload(self, classes=None):
+        classes = classes or set()
         if (self._root / FILE_NAME).is_file():
-            with open(self._root / FILE_NAME) as file_pointer:
-                self._data = json.load(file_pointer)
-        else:
-            self._data = {}
+            with open(self._root / FILE_NAME) as fp:
+                self._data = jsonpickle.decode(fp.read(), classes=classes)
 
     def bulk_save(self):
         return self._guard
@@ -47,6 +51,6 @@ class Storage:
 
     def _save(self):
         if not self._root.is_dir():
-            self._root(parents=True, exist_ok=True)
-        with open(self._root / FILE_NAME, 'w') as file_pointer:
-            json.dump(self._data, file_pointer)
+            self._root.mkdir(parents=True, exist_ok=True)
+        with open(self._root / FILE_NAME, 'w') as fp:
+            fp.write(jsonpickle.encode(self._data))
