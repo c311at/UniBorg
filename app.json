@@ -134,11 +134,7 @@
         "MIRROR_ACE_API_TOKEN": {
             "description": "mirrorace plugin token",
             "required": false
-        },
-        "MONGO_DB_URI": {
-            "description": "Database for mongodb",
-            "required": true
-        },
+        }
         "NC_LOG_P_M_S": {
             "description": "PM stuff",
             "required": false
